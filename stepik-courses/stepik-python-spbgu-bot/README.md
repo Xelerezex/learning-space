@@ -1,6 +1,6 @@
 # ["Онлайн подготовка к кружку по Python ПМ-ПУ СПбГУ"](https://stepik.org/course/74989/syllabus)
 
-![alt tag](https://github.com/Xelerezex/learning-space/tree/learning-space/stepik-courses/stepik-python-spbgu-bot/image3.png)
+![alt tag](https://github.com/Xelerezex/learning-space/blob/learning-space/stepik-courses/stepik-python-spbgu-bot/image3.png)
 
 ## About the course:
 

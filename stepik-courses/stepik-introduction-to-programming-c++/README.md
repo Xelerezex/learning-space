@@ -1,6 +1,6 @@
 # ["Введение в программирование (C++)"](https://stepik.org/course/363)
 
-![alt tag](https://github.com/Xelerezex/learning-space/tree/learning-space/stepik-courses/stepik-introduction-to-programming-c%2B%2B/image2.jpg)
+![alt tag](https://github.com/Xelerezex/learning-space/blob/learning-space/stepik-courses/stepik-introduction-to-programming-c%2B%2B/image2.jpg)
 
 ## About the course:
 
