@@ -1,6 +1,6 @@
 # [Python: основы и применение](https://stepik.org/course/512/syllabus)
 
-![alt-текст](https://github.com/Xelerezex/learning-space/tree/learning-space/stepik-courses/stepik-python-basis-%26-application/image1.jpg)
+![alt tag](https://github.com/Xelerezex/learning-space/blob/learning-space/stepik-courses/stepik-python-basis-%26-application/image1.jpg)
 
 ***Описание курса:***
 
