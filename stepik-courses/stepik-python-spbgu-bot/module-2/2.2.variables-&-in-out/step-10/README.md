@@ -3,13 +3,13 @@
 
 Два вещественных числа на двух разных строках
 
-a,b ∈ Ra, b \in \Ra,b ∈ R
+<img src="https://latex.codecogs.com/svg.image?a,&space;b&space;\in&space;\mathbb{N}" title="a, b \in \mathbb{N}" />
 
-−1016 ≤ a,b ≤ 1016-10^{16} \leq a, b \leq 10^{16}−1016 ≤ a,b ≤ 1016
+<img src="https://latex.codecogs.com/svg.image?-10^{16}&space;\leq&space;a,&space;b&space;\leq&space;10^{16}" title="-10^{16} \leq a, b \leq 10^{16}" />
 
 ***Выходные данные***
 
-***Сумма этих чисел***
+Сумма этих чисел
 
 ***Sample Input***:
 ```

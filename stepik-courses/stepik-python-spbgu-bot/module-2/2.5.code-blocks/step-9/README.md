@@ -4,25 +4,23 @@
 
 Напомним теорию. Квадратным уравнением называется уравнение вида:
 
-ax2+bx+c=0ax^2 + bx +c = 0ax2+bx+c=0, где a≠0,  a,b,c∈Ra \not= 0, \ \ a, b, c \in Ra=0,  a,b,c∈R
+<img src="https://latex.codecogs.com/svg.image?ax^2&space;&plus;&space;bx&space;&plus;&space;c&space;=&space;0,&space;a&space;\neq&space;0,&space;a,&space;b,&space;c&space;\in&space;\mathbb{R}" title="ax^2 + bx + c = 0, a \neq 0, a, b, c \in \mathbb{R}" />
 
 Для его решения считается дискриминант:
 
-D=b2−4acD = b^2 - 4acD=b2−4ac
+<img src="https://latex.codecogs.com/svg.image?D&space;=&space;b^2&space;-&space;4ac" title="D = b^2 - 4ac" />
 
-Если D>0D > 0D>0, то уравнение имеет два вещественных корня, которые считаются по формуле:
+Если D > 0, то уравнение имеет два вещественных корня, которые считаются по формуле:
 
-x1,2=−b±D2ax_{1, 2} = {-b \pm \sqrt{D} \over 2a}x1,2​=2a−b±D
+<img src="https://latex.codecogs.com/svg.image?x_{1,&space;2}&space;=&space;\frac{-b&space;&plus;&space;\sqrt{D}}{2a}" title="x_{1, 2} = \frac{-b + \sqrt{D}}{2a}" />
 
-​​
+Если D = 0, то уравнение имеет один вещественный корень, который считается по той же формуле.
 
-Если D=0D = 0D=0, то уравнение имеет один вещественный корень, который считается по той же формуле.
-
-Если D<0D < 0D<0, то уравнение не имеет вещественных корней.
+Если D < 0, то уравнение не имеет вещественных корней.
 
 ***Входные данные***
 
-Три вещественных числа: a,b,c∈Ra, b, c \in Ra,b,c∈R , коэффициенты квадратного уравнения.
+Три вещественных числа: a,b,c ∈ R, коэффициенты квадратного уравнения.
 
 ***Выходные данные***
 
