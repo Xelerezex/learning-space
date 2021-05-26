@@ -1,4 +1,4 @@
-# Основы разработки на C++: белый пояс
+# Основы разработки на C++: Желтый пояс
 
 ![alt-текст](https://github.com/Xelerezex/learning-space/blob/learning-space/coursera-courses/specialization-the-art-of-development-in-modern-c%2B%2B/2-yellow-belt/img1.png)
 
