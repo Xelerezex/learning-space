@@ -1,47 +1,35 @@
-/*
-Наиболее нетривиальная часть решения этой задачи — реализовать функцию, сравнивающую две строки без учёта регистра.
-
-Это можно сделать, например, с помощью функции lexicographical_compare, сравнивающей два диапазона элементов (в 
-нашем случае — два набора символов) с помощью данного компаратора. В компараторе для функции 
-lexicographical_compare мы используем функцию tolower, возвращающую символ, приведённый к нижнему регистру.
-*/
-
-#include <iostream>
+#include <stdexcept>
 #include <string>
-#include <vector>
-#include <algorithm>
+#include <sstream>
+#include "phone_number.h"
 
 using namespace std;
 
-int main() {
-  // считываем вектор строк
-  int n;
-  cin >> n;
-  vector<string> v(n);
-  for (string& s : v) {
-    cin >> s;
+PhoneNumber::PhoneNumber(const string& international_number) {
+  istringstream is(international_number);
+
+  char sign = is.get();
+  getline(is, country_code_, '-');
+  getline(is, city_code_, '-');
+  getline(is, local_number_);
+
+  if (sign != '+' || country_code_.empty() || city_code_.empty() || local_number_.empty()) {
+    throw invalid_argument("Phone number must begin with '+' symbol and contain 3 parts separated by '-' symbol: " + international_number);
   }
-  
-  // сортируем
-  sort(begin(v), end(v),
-       // компаратор для сортировки — лямбда-функция, сравнивающая строки без учёта регистра
-       [](const string& l, const string& r) {
-         // сравниваем лексикографически...
-         return lexicographical_compare(
-             // ... все символы строки l ...
-             begin(l), end(l),
-             // ... со всеми символами строки r ...
-             begin(r), end(r),
-             // ..., используя в качестве компаратора сравнение отдельных символов без учёта регистра
-             [](char cl, char cr) { return tolower(cl) < tolower(cr); }
-         );
-       }
-  );
-  
-  // выводим отсортированный вектор
-  for (const string& s : v) {
-    cout << s << ' ';
-  }
-  
-  return 0;
+}
+
+string PhoneNumber::GetCountryCode() const {
+  return country_code_;
+}
+
+string PhoneNumber::GetCityCode() const {
+  return city_code_;
+}
+
+string PhoneNumber::GetLocalNumber() const {
+  return local_number_;
+}
+
+string PhoneNumber::GetInternationalNumber() const {
+  return ("+" + country_code_ + "-" + city_code_ + "-" + local_number_);
 }

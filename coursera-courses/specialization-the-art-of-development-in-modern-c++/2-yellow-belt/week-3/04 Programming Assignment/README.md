@@ -1,66 +1,34 @@
-#### Задание по программированию: Имена и фамилии — 1 ####
+#### Задание по программированию: Декомпозиция программы — 2 ####
 
-Реализуйте класс для человека, поддерживающий историю изменений человеком своих фамилии и имени.
 
-```objectivec
-class Person {
-public:
-  void ChangeFirstName(int year, const string& first_name) {
-    // добавить факт изменения имени на first_name в год year
-  }
-  void ChangeLastName(int year, const string& last_name) {
-    // добавить факт изменения фамилии на last_name в год year
-  }
-  string GetFullName(int year) {
-    // получить имя и фамилию по состоянию на конец года year
-  }
-private:
-  // приватные поля
-};
-```
-Считайте, что в каждый год может произойти не более одного изменения фамилии и не более одного изменения имени. При этом с течением времени могут открываться всё новые факты из прошлого человека, поэтому года́ в последовательных вызовах методов *ChangeLastName* и *ChangeFirstName* не обязаны возрастать.
+В задаче [«Декомпозиция программы»](https://www.coursera.org/learn/c-plus-plus-yellow/programming/k6Xm2/diekompozitsiia-proghrammy) мы разбили монолитный код на набор функций и классов. Теперь мы сделаем ещё один шаг и разделим нашу программу на несколько файлов. В этой задаче вам нужно создать проект, состоящий из следующих файлов:
 
-Гарантируется, что все имена и фамилии непусты.
+1. *query.h*, в него кладём:
+* enum class QueryType
+* struct Query
+* объявление istream& operator >> (istream& is, Query& q)
+2. *query.cpp*, в него кладём
+* определение istream& operator >> (istream& is, Query& q);
+3. *responses.h*:
+* struct BusesForStopResponse
+* ostream& operator << (ostream& os, const BusesForStopResponse& r)
+* struct StopsForBusResponse
+* ostream& operator << (ostream& os, const StopsForBusResponse& r)
+* struct AllBusesResponse
+* ostream& operator << (ostream& os, const AllBusesResponse& r)
+4. *responses.cpp*: определения всего, что объявлено в *responses.h*
+5. *bus_manager.h*: объявление класса *BusManager*
+6. *bus_manager.cpp*: определения методов класса *BusManager*
+7. *main.cpp*: функция *main*
 
-Строка, возвращаемая методом *GetFullName*, должна содержать разделённые одним пробелом имя и фамилию человека по состоянию на конец данного года.
+##### Как отправлять проект на проверку #####
+В заданиях по программированию *Coursera* позволяет отправлять на проверку только один файл, поэтому для того, чтобы сдать свой проект в тестирующую систему, вам надо запаковать все свои файлы в архив и отправить его на проверку. Поддерживаемые форматы архивов: *rar*, *zip*, *7z*, *tar*, *tar.gz*, а также многие другие (для распаковки мы используем программу [dtrx](http://manpages.ubuntu.com/manpages/trusty/en/man1/dtrx.1.html), на странице с её описанием приведён полный список поддерживаемых форматов).
 
-* Если к данному году не случилось ни одного изменения фамилии и имени, верните строку **"Incognito"**.
-* Если к данному году случилось изменение фамилии, но не было ни одного изменения имени, верните **"last_name with unknown first name"**.
-* Если к данному году случилось изменение имени, но не было ни одного изменения фамилии, верните **"first_name with unknown last name"**.
+##### Как будет тестироваться ваше решение #####
+Ниже вам дана заготовка для файла *main.cpp*, содержащая функцию *main*. Это точно такая же заготовка, которая была дана в задаче «Декомпозиция программы». Тестирование вашего решения будет выполняться в два этапа. На первом этапе автоматическая тестирующая система распакует присланный вами архив и соберёт извлечённые файлы в исполняемый файл. При этом функция *main* в вашем проекте будет заменена на ту, которая дана в заготовке файла *main.cpp*. Затем этот исполняемый файл будет запущен на наборе тестов. Тестирование выполняется так же, как и для большинства задач на нашем курсе: тест подаётся в *stdin*, замеряется время выполнения программы, а затем анализируется *stdout*.
 
-##### Пример #####
-###### Код ######
-```objectivec
-int main() {
-  Person person;
-  
-  person.ChangeFirstName(1965, "Polina");
-  person.ChangeLastName(1967, "Sergeeva");
-  for (int year : {1900, 1965, 1990}) {
-    cout << person.GetFullName(year) << endl;
-  }
-  
-  person.ChangeFirstName(1970, "Appolinaria");
-  for (int year : {1969, 1970}) {
-    cout << person.GetFullName(year) << endl;
-  }
-  
-  person.ChangeLastName(1968, "Volkova");
-  for (int year : {1969, 1970}) {
-    cout << person.GetFullName(year) << endl;
-  }
-  
-  return 0;
-}
-```
+На втором этапе будет выполняться тестирование отдельных файлов вашего проекта. Проверяется, что файл *query.h* действительно содержит перечислимый тип *QueryType*, что *BusManager::GetBusesForStop* возвращает корректно сформированный объект *BusesForStopResponse* т.д.
 
-###### Вывод ######
-```objectivec
-Incognito
-Polina with unknown last name
-Polina Sergeeva
-Polina Sergeeva
-Appolinaria Sergeeva
-Polina Volkova
-Appolinaria Volkova
-```
+Заготовка файла *main.cpp*:
+
+[main.cpp](https://github.com/Hitoku/basics-of-c-plus-plus-development-yellow-belt/blob/master/Week_3/04%20Programming%20Assignment/Source/main.cpp)

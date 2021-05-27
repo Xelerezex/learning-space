@@ -1,47 +1,23 @@
-#### Тренировочное задание по программированию: Отсортированные строки ####
+#### Тренировочное задание по программированию: Написать объявление класса ####
 
-Реализуйте класс, поддерживающий набор строк в отсортированном порядке. Класс должен содержать два публичных метода:
+
+Вам дано полное определение класса *Rectangle*
 ```objectivec
-class SortedStrings {
+class Rectangle {
 public:
-  void AddString(const string& s) {
-    // добавить строку s в набор
-  }
-  vector<string> GetSortedStrings() {
-    // получить набор из всех добавленных строк в отсортированном порядке
-  }
+    Rectangle(int width, int height) : width_(width), height_(height)
+    {
+    }
+    int GetArea() const {
+        return width_ * height_;
+    }
+    int GetPerimeter() const {
+        return 2 * (width_ + height_);
+    }
+    int GetWidth() const { return width_; }
+    int GetHeight() const { return height_; }
 private:
-  // приватные поля
+    int width_, height_;
 };
 ```
-
-##### Пример #####
-###### Код ######
-```objectivec
-void PrintSortedStrings(SortedStrings& strings) {
-  for (const string& s : strings.GetSortedStrings()) {
-    cout << s << " ";
-  }
-  cout << endl;
-}
-
-int main() {
-  SortedStrings strings;
-  
-  strings.AddString("first");
-  strings.AddString("third");
-  strings.AddString("second");
-  PrintSortedStrings(strings);
-  
-  strings.AddString("second");
-  PrintSortedStrings(strings);
-  
-  return 0;
-}
-```
-
-###### Вывод ######
-```objectivec
-first second third
-first second second third
-```
+Пришлите заголовочный файл *rectangle.h*, содержащий объявление класса *Rectangle*. Это должен быть полноценный заголовочный файл, который можно использовать в большом проекте. В частности, в нём должна быть решена проблема двойного включения.

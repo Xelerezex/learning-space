@@ -1,15 +1,19 @@
-#include <iostream>
+#include <map>
+#include <tuple>
+#include <vector>
+
 using namespace std;
 
-int main() {
-    int a, b;
-    cin >> a >> b;
+bool operator<(const Region& lhs, const Region& rhs) {
+  return tie(lhs.std_name, lhs.parent_std_name, lhs.names, lhs.population) <
+      tie(rhs.std_name, rhs.parent_std_name, rhs.names, rhs.population);
+}
 
-    if (b == 0) {
-        cout << "Impossible" << endl;
-    } else {
-        cout << a / b << endl;
-    }
-
-    return 0;
+int FindMaxRepetitionCount(const vector<Region>& regions) {
+  int result = 0;
+  map<Region, int> repetition_count;
+  for (const Region& region : regions) {
+    result = max(result, ++repetition_count[region]);
+  }
+  return result;
 }
