@@ -34,11 +34,11 @@
 
 ### Offered by:
 
-#####[MIPT](https://mipt.ru/english/)
-#####[MIPT: Coursera](https://www.coursera.org/mipt)
+##### [MIPT](https://mipt.ru/english/)
+##### [MIPT: Coursera](https://www.coursera.org/mipt)
 
-#####[Yandex](https://yandex.com/company/)
-#####[Yandex: Coursera](https://www.coursera.org/yandex)
+##### [Yandex](https://yandex.com/company/)
+##### [Yandex: Coursera](https://www.coursera.org/yandex)
 
 ##### [E-Learning Development Fund](https://eldf.net/)
 ##### [E-Learning Development Fund: Coursera](https://www.coursera.org/eldf)
