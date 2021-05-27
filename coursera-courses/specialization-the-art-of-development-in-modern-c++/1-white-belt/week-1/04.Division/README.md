@@ -1,12 +1,10 @@
-# Division
+## Division
 
-#### Summary
+Дано два целых числа *A* и *B* в диапазоне от *0* до *1 000 000* включительно. Напишите программу, которая вычисляет целую часть частного от деления *A* на *B*.
 
-Write program that recieves 2 natural numbers `A` & `B` which will be not greater than 1 000 000 from `std::cin` and prints the result of the division of A by B (without the reminder, if any).
+Если *B = 0*, выведите *"Impossible"*.
 
-If `B = 0`, print `"Impossible"`.
-
-#### Examples
+#### Examples:
 stdin	 |  stdout
 -----  |  ------
 10 2   |  5

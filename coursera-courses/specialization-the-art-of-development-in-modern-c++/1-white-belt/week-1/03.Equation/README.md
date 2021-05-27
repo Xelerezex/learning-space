@@ -1,10 +1,9 @@
-# Equation
+*## Equation
+На вход вашей программы в стандартном потоке ввода подаются действительные коэффициенты *A*, *B* и *C* уравнения *Ax² + Bx + C = 0*.
+Выведите все его различные действительные корни в поток вывода в любом порядке, при этом разделяя корни пробелами.
+Гарантируется, что хотя бы один из коэффициентов уравнения не равен нулю.
 
-#### Summary
-
-Write program that recieves 3 coefficients `A`, `B` & `C` from `std::cin` for the equation `Ax^2 + Bx + C = 0` and prints all square roots of the equation to the standard output. You've guaranteed that at least one coefficient is not equal to zero.
-
-#### Examples
+#### Examples:
 stdin	 |  stdout
 -----  |  ------
 2 5 2  |  -0.5 -2
@@ -12,8 +11,11 @@ stdin	 |  stdout
 2 1 2  |
 0 4 10 |  -2.5
 
-To compute the square root you can use the `sqrt()` function from `cmath` library:
 
-```
+***Подсказка***
+
+Для вычисления квадратного корня используйте функцию *sqrt* из библиотеки *cmath*. Чтобы подключить библиотеку, в начале программы напишите
+
+```cpp
 #include <cmath>
 ```

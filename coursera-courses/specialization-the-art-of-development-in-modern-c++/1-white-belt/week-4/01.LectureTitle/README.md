@@ -1,7 +1,7 @@
-#### Задание по программированию: Структура LectureTitle ####
+## Licture Title
 
 Дана структура *LectureTitle*:
-```objectivec
+```cpp
 struct LectureTitle {
   string specialization;
   string course;
@@ -9,7 +9,8 @@ struct LectureTitle {
 };
 ```
 Допишите конструктор и структуры *Specialization*, *Course*, *Week* так, чтобы объект *LectureTitle* можно было создать с помощью кода
-```objectivec
+
+```cpp
 LectureTitle title(
     Specialization("C++"),
     Course("White belt"),
@@ -17,7 +18,8 @@ LectureTitle title(
 );
 ```
 но нельзя было с помощью следующих фрагментов кода:
-```objectivec
+
+```cpp
 LectureTitle title("C++", "White belt", "4th");
 
 LectureTitle title(string("C++"), string("White belt"), string("4th"));

@@ -1,10 +1,8 @@
-# Min String
+## Min String
 
-#### Summary
+В стандартном потоке даны три строки, разделённые пробелом. Каждая строка состоит из строчных латинских букв и имеет длину не более *30* символов. Выведите в стандартный вывод лексикографически минимальную из них.
 
-Write program that recieves 3 strings from `std::cin` that are 30 maximum symbols long and prints the minimal string (lexicographically minimal) to the standard output.
-
-#### Examples
+#### Examples:
 stdin	| stdout
 ----- | ------
 milk milkshake month | milk

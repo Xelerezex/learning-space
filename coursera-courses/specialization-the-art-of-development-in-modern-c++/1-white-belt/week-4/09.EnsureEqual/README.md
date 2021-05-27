@@ -1,7 +1,8 @@
-#### Тренировочное задание по программированию: Функция EnsureEqual ####
+## Ensure Equal
 
 Напишите функцию
-```objectivec
+
+```cpp
 void EnsureEqual(const string& left, const string& right);
 ```
 
@@ -12,7 +13,7 @@ void EnsureEqual(const string& left, const string& right);
 
 Например, код
 
-```objectivec
+```cpp
 int main() {
   try {
     EnsureEqual("C++ White", "C++ White");
@@ -26,6 +27,6 @@ int main() {
 
 должен выводить
 
-```objectivec
+```commandline
 C++ White != C++ Yellow
 ```

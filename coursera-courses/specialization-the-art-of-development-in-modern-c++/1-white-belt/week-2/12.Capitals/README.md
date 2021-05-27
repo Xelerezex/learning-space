@@ -1,4 +1,4 @@
-#### Тренировочное задание по программированию: Справочник столиц ####
+## Capitals
 
 Реализуйте справочник столиц стран.
 
@@ -36,9 +36,11 @@
 * **There are no countries in the world**, если пока не было добавлено ни одной страны;
 * разделённые пробелами пары ***country/capital***, описывающие столицы всех стран и упорядоченные по названию страны, если в мире уже есть хотя бы одна страна.
 
-##### Пример 1 #####
-###### Ввод ######
-```objectivec
+#### Example 1:
+
+##### Input:
+
+```cpp
 6
 CHANGE_CAPITAL RussianEmpire Petrograd
 RENAME RussianEmpire RussianRepublic
@@ -48,8 +50,8 @@ CHANGE_CAPITAL USSR Moscow
 DUMP
 ```
 
-###### Вывод ######
-```objectivec
+##### Output:
+```cpp
 Introduce new country RussianEmpire with capital Petrograd
 Country RussianEmpire with capital Petrograd has been renamed to RussianRepublic
 Country RussianRepublic has capital Petrograd
@@ -57,9 +59,12 @@ Country RussianRepublic with capital Petrograd has been renamed to USSR
 Country USSR has changed its capital from Petrograd to Moscow
 USSR/Moscow
 ```
-##### Пример 2 #####
-###### Ввод ######
-```objectivec
+
+#### Example 2:
+
+##### Input:
+
+```cpp
 RENAME FakeCountry FarFarAway
 ABOUT FarFarAway
 DUMP
@@ -86,8 +91,8 @@ DUMP
 RENAME USSR USSR
 ```
 
-###### Вывод ######
-```objectivec
+##### Output:
+```cpp
 Incorrect rename, skip
 Country FarFarAway doesn't exist
 There are no countries in the world
@@ -114,9 +119,10 @@ FederativeRepublicOfBrazil/Brasilia USSR/Moscow
 Incorrect rename, skip
 ```
 
-##### Пример 3 #####
-###### Ввод ######
-```objectivec
+#### Example 3:
+
+##### Input:
+```cpp
 10
 CHANGE_CAPITAL RussianEmpire Petrograd
 RENAME USSR RussianEmpire
@@ -130,8 +136,8 @@ RENAME RussianEmpire UnitedStatesOfBrazil
 DUMP
 ```
 
-###### Вывод ######
-```objectivec
+##### Output:
+```cpp
 Introduce new country RussianEmpire with capital Petrograd
 Incorrect rename, skip
 RussianEmpire/Petrograd

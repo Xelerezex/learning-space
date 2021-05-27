@@ -1,10 +1,11 @@
-#### Тренировочное задание по программированию: Строка ####
+## String Reverse
 
 Реализуйте класс *ReversibleString*, хранящий строку и поддерживающий методы *Reverse* для переворота строки и *ToString* для получения строки.
 
-##### Пример #####
-###### Код ######
-```objectivec
+#### Example:
+
+##### Code:
+```cpp
 int main() {
   ReversibleString s("live");
   s.Reverse();
@@ -22,8 +23,8 @@ int main() {
 }
 ```
 
-###### Вывод ######
-```objectivec
+##### Output:
+```commandline
 evil
 live
 ""

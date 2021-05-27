@@ -1,5 +1,3 @@
-// Для поддержки умножения и деления достаточно лишь обновить методы Apply и Invert класса FunctionPart.
-
 #include <algorithm>
 #include <vector>
 

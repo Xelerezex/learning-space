@@ -1,12 +1,10 @@
-# Division
+## Division
 
-#### Summary
+Написать программу вычисления стоимости покупки товара с учётом скидки. Если исходная стоимость товара больше *A* рублей, то на неё устанавливается скидка в *X* процентов. Если исходная стоимость товара больше B рублей, то на неё устанавливается скидка в *Y* процентов.
 
-Write a program that calculates the price of an item with the discount. The discount of X percent will apply if the total is greater than A $, or Y percent if the total is greater than B $.
+На вход программе даны пять вещественных чисел: *N, A, B, X, Y (A < B)* - где *N* - исходная стоимость товара. Выведите стоимость покупки товара с учётом скидки.
 
-The program will recieve 5 real numbers as arguments: `N, A, B, X, Y` (A < B) - where N is the initial price of an item.
-
-#### Examples
+#### Examples:
 stdin	             |  stdout
 ------------------ |  ------
 100 110 120 5 10   |	100

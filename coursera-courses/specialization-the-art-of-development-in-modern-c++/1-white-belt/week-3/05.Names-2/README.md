@@ -1,8 +1,8 @@
-#### Задание по программированию: Имена и фамилии — 2 ####
+## Names 2
 
 Дополните класс из предыдущей задачи «Имена и фамилии — 1» методом *GetFullNameWithHistory*:
 
-```objectivec
+```cpp
 class Person {
 public:
   void ChangeFirstName(int year, const string& first_name) {
@@ -26,9 +26,10 @@ private:
 
 Для лучшего понимания формата см. примеры.
 
-##### Пример 1 #####
-###### Код ######
-```objectivec
+#### Example 1:
+
+##### Code:
+```cpp
 int main() {
   Person person;
 
@@ -43,14 +44,15 @@ int main() {
 }
 ```
 
-###### Вывод ######
-```objectivec
+##### Output:
+```commandline
 Evgeny (Eugene) Sokolov
 ```
 
-##### Пример 2 #####
-###### Код ######
-```objectivec
+#### Example 2:
+
+##### Code:
+```cpp
 int main() {
   Person person;
   
@@ -89,8 +91,8 @@ int main() {
 }
 ```
 
-###### Вывод ######
-```objectivec
+##### Output:
+```commandline
 Incognito
 Polina with unknown last name
 Polina Sergeeva

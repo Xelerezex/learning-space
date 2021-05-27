@@ -1,7 +1,7 @@
-#### Тренировочное задание по программированию: Отсортированные строки ####
+## Sorted Strings
 
 Реализуйте класс, поддерживающий набор строк в отсортированном порядке. Класс должен содержать два публичных метода:
-```objectivec
+```cpp
 class SortedStrings {
 public:
   void AddString(const string& s) {
@@ -15,9 +15,10 @@ private:
 };
 ```
 
-##### Пример #####
-###### Код ######
-```objectivec
+####Example:
+
+##### Code:
+```cpp
 void PrintSortedStrings(SortedStrings& strings) {
   for (const string& s : strings.GetSortedStrings()) {
     cout << s << " ";
@@ -40,8 +41,8 @@ int main() {
 }
 ```
 
-###### Вывод ######
-```objectivec
+##### Output:
+```commandline
 first second third
 first second second third
 ```

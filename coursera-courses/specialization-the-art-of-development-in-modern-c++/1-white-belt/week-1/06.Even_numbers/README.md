@@ -1,12 +1,22 @@
-# Even numbers
+## Even numbers
 
-#### Summary
+Дано два целых числа *A* и *B* *(A <= B, A >= 1, B <= 30000)*.  Выведите через пробел все чётные числа от *A* до *B* (включительно).
 
-Write a program that prints all even numbers within the range from A to B, separated by space. A and B are integers, (A <= B, A >= 1, B <= 30000).
+_Для проверки целого числа x на чётность используется операция  взятия остатка от деления на 2, которая в C++ оформляется с помощью  символа "%". Например,_
 
-#### Examples
+```cpp
+int x;
+cin >> x;
+if (x % 2 == 0) {
+  // x - чётное число
+} else {
+  // x - нечётное число
+}
+```
+
+#### Examples:
 stdin | stdout
 ----- | ----------
 1 10	| 2 4 6 8 10
-2 3   | 2
+2 3     | 2
 9 11	| 10

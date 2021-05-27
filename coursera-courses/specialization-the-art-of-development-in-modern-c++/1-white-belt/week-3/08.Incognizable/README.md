@@ -1,7 +1,8 @@
-#### Тренировочное задание по программированию: Способы инициализации ####
+## Incognizable
 
 Определите тип *Incognizable*, для которого следующий код будет корректен:
-```objectivec
+
+```cpp
 int main() {
   Incognizable a;
   Incognizable b = {};

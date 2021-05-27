@@ -1,16 +1,16 @@
-#### Тренировочное задание по программированию: Множество значений словаря ####
+## Map Vals
 
 Напишите функцию *BuildMapValuesSet*, принимающую на вход словарь *map<int, string>* и возвращающую множество значений этого словаря:
 
-```objectivec
+```cpp
 set<string> BuildMapValuesSet(const map<int, string>& m) {
   // ...
 }
 ```
 
-##### Пример #####
-###### Код ######
-```objectivec
+#### Example:
+##### Code:
+```cpp
 set<string> values = BuildMapValuesSet({
     {1, "odd"},
     {2, "even"},
@@ -23,8 +23,8 @@ for (const string& value : values) {
 }
 ```
 
-###### Вывод ######
-```objectivec
+##### Output:
+```commandline
 even
 odd
 ```
