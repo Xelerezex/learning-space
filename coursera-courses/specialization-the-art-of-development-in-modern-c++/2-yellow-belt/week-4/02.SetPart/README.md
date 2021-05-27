@@ -1,13 +1,15 @@
-#### Задание по программированию: Часть множества ####
-
+## Set Part
 
 Напишите шаблонную функцию *FindGreaterElements*, принимающую множество *elements* объектов типа *T* и ещё один объект *border* типа *T* и возвращающую вектор из всех элементов множества, бо́льших *border*, в возрастающем порядке.
-```objectivec
+
+```cpp
 template <typename T>
 vector<T> FindGreaterElements(const set<T>& elements, const T& border);
 ```
-##### Пример кода #####
-```objectivec
+
+#### Example
+
+```cpp
 int main() {
   for (int x : FindGreaterElements(set<int>{1, 5, 7, 8}, 5)) {
     cout << x << " ";
@@ -19,7 +21,9 @@ int main() {
   return 0;
 }
 ```
-###### Вывод ######
+
+##### Output
+
 ```commandline
 7 8
 0

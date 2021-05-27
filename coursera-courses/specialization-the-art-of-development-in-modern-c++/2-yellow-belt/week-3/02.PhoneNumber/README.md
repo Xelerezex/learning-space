@@ -1,11 +1,10 @@
-#### Задание по программированию: Реализовать класс, объявленный в заголовочном файле ####
-
+## Phone Number
 
 Вам дан заголовочный файл *phone_number.h*, содержащий объявление класса *PhoneNumber*. При этом в комментариях описано поведение, которое ожидается от реализации этого класса.
 
-[phone_number.h](https://github.com/Hitoku/basics-of-c-plus-plus-development-yellow-belt/blob/master/Week_3/02%20Programming%20Assignment/Source/phone_number.h)
+[phone_number.h](https://d3c33hcgiwev3.cloudfront.net/_cfc497ae3376b86ce5c8aab531b01f56_phone_number.h?Expires=1622246400&Signature=kMO46BcpO5RRgq3vRezBxVvndAL1kACwa6QABuduNHHzWI5AtX7OOE3m2qktf4JcDfSTlYh0yuvlO5LKPi-UdqhbTl1o4EuyQT53qlHh-d3a~amdUUIAdzuTEh9eWKgG2A0cld07wtcXZXrCMazrwRA2TG37pnWFl~ifcUy5GQM_&Key-Pair-Id=APKAJLTNE6QMUY6HBC5A)
 
-```objectivec
+```cpp
 #pragma once
 #include <string>
 using namespace std;
@@ -35,9 +34,11 @@ private:
   string city_code_;
   string local_number_;
 };
+
 ```
 Пришлите *cpp*-файл **с определениями методов** класса *PhoneNumber*, которые реализуют описанное поведение.
 
-##### Как будет тестироваться ваш код #####
+***Как будет тестироваться ваш код***
+
 Автоматическая тестирующая система добавит ваш *cpp*-файл в проект, содержащий другой *cpp*-файл с юнит-тестами для класса *PhoneNumber*, а также файл *phone_number.h*. Затем она соберёт этот проект и, если компиляция будет выполнена успешно, запустит получившийся исполняемый файл. Если он завершится успешно (т. е. юнит-тесты не найдут ошибок в вашей реализации), то ваша посылка будет засчитана.
 Автоматическая тестирующая система добавит ваш *cpp*-файл в проект, содержащий другой *cpp*-файл с юнит-тестами для класса *PhoneNumber*, а также файл *phone_number.h*. Затем она соберёт этот проект и, если компиляция будет выполнена успешно, запустит получившийся исполняемый файл. Если он завершится успешно (т. е. юнит-тесты не найдут ошибок в вашей реализации), то ваша посылка будет засчитана.

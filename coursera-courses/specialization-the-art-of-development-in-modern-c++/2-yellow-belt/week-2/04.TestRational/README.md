@@ -1,8 +1,8 @@
-#### Задание по программированию: Тесты для класса Rational ####
-
+## Test Rational
 
 Класс _Rational_ представляет собой рациональное число и имеет следующий интерфейс
-```objectivec
+
+```cpp
 class Rational {
 public:
   Rational();
@@ -23,7 +23,8 @@ public:
 
 Начать работу вы можете с шаблона, который содержит наш фреймворк юнит-тестов и заготовку класса _Rational_.
 
-[test_rational.cpp](https://github.com/Hitoku/basics-of-c-plus-plus-development-yellow-belt/blob/master/Week_2/04%20Programming%20Assignment/Source/test_rational.cpp)
+[test_rational.cpp](https://d3c33hcgiwev3.cloudfront.net/_de8ebd63ad7a6913565dbd0f6425ecdc_test_rational.cpp?Expires=1622246400&Signature=EPVICIYCxkjbTnbk3UYxpToFtvEkDWPjsdQMGWXQub7HWnfA5u-Ws3kawEGoP8qn5ZoRYBPYXIl2-prwVmqZ8JKNHGNYkovwMhEbGe3TxRWSSC~rCLwtqhBHaPJ~R2c54Y39pFBXoDUrhAr58i2Mv~LTIFffmtwEwj3wXxIcpm0_&Key-Pair-Id=APKAJLTNE6QMUY6HBC5A)
 
-##### Примечание #####
+***Примечание***
+
 Перед отправкой вашего файла убедитесь, что он не содержит класса _Person_. В противном случае вы получите ошибку компиляции. Наша тестирующая система умеет игнорировать функции в файлах (поэтому, например, в задаче "Тесты для функции _IsPalindrom_" необязательно удалять функцию _IsPalindrom_), но не умеет это делать для классов.
