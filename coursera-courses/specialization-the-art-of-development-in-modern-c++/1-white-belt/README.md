@@ -2,6 +2,9 @@
 
 ![alt-текст](https://github.com/Xelerezex/learning-space/blob/learning-space/coursera-courses/specialization-the-art-of-development-in-modern-c%2B%2B/1-white-belt/img.jpg)
 
+### About:
+Этот курс посвящён знакомству с языком программирования С++. Вы научитесь использовать его основные конструкции, создавать свои типы данных, разбивать программу на классы и функции. В конце курса вас ждёт финальный проект: вы сможете самостоятельно реализовать простое хранилище данных с возможностью добавления, удаления и поиска.
+
 | Basic Info | Course 1 of 5 in the [Искусство разработки на современном C++ Specialization](https://www.coursera.org/learn/c-plus-plus-white)|
 | ------------- | ------------- |
 | Level | Intermediate |

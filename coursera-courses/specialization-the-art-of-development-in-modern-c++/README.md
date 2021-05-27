@@ -32,3 +32,14 @@
 | 4 | [Основы разработки на С++: коричневый пояс](https://www.coursera.org/learn/c-plus-plus-brown?specialization=c-plus-plus-modern-development) | []() | [<img src="https://github.com/Xelerezex/account-decoration/blob/main/cpp-logo.png" width="25" />](https://en.cppreference.com/w/) | []() |  ❌ |
 | 5 | [Основы разработки на С++: черный пояс](https://www.coursera.org/learn/c-plus-plus-black?specialization=c-plus-plus-modern-development) | []() | [<img src="https://github.com/Xelerezex/account-decoration/blob/main/cpp-logo.png" width="25" />](https://en.cppreference.com/w/) | []() |  ❌ |
 
+### Offered by:
+
+#####[MIPT](https://mipt.ru/english/)
+#####[MIPT: Coursera](https://www.coursera.org/mipt)
+
+#####[Yandex](https://yandex.com/company/)
+#####[Yandex: Coursera](https://www.coursera.org/yandex)
+
+##### [E-Learning Development Fund](https://eldf.net/)
+##### [E-Learning Development Fund: Coursera](https://www.coursera.org/eldf)
+
