@@ -14,6 +14,7 @@
 
 ### Offered by:
 [Академия Яндекса](https://academy.yandex.ru/)
+
 [Высшая школа экономики (НИУ ВШЭ)](www.hse.ru)
 
 
