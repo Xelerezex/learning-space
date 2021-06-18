@@ -4,7 +4,7 @@
 
 Добавьте вокруг имеющихся значений матрицы "забор" из 0.
 
-![alt tag](https://github.com/Xelerezex/learning-space/tree/learning-space/stepik-courses/stepik-practice-python-math/5-week-2-vectors-%26-matrix/6.4-numpy-11-20/step-9/Source/1.png)
+![alt tag](https://github.com/Xelerezex/learning-space/tree/learning-space/stepik-courses/stepik-practice-python-math/5-week-2-vectors-%26-matrix/6.4-numpy-11-20/step-09/Source/1.png)
 
 Результат должен быть сохранён в ту же переменную Z.
 

@@ -1,6 +1,6 @@
 Реализуйте функцию Ротора шифрования.
 
-![alt tag](https://github.com/Xelerezex/learning-space/tree/learning-space/stepik-courses/stepik-practice-python-math/3-facultative/4.7-enigma/step-2/Source/1.png)
+![alt tag](https://github.com/Xelerezex/learning-space/tree/learning-space/stepik-courses/stepik-practice-python-math/3-facultative/4.7-enigma/step-02/Source/1.png)
 
 Фактически это простая замена символа по словарю.
 
@@ -15,7 +15,7 @@
 
 Спецификация на роторы (и таблица соответствия символов) - http://www.codesandciphers.org.uk/enigma/rotorspec.htm
 
-![alt tag](https://github.com/Xelerezex/learning-space/tree/learning-space/stepik-courses/stepik-practice-python-math/3-facultative/4.7-enigma/step-2/Source/2.png)
+![alt tag](https://github.com/Xelerezex/learning-space/tree/learning-space/stepik-courses/stepik-practice-python-math/3-facultative/4.7-enigma/step-02/Source/2.png)
 
 Реализуйте функцию rotor(symbol, n, reverse=False)
 
@@ -25,7 +25,7 @@
 
 Возвращает строку с зашифрованным символом
 
-![alt tag](https://github.com/Xelerezex/learning-space/tree/learning-space/stepik-courses/stepik-practice-python-math/3-facultative/4.7-enigma/step-2/Source/3.png)
+![alt tag](https://github.com/Xelerezex/learning-space/tree/learning-space/stepik-courses/stepik-practice-python-math/3-facultative/4.7-enigma/step-02/Source/3.png)
 
 ***Подсказка.***
 

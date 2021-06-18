@@ -20,7 +20,7 @@
 
 Сигнал распространяется по машине справа налево (и после отражения обратно):
 
-![alt tag](https://github.com/Xelerezex/learning-space/tree/learning-space/stepik-courses/stepik-practice-python-math/3-facultative/4.7-enigma/step-5/Source/1.png)
+![alt tag](https://github.com/Xelerezex/learning-space/tree/learning-space/stepik-courses/stepik-practice-python-math/3-facultative/4.7-enigma/step-05/Source/1.png)
 
 **Sample Input 1:**
 

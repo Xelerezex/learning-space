@@ -10,7 +10,7 @@
 
 ПРИМЕР
 
-![alt tag](https://github.com/Xelerezex/learning-space/tree/learning-space/stepik-courses/stepik-practice-python-math/5-week-2-vectors-%26-matrix/6.4-numpy-11-20/step-8/Source/1.png)
+![alt tag](https://github.com/Xelerezex/learning-space/tree/learning-space/stepik-courses/stepik-practice-python-math/5-week-2-vectors-%26-matrix/6.4-numpy-11-20/step-08/Source/1.png)
 
 
 ***Примечание.*** _В этой задаче не нужно ничего выводить на печать. Только создать матрицу Z._

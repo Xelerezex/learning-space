@@ -12,7 +12,7 @@ numpy.random.seed(42)
 
 **ПРИМЕР**
 
-![alt tag](https://github.com/Xelerezex/learning-space/tree/learning-space/stepik-courses/stepik-practice-python-math/5-week-2-vectors-%26-matrix/6.4-numpy-11-20/step-7/Source/1.png)
+![alt tag](https://github.com/Xelerezex/learning-space/tree/learning-space/stepik-courses/stepik-practice-python-math/5-week-2-vectors-%26-matrix/6.4-numpy-11-20/step-07/Source/1.png)
 
 **0.15, 0.55 и 0.88 - средние значения по столбцам.**
 **0.15 - минимальное среднее**

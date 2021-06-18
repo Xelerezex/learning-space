@@ -4,7 +4,7 @@
 
 К 5 сторонам этого шестиугольника снаружи дорисовали по правильному треугольнику.
 
-![alt tag](https://github.com/Xelerezex/learning-space/blob/learning-space/stepik-courses/stepik-practice-python-math/1-week-1-basis/2.2-math-operation/step-9/Source/1.jpg)
+![alt tag](https://github.com/Xelerezex/learning-space/blob/learning-space/stepik-courses/stepik-practice-python-math/1-week-1-basis/2.2-math-operation/step-09/Source/1.jpg)
 
 Найдите площадь получившейся фигуры.
 
