@@ -1,123 +1,98 @@
-#ifndef TESTS_CPP
-#define TESTS_CPP
-
-//--> EDIT HERE
-//----------------------ОПРЕДЕЛЕНИЕ КОНКРЕТНЫХ ТЕСТОВ---------------------------
-//--------------------------IMPLEMENTATION--------------------------------------
 #include "tests.h"
 
- /*
-void TestingTest() {
-    vector<vector<int>> input_data = {{0}};
-    vector<int> expected = {0};
+void TestClassDateOutput() {
+    {
+        Date date(2000, 12, 03);
+        string expected = "2000-12-03";
 
-    AssertEqual(func(input_data), expected, "TestingTests");    
+        AssertEqual(date.getOutput(), expected, "Testing Our Data Class #1");
+    }
+    {
+        Date date(2000, 9, 12);
+        string expected = "2000-09-12";
+
+        AssertEqual(date.getOutput(), expected, "Testing Our Data Class #2");
+    }
+
+}
+
+void TestClassDateplusDay() {
+    {
+        Date date(2000, 9, 12);
+        date.plusDay();
+        string expected = "2000-09-13";
+
+        AssertEqual(date.getOutput(), expected, "Testing Our Data Class. plusDay Function #1");
+    }
+    {
+        Date date(2000, 9, 30);
+        date.plusDay();
+        string expected = "2000-10-01";
+
+        AssertEqual(date.getOutput(), expected, "Testing Our Data Class. plusDay Function #2");
+    }
+    {
+        Date date(2020, 12, 30);
+        date.plusDay();
+        string expected = "2020-12-31";
+
+        AssertEqual(date.getOutput(), expected, "Testing Our Data Class. plusDay Function #3");
+    }
+    {
+        Date date(2020, 12, 31);
+        date.plusDay();
+        string expected = "2021-01-01";
+
+        AssertEqual(date.getOutput(), expected, "Testing Our Data Class. plusDay Function #4");
+    }
+    {
+        Date date(2020, 02, 28);
+        date.plusDay();
+        string expected = "2020-02-29";
+
+        AssertEqual(date.getOutput(), expected, "Testing Our Data Class. plusDay Function #5");
+    }
+    {
+        Date date(2020, 02, 29);
+        date.plusDay();
+        string expected = "2020-03-01";
+
+        AssertEqual(date.getOutput(), expected, "Testing Our Data Class. plusDay Function #6");
+    }
+        {
+        Date date(2021, 02, 28);
+        date.plusDay();
+        string expected = "2021-03-01";
+
+        AssertEqual(date.getOutput(), expected, "Testing Our Data Class. plusDay Function #7");
+    }
+}
+
+/*void TestClassBudgetEarn() {
+    {
+        Budget b;
+
+        string fdate = "2020-02-26", sdate = "2020-03-01";
+
+        float amount = 10;
+
+        map<string, int> expected = {
+            {"2020-02-26", 2},
+            {"2020-02-27", 2},
+            {"2020-02-28", 2},
+            {"2020-02-29", 2},
+            {"2020-03-01", 2},
+        };
+
+        b.budgetAppend(fdate, sdate, amount);
+        AssertEqual(b.getBudgetData(), expected, "Testing Our Budget Class. Earn logic #1");
+    }
+
 }*/
 
-void LeetCodeTests() {
-    {
-        vector<vector<int>> input_data = {{1, 2, 3}, 
-                                          {4, 5, 6}, 
-                                          {7, 8, 9}};
-        vector<int> expected = {1, 2, 4, 7, 5, 3, 6, 8, 9};
-
-        AssertEqual(findDiagonalOrder(input_data), expected, "First LeetCode Test"); 
-    }
-    {
-        vector<vector<int>> input_data = {{1, 2}, 
-                                          {3, 4}};
-        vector<int> expected = {1, 2, 3, 4};
-
-        AssertEqual(findDiagonalOrder(input_data), expected, "Second LeetCode Test");
-    }   
-}
-
-void Testing_N_N() {
-    {   int a = -100'000, b = 100'000, c = 50'000, d = -66'777;
-        vector<vector<int>> input_data = {
-            {a, b, c, d}, 
-            {d, a, d, c}, 
-            {d, d, a, c},
-            {d, d, c, a},
-                                          };
-        vector<int> expected = {a, b, d, d, a, c, d, d, d, d, d, a, c, c, c, a};
-
-        AssertEqual(findDiagonalOrder(input_data), expected, "My First NxN Test");         
-    }
-    {
-        vector<vector<int>> input_data = {
-            {-1, -1, -1, -1}, 
-            {-1, -1, -1, -1}, 
-            {-1, -1, -1, -1},
-            {-1, -1, -1, -1},
-                                          };
-        vector<int> expected = {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
-
-        AssertEqual(findDiagonalOrder(input_data), expected, "My Second NxN Test");  
-    }
-}
-
-
-void Testing_M_N() {
-    {   int a = -100'000, b = 100'000, c = 50'000, d = -66'777;
-        vector<vector<int>> input_data = {
-            {a, b, c, d}, 
-            {d, b, c, a},                                          
-                                         };
-        vector<int> expected = {a, b, d, b, c, d, c, a};
-
-        AssertEqual(findDiagonalOrder(input_data), expected, "My First NxN Test");         
-    }
-    {   int a = -100'000, b = 100'000, c = 50'000, d = -66'777;
-        vector<vector<int>> input_data = {
-            {a, b},
-            {c, d},
-            {d, a},
-            {d, b},
-                                         };
-        vector<int> expected = {a, b, c, d, d, a, d, b};
-
-        AssertEqual(findDiagonalOrder(input_data), expected, "My First NxN Test");         
-    }
-}
-
-void Testing_1_N_or_M_1() {
-    {   int a = -100'000, b = 100'000, c = 50'000, d = -66'777;
-        vector<vector<int>> input_data = {
-            {a, b, c, d, 1, 1, 1, 1, 1, 1},            
-                                         };
-        vector<int> expected = {a, b, c, d, 1, 1, 1, 1, 1, 1};
-
-        AssertEqual(findDiagonalOrder(input_data), expected, "My First NxN Test");         
-    }
-    {   int a = -100'000, b = 100'000, c = 50'000, d = -66'777;
-        vector<vector<int>> input_data = {
-            {a},
-            {b},
-            {c},
-            {d},
-            {1},
-            {1},
-            {1},
-            {1},
-            {1},
-            {1},
-                                         };
-        vector<int> expected = {a, b, c, d, 1, 1, 1, 1, 1, 1};
-
-        AssertEqual(findDiagonalOrder(input_data), expected, "My First NxN Test");         
-    }
-}
-
-void TestAll(){
-    unsigned counter = 0;
+void TestAll() {
     TestRunner tr;
-    //tr.RunTest(TestingTest, to_string(++counter) + ": LT Tests");
-    tr.RunTest(LeetCodeTests, to_string(++counter) + ": LT Tests");
-    tr.RunTest(Testing_N_N, to_string(++counter) + ": LT Tests");
-    tr.RunTest(Testing_M_N, to_string(++counter) + ": LT Tests");
-    tr.RunTest(Testing_1_N_or_M_1, to_string(++counter) + ": LT Tests");
+    tr.RunTest(TestClassDateOutput, "Data class Test");
+    tr.RunTest(TestClassDateplusDay, "Data class Test. plusDay Function");
+/*    tr.RunTest(TestClassBudgetEarn, "Budget class Test. Earn logic");*/
 }
-
-//------------------------------------------------------------------------------
-#endif

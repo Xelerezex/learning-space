@@ -1,14 +1,44 @@
-//--> EDIT HERE
+#include "tests.h"
+#include "budget_starter.h"
 
-#include "test_runner.cpp"
-#include "tests.cpp"
-#include "diagonal_traverse.cpp"
-#include "container_cout.cpp"
+#include <exception>
+#include <iostream>
+#include <vector>
 
-int main(){
 
-	TestAll();
-	cout << "NO ERRORS!" << endl;
-	return 0;
+using namespace std;
 
+
+int main() {
+
+    TestAll();
+
+    Budget BUDG;
+    int quantity_commands;
+    cin >> quantity_commands;
+
+
+    for (int i = 0; i < quantity_commands; ++i) {
+
+        string command;
+        cin >> command;
+
+        if (command == "Earn") {
+            double amount;
+            string fdate, sdate;
+            cin >> fdate >> sdate >> amount;
+
+            BUDG.budgetAppend(fdate, sdate, amount);
+
+
+        } else if (command == "ComputeIncome") {
+            string fdate, sdate;
+            cin >> fdate >> sdate;
+
+            cout.precision(25);
+            cout << BUDG.budgetCount(fdate, sdate) << endl;
+        }
+
+    }
+    return 0;
 }
