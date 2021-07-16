@@ -1,4 +1,5 @@
 #include "tests.h"
+#include "timer.h"
 #include "budget_starter.h"
 
 #include <exception>
@@ -12,6 +13,7 @@ using namespace std;
 int main() {
 
     TestAll();
+    TimerAll();
 
     Budget BUDG;
     int quantity_commands;

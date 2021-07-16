@@ -109,9 +109,11 @@ void TestClassBudgetCompute() {
 }
 
 void TestAll() {
+    cerr << "------------------Tests-----------------------" << endl;
     TestRunner tr;
     tr.RunTest(TestClassDateOutput, "Data class Test");
     tr.RunTest(TestClassDateplusDay, "Data class Test. plusDay Function");
     tr.RunTest(TestClassBudgetEarn, "Budget class Test. Earn logic");
     tr.RunTest(TestClassBudgetCompute, "Budget class Test. Compute logic");
+    cerr << "----------------------------------------------" << endl << endl;
 }
