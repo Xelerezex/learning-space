@@ -1,9 +1,5 @@
 #pragma once
-#include <chrono>
-#include <iostream>
-
-using namespace std::chrono;
-using namespace std;
+#include "headers.h"
 
 class Timer{
     public:

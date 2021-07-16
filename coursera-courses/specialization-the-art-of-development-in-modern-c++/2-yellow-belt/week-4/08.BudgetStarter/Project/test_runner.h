@@ -1,13 +1,5 @@
 #pragma once
-#include <string>
-#include <set>
-#include <map>
-#include <vector>
-#include <tuple>
-#include <iostream>
-#include <sstream>
-
-using namespace std;
+#include "headers.h"
 
 //---------------------------------IMPLEMENTATION-----------------------------------------------//
 template <class T>

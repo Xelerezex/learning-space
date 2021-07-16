@@ -2,13 +2,6 @@
 #include "timer.h"
 #include "budget_starter.h"
 
-#include <exception>
-#include <iostream>
-#include <vector>
-
-
-using namespace std;
-
 
 int main() {
 
