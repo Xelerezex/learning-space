@@ -4,5 +4,6 @@
 
 void TestClassDateOutput();
 void TestClassDateplusDay();
-/*void TestClassBudgetEarn();*/
+void TestClassBudgetEarn();
+void TestClassBudgetCompute();
 void TestAll();

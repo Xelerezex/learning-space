@@ -68,15 +68,16 @@ void TestClassDateplusDay() {
     }
 }
 
-/*void TestClassBudgetEarn() {
+void TestClassBudgetEarn() {
+    using budgMap = map<string, double>;
     {
         Budget b;
 
         string fdate = "2020-02-26", sdate = "2020-03-01";
 
-        float amount = 10;
+        double amount = 10;
 
-        map<string, int> expected = {
+        budgMap expected = {
             {"2020-02-26", 2},
             {"2020-02-27", 2},
             {"2020-02-28", 2},
@@ -88,11 +89,29 @@ void TestClassDateplusDay() {
         AssertEqual(b.getBudgetData(), expected, "Testing Our Budget Class. Earn logic #1");
     }
 
-}*/
+}
+
+void TestClassBudgetCompute() {
+    {
+        Budget b;
+
+        string fdate = "2020-02-26", sdate = "2020-03-01";
+
+        double amount = 10;
+
+        double expected = 10;
+
+        b.budgetAppend(fdate, sdate, amount);
+
+        AssertEqual(b.budgetCount(fdate, sdate), expected, "Testing Our Budget Class. Compute logic #1");
+    }
+
+}
 
 void TestAll() {
     TestRunner tr;
     tr.RunTest(TestClassDateOutput, "Data class Test");
     tr.RunTest(TestClassDateplusDay, "Data class Test. plusDay Function");
-/*    tr.RunTest(TestClassBudgetEarn, "Budget class Test. Earn logic");*/
+    tr.RunTest(TestClassBudgetEarn, "Budget class Test. Earn logic");
+    tr.RunTest(TestClassBudgetCompute, "Budget class Test. Compute logic");
 }
