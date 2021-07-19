@@ -108,4 +108,10 @@ ostream& operator << (ostream& os, const vector <L>& l) {
 
     return os << "]" << "\tvector\tsize:" << l.size();
 }
+
+//-------------FOR-PAIR
+template <class F, class S>
+ostream& operator << (ostream& os, const pair <F, S>& fs) {
+    return os << "<" << fs.first << " : " << fs.second << ">";
+}
 //----------------------------------------------------------------------------------------------//

@@ -6,6 +6,7 @@
 #include <map>
 #include <vector>
 #include <tuple>
+#include <numeric>
 
 //----------------INPUT-OUTPUT
 #include <iostream>

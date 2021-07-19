@@ -4,12 +4,12 @@
 class Timer{
     public:
         template <class TimerFunc>
-        void funcTimer(TimerFunc func, const string&);
+        void FuncTimer(TimerFunc func, const string&);
     private:
 };
 
 template <class TimerFunc>
-void Timer::funcTimer(TimerFunc func, const string& message){
+void Timer::FuncTimer(TimerFunc func, const string& message){
 
     auto start = high_resolution_clock::now();
     func();
