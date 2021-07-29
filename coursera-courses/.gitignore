@@ -1,6 +1,8 @@
 # Ignore all
 *
 
+*.out
+
 # Unignore all with extensions
 !*.*
 
