@@ -1,6 +1,119 @@
 #include "tests.h"
 
-void TestParseCondition() {
+void TestClassDate() {
+    {
+        {
+            ostringstream testing;
+            Date date(2020, 12, 31);
+            string expected = "2020-12-31";
+            testing << date;
+            AssertEqual(testing.str(), expected, "Date constructor #1");
+        }
+        {
+            ostringstream testing;
+            Date date = ParseDate("2020-12-31");
+            string expected = "2020-12-31";
+            testing << date;
+            AssertEqual(testing.str(), expected, "ParseDate function");
+        }
+    }
+    {
+        {
+            int year = 2020, month = 13, day = 31;
+            try {
+                Date date(year, month, day);
+            } catch (exception& ex) {
+                string testing = ex.what();
+                string expected = "Month value is invalid: " + to_string(month);
+                AssertEqual(testing, expected, "Date constructor Month Exception");
+            }
+        }
+        {
+            int year = 2020, month = 12, day = 32;
+            try {
+                Date date(year, month, day);
+            } catch (exception& ex) {
+                string testing = ex.what();
+                string expected = "Day value is invalid: " + to_string(day);
+                AssertEqual(testing, expected, "Date constructor Day Exception");
+            }
+        }
+        {
+            int year = 0, month = 13, day = 32;
+            try {
+                Date date(year, month, day);
+            } catch (exception& ex) {
+                string testing = ex.what();
+                string expected = "Month value is invalid: " + to_string(month);
+                AssertEqual(testing, expected, "Date constructor Day Exception");
+            }
+        }
+    }
+    {
+        {
+            string date = "2020---02-10";
+            try {
+                ParseDate(date);
+            } catch (exception& ex) {
+                string testing = ex.what();
+                string expected = "Wrong date format: " + date;
+                AssertEqual(testing, expected, "Date constructor Day Exception");
+            }
+        }
+        {
+            string date = "2020--02-10";
+            try {
+                ParseDate(date);
+            } catch (exception& ex) {
+                string testing = ex.what();
+                string expected = "Month value is invalid: -2";
+                AssertEqual(testing, expected, "Date constructor Day Exception");
+            }
+        }
+        {
+            string date = "2020-02--10";
+            try {
+                ParseDate(date);
+            } catch (exception& ex) {
+                string testing = ex.what();
+                string expected = "Day value is invalid: -10";
+                AssertEqual(testing, expected, "Date constructor Day Exception");
+            }
+        }
+        {
+            string date = "--2020-02-10";
+            try {
+                ParseDate(date);
+            } catch (exception& ex) {
+                string testing = ex.what();
+                string expected = "Wrong date format: --2020-02-10";
+                AssertEqual(testing, expected, "Date constructor Day Exception");
+            }
+        }
+    }
+    {
+        {
+            Date date1 = ParseDate("2020-10-15");
+            Date date2 = ParseDate("2020-10-16");
+            bool expression = date1 < date2;
+            AssertEqual(expression, true, "Date testing comparision #1");
+        }
+        {
+            Date date1 = ParseDate("2019-12-31");
+            Date date2 = ParseDate("2020-10-16");
+            bool expression = date1 < date2;
+            AssertEqual(expression, true, "Date testing comparision #2");
+        }
+        {
+            Date date1 = ParseDate("2021-11-01");
+            Date date2 = ParseDate("2021-12-01");
+            bool expression = date1 < date2;
+            AssertEqual(expression, true, "Date testing comparision #2");
+        }
+    }
+}
+
+/*void TestParseCondition() {
     {
         istringstream is("date != 2017-11-18");
         shared_ptr<Node> root = ParseCondition(is);
@@ -89,16 +202,17 @@ void TestParseEvent() {
         events.push_back(ParseEvent(is));
         AssertEqual(events, vector<string>{"first event   ", "second event"}, "Parse multiple events");
     }
-}
+}*/
 
 
 void TestAll() {
     cerr << "------------------Tests-----------------------" << endl;
     TestRunner tr;
+    tr.RunTest(TestClassDate, "TestClassDate");
 
-    tr.RunTest(TestParseEvent, "TestParseEvent");
+/*    tr.RunTest(TestParseEvent, "TestParseEvent");
 
-    tr.RunTest(TestParseCondition, "TestParseCondition");
+    tr.RunTest(TestParseCondition, "TestParseCondition");*/
 
     cerr << "----------------------------------------------" << endl << endl;
 }

@@ -1,6 +1,9 @@
 #include "database.h"
-#include "date.h"
-#include "condition_parser.h"
+#include "date.h" // ok
+#include "tests.h"
+
+// #include "condition_parser.h"
+
 #include "node.h"
 #include "test_runner.h"
 #include "headers.h"
@@ -11,23 +14,25 @@ string ParseEvent(istream& is) {
     return "";
 }
 
-void TestAll();
 
 int main() {
     TestAll();
 
-    // PASS
-    // Database db;
+    // : PASS :
+    //Database db;
 
-    Data date;
+
 
     for (string line; getline(cin, line); ) {
+        Date date = ParseDate(line);
+        cout << "DATE : " << date << endl;
 
 
         /* PASS
         istringstream is(line);
 
         string command;
+
         is >> command;
         if (command == "Add") {
             const auto date = ParseDate(is);
@@ -66,11 +71,11 @@ int main() {
                 }
         }
         */
-        else if (command.empty()) {
-            continue;
-        } else {
-            throw logic_error("Unknown command: " + command);
-        }
+        //else if (command.empty()) {
+        //    continue;
+        //} else {
+        //    throw logic_error("Unknown command: " + command);
+        //}
     }
 
     return 0;

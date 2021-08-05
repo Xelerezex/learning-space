@@ -6,10 +6,12 @@
 #include <map>
 #include <vector>
 #include <tuple>
+#include <deque>
 
 //----------------INPUT-OUTPUT
 #include <iostream>
 #include <sstream>
+#include <iomanip>
 
 //----------------EXCEPTIONS
 #include <exception>
