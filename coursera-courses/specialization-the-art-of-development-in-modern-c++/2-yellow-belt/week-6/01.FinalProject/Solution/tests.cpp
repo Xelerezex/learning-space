@@ -113,6 +113,34 @@ void TestClassDate() {
     }
 }
 
+void TestClassDatebase() {
+    {
+        string expected = "Someone's birthday FUCK!";
+        istringstream is(expected);
+        const auto testing = ParseEvent(is);
+        AssertEqual(testing, expected, "ParseEvent for Datebase testing #1");
+    }
+    {
+        string expected = " ! @ # $ \% \% ^ & * ( ) \\ ";
+        istringstream is(expected);
+        const auto testing = ParseEvent(is);
+        AssertEqual(testing, expected, "ParseEvent for Datebase testing #2");
+    }
+    {
+        Date date1 = ParseDate("2020-12-30");
+        string event = "Test event";
+        DBType expected;
+        expected[date1].push_front(event);
+
+        //operator== -? But where, for Date, or for Deque
+
+        Database testing;
+        testing.Add(date1, event);
+
+        AssertEqual(testing.GetAllData(), expected, "ParseEvent for Datebase testing #2");
+    }
+}
+
 /*void TestParseCondition() {
     {
         istringstream is("date != 2017-11-18");
@@ -209,6 +237,7 @@ void TestAll() {
     cerr << "------------------Tests-----------------------" << endl;
     TestRunner tr;
     tr.RunTest(TestClassDate, "TestClassDate");
+    tr.RunTest(TestClassDatebase, "TestClassDatebase");
 
 /*    tr.RunTest(TestParseEvent, "TestParseEvent");
 

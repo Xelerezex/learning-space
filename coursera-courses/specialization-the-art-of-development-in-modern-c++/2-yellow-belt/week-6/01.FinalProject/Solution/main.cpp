@@ -9,17 +9,11 @@
 #include "headers.h"
 
 
-string ParseEvent(istream& is) {
-    // Реализуйте эту функцию
-    return "";
-}
-
-
 int main() {
     TestAll();
 
     // : PASS :
-    //Database db;
+    Database db;
 
 
 

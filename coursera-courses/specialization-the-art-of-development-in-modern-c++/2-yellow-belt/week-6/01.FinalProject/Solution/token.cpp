@@ -1,8 +1,5 @@
 #include "token.h"
 
-#include <stdexcept>
-
-using namespace std;
 
 vector<Token> Tokenize(istream& cl) {
     vector<Token> tokens;

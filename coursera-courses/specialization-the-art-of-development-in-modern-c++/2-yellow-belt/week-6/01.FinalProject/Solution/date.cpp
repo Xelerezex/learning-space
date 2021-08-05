@@ -34,6 +34,21 @@ int Date::GetDay() const {
 }
 
 
+// Class operator's redefinitions:
+ostream& operator<<(ostream& stream, const Date& date) {
+    return  stream << setw(4) << setfill('0') << date.GetYear() <<
+               "-" << setw(2) << setfill('0') << date.GetMonth() <<
+               "-" << setw(2) << setfill('0') << date.GetDay();
+}
+
+
+bool operator<(const Date& lhs, const Date& rhs) {
+    return  vector<int>{lhs.GetYear(), lhs.GetMonth(), lhs.GetDay()} <
+            vector<int>{rhs.GetYear(), rhs.GetMonth(), rhs.GetDay()};
+}
+
+
+// Not class member functions:
 Date ParseDate(const string& date) {
     istringstream date_stream(date);
     bool ok = true;
@@ -56,17 +71,4 @@ Date ParseDate(const string& date) {
       throw logic_error("Wrong date format: " + date);
     }
     return Date(year, month, day);
-}
-
-
-ostream& operator<<(ostream& stream, const Date& date) {
-    return  stream << setw(4) << setfill('0') << date.GetYear() <<
-               "-" << setw(2) << setfill('0') << date.GetMonth() <<
-               "-" << setw(2) << setfill('0') << date.GetDay();
-}
-
-
-bool operator<(const Date& lhs, const Date& rhs) {
-    return  vector<int>{lhs.GetYear(), lhs.GetMonth(), lhs.GetDay()} <
-            vector<int>{rhs.GetYear(), rhs.GetMonth(), rhs.GetDay()};
 }

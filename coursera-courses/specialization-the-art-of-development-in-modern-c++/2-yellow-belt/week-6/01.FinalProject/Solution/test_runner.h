@@ -106,6 +106,25 @@ ostream& operator << (ostream& os, const vector <L>& l) {
         os << i;
     }
 
-    return os << "]" << "\tvector\tsize:" << l.size();
+    return os << "]";
+}
+
+
+//-------------FOR-DEQUE
+template <class D>
+ostream& operator << (ostream& os, const deque <D>& d) {
+    os << "d[";
+    bool first = true;
+
+    for(const auto& i : d) {
+        if (!first) {
+            os << ", ";
+        }
+
+        first = false;
+        os << i;
+    }
+
+    return os << "]";
 }
 //----------------------------------------------------------------------------------------------//
