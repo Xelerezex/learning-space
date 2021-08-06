@@ -8,8 +8,8 @@ using DBType = map<Date, deque<string>>;
 
 class Database {
     public:
-        void Add(Date& date, string& event);
-        DBType GetAllData();
+        void Add(const Date& date, const string& event);
+        DBType GetAllData() const;
     private:
         DBType DataBaseStorage;
 };

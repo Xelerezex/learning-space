@@ -11,7 +11,11 @@ void TestClassDate() {
         }
         {
             ostringstream testing;
-            Date date = ParseDate("2020-12-31");
+
+            string line = "2020-12-31";
+            istringstream ist(line);
+            Date date = ParseDate(ist);
+
             string expected = "2020-12-31";
             testing << date;
             AssertEqual(testing.str(), expected, "ParseDate function");
@@ -52,18 +56,21 @@ void TestClassDate() {
     {
         {
             string date = "2020---02-10";
+            istringstream ist(date);
             try {
-                ParseDate(date);
+
+                ParseDate(ist);
             } catch (exception& ex) {
                 string testing = ex.what();
-                string expected = "Wrong date format: " + date;
+                string expected = "Wrong date format."; // + date mb some day
                 AssertEqual(testing, expected, "Date constructor Day Exception");
             }
         }
         {
             string date = "2020--02-10";
+            istringstream ist(date);
             try {
-                ParseDate(date);
+                ParseDate(ist);
             } catch (exception& ex) {
                 string testing = ex.what();
                 string expected = "Month value is invalid: -2";
@@ -72,8 +79,9 @@ void TestClassDate() {
         }
         {
             string date = "2020-02--10";
+            istringstream ist(date);
             try {
-                ParseDate(date);
+                ParseDate(ist);
             } catch (exception& ex) {
                 string testing = ex.what();
                 string expected = "Day value is invalid: -10";
@@ -82,66 +90,194 @@ void TestClassDate() {
         }
         {
             string date = "--2020-02-10";
+            istringstream ist(date);
             try {
-                ParseDate(date);
+                ParseDate(ist);
             } catch (exception& ex) {
                 string testing = ex.what();
-                string expected = "Wrong date format: --2020-02-10";
+                string expected = "Wrong date format."; // + date mb some day
                 AssertEqual(testing, expected, "Date constructor Day Exception");
             }
         }
     }
     {
-        {
-            Date date1 = ParseDate("2020-10-15");
-            Date date2 = ParseDate("2020-10-16");
+        {   string line1 = "2020-10-15";
+            istringstream ist1(line1);
+            Date date1 = ParseDate(ist1);
+
+            string line2 = "2020-10-16";
+            istringstream ist2(line2);
+            Date date2 = ParseDate(ist2);
+
             bool expression = date1 < date2;
             AssertEqual(expression, true, "Date testing comparision #1");
         }
         {
-            Date date1 = ParseDate("2019-12-31");
-            Date date2 = ParseDate("2020-10-16");
+            string line1 = "2019-12-31";
+            istringstream ist1(line1);
+            Date date1 = ParseDate(ist1);
+
+            string line2 = "2020-10-16";
+            istringstream ist2(line2);
+            Date date2 = ParseDate(ist2);
+
             bool expression = date1 < date2;
             AssertEqual(expression, true, "Date testing comparision #2");
         }
         {
-            Date date1 = ParseDate("2021-11-01");
-            Date date2 = ParseDate("2021-12-01");
+            string line1 = "2021-11-01";
+            istringstream ist1(line1);
+            Date date1 = ParseDate(ist1);
+
+            string line2 = "2021-12-01";
+            istringstream ist2(line2);
+            Date date2 = ParseDate(ist2);
+
             bool expression = date1 < date2;
             AssertEqual(expression, true, "Date testing comparision #2");
+        }
+    }
+}
+
+void TestParseEvent() {
+    { // My tests:
+        {
+            string expected = "Someone's birthday FUCK!";
+            istringstream is(expected);
+            const auto testing = ParseEvent(is);
+            AssertEqual(testing, expected, "ParseEvent for Datebase testing #1");
+        }
+        {
+            string expected = "! @ # $ \% \% ^ & * ( ) \\ ";
+            istringstream is(expected);
+            const auto testing = ParseEvent(is);
+            AssertEqual(testing, expected, "ParseEvent for Datebase testing #2");
+        }
+    }
+    { // Course tests:
+        {
+            istringstream is("event");
+            AssertEqual(ParseEvent(is), "event", "Parse event without leading spaces");
+        }
+        {
+            istringstream is("     sport event ");
+            AssertEqual(ParseEvent(is), "sport event ", "Parse event with leading spaces");
+        }
+        {
+            istringstream is("    first event   \n   second event");
+            vector<string> events;
+            events.push_back(ParseEvent(is));
+            events.push_back(ParseEvent(is));
+            AssertEqual(events, vector<string>{"first event   ", "second event"}, "Parse multiple events");
         }
     }
 }
 
 void TestClassDatebase() {
     {
-        string expected = "Someone's birthday FUCK!";
-        istringstream is(expected);
-        const auto testing = ParseEvent(is);
-        AssertEqual(testing, expected, "ParseEvent for Datebase testing #1");
-    }
-    {
-        string expected = " ! @ # $ \% \% ^ & * ( ) \\ ";
-        istringstream is(expected);
-        const auto testing = ParseEvent(is);
-        AssertEqual(testing, expected, "ParseEvent for Datebase testing #2");
-    }
-    {
-        Date date1 = ParseDate("2020-12-30");
-        string event = "Test event";
-        DBType expected;
-        expected[date1].push_front(event);
+        {
+            string e1 = "Test event";
 
-        //operator== -? But where, for Date, or for Deque
+            string line = "2020-12-30";
+            istringstream ist(line);
+            Date d1 = ParseDate(ist);
 
-        Database testing;
-        testing.Add(date1, event);
+            deque<string> dq1({e1});
 
-        AssertEqual(testing.GetAllData(), expected, "ParseEvent for Datebase testing #2");
+
+            DBType expected = {
+                {d1, dq1}, // "2020-12-30" : {"Test event"}
+            };
+
+            Database testing;
+            testing.Add(d1, e1);
+
+            AssertEqual(testing.GetAllData(), expected, "ADD for Datebase testing #1");
+        }
+        {
+            string e1 = "First Event", e2 = "Second Event", e3 = "Third Event";
+
+            string line = "2020-12-30";
+            istringstream ist(line);
+            Date d1 = ParseDate(ist);
+
+            deque<string> dq1({e3, e2, e1});
+
+
+            DBType expected = {
+                {d1, dq1},          // "2020-12-30" : {"First Event", "Second Event", "Third Event"}
+            };
+
+            Database testing;       // Should Added only one event from each doubling
+            testing.Add(d1, e1);
+            testing.Add(d1, e1);
+            testing.Add(d1, e2);
+            testing.Add(d1, e2);
+            testing.Add(d1, e3);
+            testing.Add(d1, e3);
+
+            AssertEqual(testing.GetAllData(), expected, "ADD for Datebase testing #2");
+        }
+        {
+            string e1 = "First 1234 Event", e2 = "Second # Event", e3 = "Third @ Event", e4 = "Fourth ~ Event", e5 = "Fifth ! Event";
+
+
+            string line1 = "2020-12-30";
+            istringstream ist1(line1);
+            Date d1 = ParseDate(ist1);
+
+            string line2 = "2019-12-30";
+            istringstream ist2(line2);
+            Date d2 = ParseDate(ist2);
+
+            string line3 = "2020-12-30";
+            istringstream ist3(line3);
+            Date d3 = ParseDate(ist3);
+
+            string line4 = "0000-01-01";
+            istringstream ist4(line4);
+            Date d5 = ParseDate(ist4);
+
+            deque<string> dq1({e3, e2, e1});
+            deque<string> dq2({e5, e4});
+            deque<string> dq3({e1, e5});
+
+
+            DBType expected = {
+                {d1, dq1},          // "2020-12-30" : {"First 1234 Event", "Second # Event", "Third @ Event"}
+                {d2, dq2},          // "2019-12-30" : {"Fourth ~ Event", "Fifth ! Event"}
+                {d5, dq3},          // "0000-01-01" : {"Fifth ! Event", "First 1234 Event"}
+
+            };
+
+            Database testing;       // Should Added only one event from each doubling
+            testing.Add(d1, e1);
+            testing.Add(d1, e2);
+            testing.Add(d1, e2);
+            testing.Add(d1, e3);
+            testing.Add(d1, e3);
+
+            testing.Add(d3, e1);    // Dubling but with another obj
+            testing.Add(d3, e2);
+            testing.Add(d3, e2);
+            testing.Add(d3, e3);
+            testing.Add(d3, e3);
+
+            testing.Add(d2, e4);
+            testing.Add(d2, e5);
+            testing.Add(d2, e5);
+
+            testing.Add(d5, e5);
+            testing.Add(d5, e5);
+            testing.Add(d5, e1);
+
+            AssertEqual(testing.GetAllData(), expected, "ADD for Datebase testing #3");
+        }
     }
 }
 
-/*void TestParseCondition() {
+/*
+void TestParseCondition() {
     {
         istringstream is("date != 2017-11-18");
         shared_ptr<Node> root = ParseCondition(is);
@@ -213,35 +349,18 @@ void TestClassDatebase() {
         Assert(root->Evaluate({2016, 1, 2}, "event"), "Parse condition 30");
     }
 }
-
-void TestParseEvent() {
-    {
-        istringstream is("event");
-        AssertEqual(ParseEvent(is), "event", "Parse event without leading spaces");
-    }
-    {
-        istringstream is("     sport event ");
-        AssertEqual(ParseEvent(is), "sport event ", "Parse event with leading spaces");
-    }
-    {
-        istringstream is("    first event   \n   second event");
-        vector<string> events;
-        events.push_back(ParseEvent(is));
-        events.push_back(ParseEvent(is));
-        AssertEqual(events, vector<string>{"first event   ", "second event"}, "Parse multiple events");
-    }
-}*/
+*/
 
 
 void TestAll() {
     cerr << "------------------Tests-----------------------" << endl;
     TestRunner tr;
+
     tr.RunTest(TestClassDate, "TestClassDate");
+    tr.RunTest(TestParseEvent, "TestParseEvent");
     tr.RunTest(TestClassDatebase, "TestClassDatebase");
 
-/*    tr.RunTest(TestParseEvent, "TestParseEvent");
-
-    tr.RunTest(TestParseCondition, "TestParseCondition");*/
+/*    tr.RunTest(TestParseCondition, "TestParseCondition");*/
 
     cerr << "----------------------------------------------" << endl << endl;
 }

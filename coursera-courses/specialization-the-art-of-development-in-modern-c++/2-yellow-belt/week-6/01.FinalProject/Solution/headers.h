@@ -5,8 +5,11 @@
 #include <set>
 #include <map>
 #include <vector>
-#include <tuple>
 #include <deque>
+#include <utility>
+
+//-----------------ALGORITHMIC
+#include <algorithm>
 
 //----------------INPUT-OUTPUT
 #include <iostream>

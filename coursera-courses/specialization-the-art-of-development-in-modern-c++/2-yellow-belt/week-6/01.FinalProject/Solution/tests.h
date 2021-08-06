@@ -9,6 +9,9 @@
 /*#include "condition_parser.h"*/
 
 void TestClassDate();
+void TestParseEvent();
 void TestClassDatebase();
+
 /*void TestParseCondition();*/
+
 void TestAll();

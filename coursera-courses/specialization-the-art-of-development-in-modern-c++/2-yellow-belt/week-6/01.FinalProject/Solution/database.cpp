@@ -2,18 +2,26 @@
 
 
 // Methods & Constructors of class Date:
-void Database::Add(Date& date, string& event) {
-    DataBaseStorage[date].push_front(event);
+void Database::Add(const Date& date, const string& event) {
+    bool condition1 = (find(begin(DataBaseStorage[date]),
+                            end(DataBaseStorage[date]), event)
+                         == end(DataBaseStorage[date]));
+
+    bool condition2 = DataBaseStorage[date].empty();
+    if (condition1 || condition2) {
+        DataBaseStorage[date].push_front(event);
+    }
 }
 
 
-DBType Database::GetAllData() {
+DBType Database::GetAllData() const {
     return DataBaseStorage;
 }
 
 
 // Not class member functions:
 string ParseEvent(istream& is) {
+    is >> ws;
     string line;
     getline(is, line);
     return line;

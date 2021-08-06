@@ -42,15 +42,25 @@ ostream& operator<<(ostream& stream, const Date& date) {
 }
 
 
-bool operator<(const Date& lhs, const Date& rhs) {
-    return  vector<int>{lhs.GetYear(), lhs.GetMonth(), lhs.GetDay()} <
-            vector<int>{rhs.GetYear(), rhs.GetMonth(), rhs.GetDay()};
+bool operator < (const Date& lhs, const Date& rhs) {
+    return  make_tuple(lhs.GetYear(), lhs.GetMonth(), lhs.GetDay())
+        <   make_tuple(rhs.GetYear(), rhs.GetMonth(), rhs.GetDay());
 }
 
 
+bool operator == (const Date& lhs, const Date& rhs) {
+    return  make_tuple(lhs.GetYear(), lhs.GetMonth(), lhs.GetDay())
+        ==   make_tuple(rhs.GetYear(), rhs.GetMonth(), rhs.GetDay());
+}
+
+
+bool operator != (const Date& lhs, const Date& rhs) {
+    return  make_tuple(lhs.GetYear(), lhs.GetMonth(), lhs.GetDay())
+        !=   make_tuple(rhs.GetYear(), rhs.GetMonth(), rhs.GetDay());
+}
+
 // Not class member functions:
-Date ParseDate(const string& date) {
-    istringstream date_stream(date);
+Date ParseDate(istream& date_stream) {
     bool ok = true;
 
     int year;
@@ -68,7 +78,7 @@ Date ParseDate(const string& date) {
     ok = ok && date_stream.eof();
 
     if (!ok) {
-      throw logic_error("Wrong date format: " + date);
+        throw logic_error("Wrong date format.");
     }
     return Date(year, month, day);
 }
