@@ -1,2 +1,14 @@
 __pycache__/
 .ipynb_checkpoints/
+
+# For C++:
+# Ignore all
+*
+
+# Unignore all with extensions
+!*.*
+
+*.out
+
+# Unignore all dirs
+!*/
