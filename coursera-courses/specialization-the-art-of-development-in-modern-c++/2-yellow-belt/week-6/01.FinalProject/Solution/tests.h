@@ -10,7 +10,7 @@
 
 void TestClassDate();
 void TestParseEvent();
-void TestClassDatebase();
+void TestClassDBAddPrint();
 
 /*void TestParseCondition();*/
 

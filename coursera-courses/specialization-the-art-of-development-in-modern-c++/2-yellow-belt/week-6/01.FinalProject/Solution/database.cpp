@@ -14,8 +14,23 @@ void Database::Add(const Date& date, const string& event) {
 }
 
 
+void Database::Print(ostream& os) const {
+    os << DataBaseStorage;
+}
+
+
 DBType Database::GetAllData() const {
     return DataBaseStorage;
+}
+
+// Class operator's redefinitions:
+ostream& operator << (ostream& os, const DBType& DB) {
+    for (const auto& [key, value] : DB) {
+        for (auto it = value.rbegin(); it != value.rend(); ++it) {
+            os << key << " " << *it << endl;
+        }
+    }
+    return os;
 }
 
 

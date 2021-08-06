@@ -23,17 +23,13 @@ int main() {
         string command;
         is >> command;
         if (command == "Add") {
-            cout << "!" << endl;
             const auto date = ParseDate(is);
             const auto event = ParseEvent(is);
             db.Add(date, event);
+        } else if (command == "Print") {
+            db.Print(cout);
         }
-
-        /*
-        {
-                else if (command == "Print") {
-                    db.Print(cout);
-                }
+                /*
                 else if (command == "Del") {
                     auto condition = ParseCondition(is);
                     auto predicate = [condition](const Date& date, const string& event) {

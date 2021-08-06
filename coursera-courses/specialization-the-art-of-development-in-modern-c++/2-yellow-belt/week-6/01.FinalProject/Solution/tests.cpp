@@ -173,7 +173,7 @@ void TestParseEvent() {
     }
 }
 
-void TestClassDatebase() {
+void TestClassDBAddPrint() {
     {
         {
             string e1 = "Test event";
@@ -274,7 +274,44 @@ void TestClassDatebase() {
             AssertEqual(testing.GetAllData(), expected, "ADD for Datebase testing #3");
         }
     }
+    { // Tests for PRINT from gist: https://gist.github.com/SergeiShumilin/a030350c6226b8091b57ed0c7ccba779
+        {
+            Database db;
+            db.Add({2017, 1, 1}, "new year");
+            db.Add({2017, 1, 7}, "xmas");
+            ostringstream out;
+            db.Print(out);
+            AssertEqual("2017-01-01 new year\n2017-01-07 xmas\n", out.str(), "straight ordering");
+        }
+        {
+            Database db;
+            db.Add({2017, 1, 1}, "new year");
+            db.Add({2017, 1, 1}, "holiday");
+            ostringstream out;
+            db.Print(out);
+            AssertEqual("2017-01-01 new year\n2017-01-01 holiday\n", out.str(), "several in one day");
+        }
+        {
+            Database db;
+            db.Add({2017, 1, 7}, "xmas");
+            db.Add({2017, 1, 1}, "new year");
+            ostringstream out;
+            db.Print(out);
+            AssertEqual("2017-01-01 new year\n2017-01-07 xmas\n", out.str(), "reverse ordering");
+        }
+        {
+            Database db;
+            db.Add({2017, 1, 1}, "new year");
+            db.Add({2017, 1, 1}, "new year");
+            db.Add({2017, 1, 1}, "xmas");
+            db.Add({2017, 1, 1}, "new year");
+            ostringstream out;
+            db.Print(out);
+            AssertEqual("2017-01-01 new year\n2017-01-01 xmas\n", out.str(), "uniq adding");
+        }
+    }
 }
+
 
 /*
 void TestParseCondition() {
@@ -356,9 +393,9 @@ void TestAll() {
     cerr << "------------------Tests-----------------------" << endl;
     TestRunner tr;
 
-    tr.RunTest(TestClassDate, "TestClassDate");
-    tr.RunTest(TestParseEvent, "TestParseEvent");
-    tr.RunTest(TestClassDatebase, "TestClassDatebase");
+    tr.RunTest(TestClassDate, "Test_Class_Date");
+    tr.RunTest(TestParseEvent, "Test_Parse_Event");
+    tr.RunTest(TestClassDBAddPrint, "Test_Class_Datebase_ADD_PRINT");
 
 /*    tr.RunTest(TestParseCondition, "TestParseCondition");*/
 

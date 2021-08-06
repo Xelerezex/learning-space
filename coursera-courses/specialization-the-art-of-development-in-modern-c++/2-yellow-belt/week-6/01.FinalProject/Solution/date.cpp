@@ -62,6 +62,7 @@ bool operator != (const Date& lhs, const Date& rhs) {
 // Not class member functions:
 Date ParseDate(istream& date_stream) {
     bool ok = true;
+    date_stream >> ws;
 
     int year;
     ok = ok && (date_stream >> year);
@@ -75,7 +76,7 @@ Date ParseDate(istream& date_stream) {
 
     int day;
     ok = ok && (date_stream >> day);
-    ok = ok && date_stream.eof();
+    ok = ok && (date_stream.eof() || date_stream.peek() == ' ');
 
     if (!ok) {
         throw logic_error("Wrong date format.");
