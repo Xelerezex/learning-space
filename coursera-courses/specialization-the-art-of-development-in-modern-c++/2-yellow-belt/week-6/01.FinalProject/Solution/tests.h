@@ -6,12 +6,12 @@
 // TESTING ELEMENTS:
 #include "date.h"
 #include "database.h"
-/*#include "condition_parser.h"*/
+#include "condition_parser.h"
 
 void TestClassDate();
 void TestParseEvent();
 void TestClassDBAddPrint();
 
-/*void TestParseCondition();*/
+void TestParseCondition();
 
 void TestAll();
