@@ -10,8 +10,8 @@
 
 void TestClassDate();
 void TestParseEvent();
-void TestClassDBAddPrint();
-
 void TestParseCondition();
+void TestClassDBAddPrint();
+void TestClassDBDel();
 
 void TestAll();

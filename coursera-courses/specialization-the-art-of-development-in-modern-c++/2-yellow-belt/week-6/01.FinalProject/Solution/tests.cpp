@@ -173,147 +173,6 @@ void TestParseEvent() {
     }
 }
 
-void TestClassDBAddPrint() {
-    {
-        {
-            string e1 = "Test event";
-
-            string line = "2020-12-30";
-            istringstream ist(line);
-            Date d1 = ParseDate(ist);
-
-            deque<string> dq1({e1});
-
-
-            DBType expected = {
-                {d1, dq1}, // "2020-12-30" : {"Test event"}
-            };
-
-            Database testing;
-            testing.Add(d1, e1);
-
-            AssertEqual(testing.GetAllData(), expected, "ADD for Datebase testing #1");
-        }
-        {
-            string e1 = "First Event", e2 = "Second Event", e3 = "Third Event";
-
-            string line = "2020-12-30";
-            istringstream ist(line);
-            Date d1 = ParseDate(ist);
-
-            deque<string> dq1({e3, e2, e1});
-
-
-            DBType expected = {
-                {d1, dq1},          // "2020-12-30" : {"First Event", "Second Event", "Third Event"}
-            };
-
-            Database testing;       // Should Added only one event from each doubling
-            testing.Add(d1, e1);
-            testing.Add(d1, e1);
-            testing.Add(d1, e2);
-            testing.Add(d1, e2);
-            testing.Add(d1, e3);
-            testing.Add(d1, e3);
-
-            AssertEqual(testing.GetAllData(), expected, "ADD for Datebase testing #2");
-        }
-        {
-            string e1 = "First 1234 Event", e2 = "Second # Event", e3 = "Third @ Event", e4 = "Fourth ~ Event", e5 = "Fifth ! Event";
-
-
-            string line1 = "2020-12-30";
-            istringstream ist1(line1);
-            Date d1 = ParseDate(ist1);
-
-            string line2 = "2019-12-30";
-            istringstream ist2(line2);
-            Date d2 = ParseDate(ist2);
-
-            string line3 = "2020-12-30";
-            istringstream ist3(line3);
-            Date d3 = ParseDate(ist3);
-
-            string line4 = "0000-01-01";
-            istringstream ist4(line4);
-            Date d5 = ParseDate(ist4);
-
-            deque<string> dq1({e3, e2, e1});
-            deque<string> dq2({e5, e4});
-            deque<string> dq3({e1, e5});
-
-
-            DBType expected = {
-                {d1, dq1},          // "2020-12-30" : {"First 1234 Event", "Second # Event", "Third @ Event"}
-                {d2, dq2},          // "2019-12-30" : {"Fourth ~ Event", "Fifth ! Event"}
-                {d5, dq3},          // "0000-01-01" : {"Fifth ! Event", "First 1234 Event"}
-
-            };
-
-            Database testing;       // Should Added only one event from each doubling
-            testing.Add(d1, e1);
-            testing.Add(d1, e2);
-            testing.Add(d1, e2);
-            testing.Add(d1, e3);
-            testing.Add(d1, e3);
-
-            testing.Add(d3, e1);    // Dubling but with another obj
-            testing.Add(d3, e2);
-            testing.Add(d3, e2);
-            testing.Add(d3, e3);
-            testing.Add(d3, e3);
-
-            testing.Add(d2, e4);
-            testing.Add(d2, e5);
-            testing.Add(d2, e5);
-
-            testing.Add(d5, e5);
-            testing.Add(d5, e5);
-            testing.Add(d5, e1);
-
-            AssertEqual(testing.GetAllData(), expected, "ADD for Datebase testing #3");
-        }
-    }
-    { // Tests for PRINT from gist: https://gist.github.com/SergeiShumilin/a030350c6226b8091b57ed0c7ccba779
-        {
-            Database db;
-            db.Add({2017, 1, 1}, "new year");
-            db.Add({2017, 1, 7}, "xmas");
-            ostringstream out;
-            db.Print(out);
-            AssertEqual("2017-01-01 new year\n2017-01-07 xmas\n", out.str(), "straight ordering");
-        }
-        {
-            Database db;
-            db.Add({2017, 1, 1}, "new year");
-            db.Add({2017, 1, 1}, "holiday");
-            ostringstream out;
-            db.Print(out);
-            AssertEqual("2017-01-01 new year\n2017-01-01 holiday\n", out.str(), "several in one day");
-        }
-        {
-            Database db;
-            db.Add({2017, 1, 7}, "xmas");
-            db.Add({2017, 1, 1}, "new year");
-            ostringstream out;
-            db.Print(out);
-            AssertEqual("2017-01-01 new year\n2017-01-07 xmas\n", out.str(), "reverse ordering");
-        }
-        {
-            Database db;
-            db.Add({2017, 1, 1}, "new year");
-            db.Add({2017, 1, 1}, "new year");
-            db.Add({2017, 1, 1}, "xmas");
-            db.Add({2017, 1, 1}, "new year");
-            ostringstream out;
-            db.Print(out);
-            AssertEqual("2017-01-01 new year\n2017-01-01 xmas\n", out.str(), "uniq adding");
-        }
-    }
-}
-
-
-
 void TestParseCondition() {
     unsigned test_counter = 0;
 
@@ -438,6 +297,186 @@ void TestParseCondition() {
 }
 
 
+void TestClassDBAddPrint() {
+    {
+        {
+            string e1 = "Test event";
+
+            string line = "2020-12-30";
+            istringstream ist(line);
+            Date d1 = ParseDate(ist);
+
+            vector<string> dq1({e1});
+
+
+            DBType expected = {
+                {d1, dq1}, // "2020-12-30" : {"Test event"}
+            };
+
+            Database testing;
+            testing.Add(d1, e1);
+
+            AssertEqual(testing.GetAllData(), expected, "ADD for Datebase testing #1");
+        }
+        {
+            string e1 = "First Event", e2 = "Second Event", e3 = "Third Event";
+
+            string line = "2020-12-30";
+            istringstream ist(line);
+            Date d1 = ParseDate(ist);
+
+            vector<string> dq1({e1, e2, e3});
+
+
+            DBType expected = {
+                {d1, dq1},          // "2020-12-30" : {"First Event", "Second Event", "Third Event"}
+            };
+
+            Database testing;       // Should Added only one event from each doubling
+            testing.Add(d1, e1);
+            testing.Add(d1, e1);
+            testing.Add(d1, e2);
+            testing.Add(d1, e2);
+            testing.Add(d1, e3);
+            testing.Add(d1, e3);
+
+            AssertEqual(testing.GetAllData(), expected, "ADD for Datebase testing #2");
+        }
+        {
+            string e1 = "First 1234 Event", e2 = "Second # Event", e3 = "Third @ Event", e4 = "Fourth ~ Event", e5 = "Fifth ! Event";
+
+
+            string line1 = "2020-12-30";
+            istringstream ist1(line1);
+            Date d1 = ParseDate(ist1);
+
+            string line2 = "2019-12-30";
+            istringstream ist2(line2);
+            Date d2 = ParseDate(ist2);
+
+            string line3 = "2020-12-30";
+            istringstream ist3(line3);
+            Date d3 = ParseDate(ist3);
+
+            string line4 = "0000-01-01";
+            istringstream ist4(line4);
+            Date d5 = ParseDate(ist4);
+
+            vector<string> dq1({e1, e2, e3});
+            vector<string> dq2({e4, e5});
+            vector<string> dq3({e5, e1});
+
+
+            DBType expected = {
+                {d1, dq1},          // "2020-12-30" : {"First 1234 Event", "Second # Event", "Third @ Event"}
+                {d2, dq2},          // "2019-12-30" : {"Fourth ~ Event", "Fifth ! Event"}
+                {d5, dq3},          // "0000-01-01" : {"Fifth ! Event", "First 1234 Event"}
+
+            };
+
+            Database testing;       // Should Added only one event from each doubling
+            testing.Add(d1, e1);
+            testing.Add(d1, e2);
+            testing.Add(d1, e2);
+            testing.Add(d1, e3);
+            testing.Add(d1, e3);
+
+            testing.Add(d3, e1);    // Dubling but with another obj
+            testing.Add(d3, e2);
+            testing.Add(d3, e2);
+            testing.Add(d3, e3);
+            testing.Add(d3, e3);
+
+            testing.Add(d2, e4);
+            testing.Add(d2, e5);
+            testing.Add(d2, e5);
+
+            testing.Add(d5, e5);
+            testing.Add(d5, e5);
+            testing.Add(d5, e1);
+
+            AssertEqual(testing.GetAllData(), expected, "ADD for Datebase testing #3");
+        }
+    }
+    { // Tests for PRINT from gist: https://gist.github.com/SergeiShumilin/a030350c6226b8091b57ed0c7ccba779
+        {
+            Database db;
+            db.Add({2017, 1, 1}, "new year");
+            db.Add({2017, 1, 7}, "xmas");
+            ostringstream out;
+            db.Print(out);
+            AssertEqual("2017-01-01 new year\n2017-01-07 xmas\n", out.str(), "straight ordering");
+        }
+        {
+            Database db;
+            db.Add({2017, 1, 1}, "new year");
+            db.Add({2017, 1, 1}, "holiday");
+            ostringstream out;
+            db.Print(out);
+            AssertEqual("2017-01-01 new year\n2017-01-01 holiday\n", out.str(), "several in one day");
+        }
+        {
+            Database db;
+            db.Add({2017, 1, 7}, "xmas");
+            db.Add({2017, 1, 1}, "new year");
+            ostringstream out;
+            db.Print(out);
+            AssertEqual("2017-01-01 new year\n2017-01-07 xmas\n", out.str(), "reverse ordering");
+        }
+        {
+            Database db;
+            db.Add({2017, 1, 1}, "new year");
+            db.Add({2017, 1, 1}, "new year");
+            db.Add({2017, 1, 1}, "xmas");
+            db.Add({2017, 1, 1}, "new year");
+            ostringstream out;
+            db.Print(out);
+            AssertEqual("2017-01-01 new year\n2017-01-01 xmas\n", out.str(), "uniq adding");
+        }
+    }
+}
+
+
+int DoRemove (Database& db, const string& str) {
+        istringstream is (str);
+        auto condition = ParseCondition(is);
+        auto predicate = [condition](const Date &date, const string &event) {
+            return condition->Evaluate(date, event);
+        };
+        return db.RemoveIf(predicate);
+}
+void TestClassDBDel() {
+
+
+    {
+        Database db;
+        db.Add({2017, 1, 1}, "new year");
+        db.Add({2017, 1, 7}, "xmas");
+
+        ostringstream out;
+
+        AssertEqual(0, DoRemove(db, R"(event == "something")"), "Remove nothing");
+        AssertEqual(1, DoRemove(db, R"(date == "2017-01-01")"), "Remove by date");
+
+        db.Print(out);
+        AssertEqual("2017-01-07 xmas\n", out.str(), "Remove by date, left");
+
+
+     }
+
+/*    {
+        Database db;
+        string expected = "Removed 2 entries";
+
+        db.({Add 2017-06-01}, "1st of June");
+        db.({Add 2017-07-08}, "8th of July");
+        db.({Add 2017-07-08}, "Someone's birthday");
+        Del date == 2017-07-08
+    }*/
+}
+
+
+
 
 void TestAll() {
     cerr << "------------------Tests-----------------------" << endl;
@@ -445,8 +484,11 @@ void TestAll() {
 
     tr.RunTest(TestClassDate, "Test_Class_Date");
     tr.RunTest(TestParseEvent, "Test_Parse_Event");
-    tr.RunTest(TestClassDBAddPrint, "Test_Class_Datebase_ADD_PRINT");
     tr.RunTest(TestParseCondition, "TestParseCondition");
+    tr.RunTest(TestClassDBAddPrint, "Test_Class_Datebase_ADD_PRINT");
+    tr.RunTest(TestClassDBDel, "Test_Class_Datebase_Del");
+
+
 
     cerr << "----------------------------------------------" << endl << endl;
 }

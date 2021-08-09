@@ -9,7 +9,7 @@ void Database::Add(const Date& date, const string& event) {
 
     bool condition2 = DataBaseStorage[date].empty();
     if (condition1 || condition2) {
-        DataBaseStorage[date].push_front(event);
+        DataBaseStorage[date].push_back(event);
     }
 }
 
@@ -26,7 +26,7 @@ DBType Database::GetAllData() const {
 // Class operator's redefinitions:
 ostream& operator << (ostream& os, const DBType& DB) {
     for (const auto& [key, value] : DB) {
-        for (auto it = value.rbegin(); it != value.rend(); ++it) {
+        for (auto it = value.begin(); it != value.end(); ++it) {
             os << key << " " << *it << endl;
         }
     }
