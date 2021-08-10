@@ -12,9 +12,9 @@ public:
     int GetDay() const;
 
 private:
-    const int Year;
-    const int Month;
-    const int Day;
+    int Year;
+    int Month;
+    int Day;
 };
 
 Date ParseDate(istream& date_stream);

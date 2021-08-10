@@ -3,13 +3,19 @@
 
 // Methods & Constructors of class Date:
 void Database::Add(const Date& date, const string& event) {
-    bool condition1 = (find(begin(DataBaseStorage[date]),
-                            end(DataBaseStorage[date]), event)
-                         == end(DataBaseStorage[date]));
+    auto cont_begin = begin(DataBaseStorage);
+    auto cont_end = end(DataBaseStorage);
+    //pair<Date, string> datevent = make_pair(date, event);
 
-    bool condition2 = DataBaseStorage[date].empty();
-    if (condition1 || condition2) {
-        DataBaseStorage[date].push_back(event);
+
+    bool condition1 = (find(cont_begin, cont_end, make_pair(date, event)) == cont_end);
+    if (condition1) {
+        DataBaseStorage.emplace_back(date, event);
+
+        /// !!!!!!!!!!!!!!!!!!!!!!!! HERE
+        sort(cont_begin, cont_end, [](const pair<Date, string> &left, const pair<Date, string> &right) {
+             return left.first < right.first;
+        });
     }
 }
 
@@ -25,14 +31,11 @@ DBType Database::GetAllData() const {
 
 // Class operator's redefinitions:
 ostream& operator << (ostream& os, const DBType& DB) {
-    for (const auto& [key, value] : DB) {
-        for (auto it = value.begin(); it != value.end(); ++it) {
-            os << key << " " << *it << endl;
-        }
+    for (const auto& [data, event] : DB) {
+        os << data << " " << event << endl;
     }
     return os;
 }
-
 
 // Not class member functions:
 string ParseEvent(istream& is) {

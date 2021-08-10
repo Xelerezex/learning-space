@@ -4,7 +4,7 @@
 #include "headers.h"
 #include "date.h"
 
-using DBType = map<Date, vector<string>>;
+using DBType = vector< pair<Date, string> >;
 
 class Database {
     public:
@@ -20,25 +20,12 @@ class Database {
 };
 
 template <typename Func>
-int Database::RemoveIf(Func eval) {
+int Database::RemoveIf(Func func) {
     int number_out = 1;
 
-    for (auto& [key, value] : DataBaseStorage) {
-        size_t old_size = value.size();
+    // auto DB_citer = DataBaseStorage.cbegin();
+    // auto DB_cend = DataBaseStorage.cend();
 
-        if (old_size > 1) {
-            auto new_end = remove_if(value.begin(), value.end(), [key, eval](string event){
-                return eval(key, event);
-            });
-            value.erase(new_end, value.end());
-
-            number_out =  static_cast<int>(old_size - value.size());
-        } else {
-
-            // Так нельзя, ошибка стека. Надо понять как удалять значения внутри мапы
-            DataBaseStorage.erase(key);
-        }
-    }
 
     return number_out;
 }
