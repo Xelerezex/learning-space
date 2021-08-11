@@ -498,9 +498,43 @@ void TestClassDBDel() {
     }
 }
 
-void TestClassDBFind() {
-    {
+string DoFind (Database& db, const string& str) {
+    istringstream is (str);
+    auto condition = ParseCondition(is);
+    auto predicate = [condition](const Date &date, const string &event) {
+        return condition->Evaluate(date, event);
+    };
+    const auto entries = db.FindIf(predicate);
+    ostringstream os;
+    for (const auto& entry : entries) {
+        os << entry << endl;
+    }
+    os << entries.size();
+    return os.str();
+}
 
+void TestClassDBFind() {
+    {   // Tests for FIND from gist: https://gist.github.com/SergeiShumilin/a030350c6226b8091b57ed0c7ccba779
+        {
+            Database db;
+            db.Add({2017, 1, 1}, "new year");
+            db.Add({2017, 1, 7}, "xmas");
+            AssertEqual("2017-01-01 new year\n1", DoFind(db, "date == 2017-01-01"), "simple find by date");
+            AssertEqual("2017-01-01 new year\n2017-01-07 xmas\n2", DoFind(db, "date < 2017-01-31"), "multiple find by date");
+            AssertEqual("2017-01-01 new year\n1", DoFind(db, R"(event != "xmas")"), "multiple find by holiday");
+        }
+        {
+            Database db;
+            db.Add({2017, 1, 1}, "new year");
+            db.Add({2017, 1, 1}, "new year2");
+            db.Add({2017, 1, 7}, "xmas");
+            AssertEqual("2017-01-01 new year\n2017-01-07 xmas\n2", DoFind(db, R"(date == 2017-01-07 OR event == "new year")"),
+                    "complex find or");
+            AssertEqual("2017-01-01 new year\n1", DoFind(db, R"(date == 2017-01-01 AND event == "new year")"),
+                        "complex find and");
+            AssertEqual("0", DoFind(db, R"(date == 2017-01-09 AND event == "new year")"),
+                        "complex find and, nothing");
+        }
     }
 }
 

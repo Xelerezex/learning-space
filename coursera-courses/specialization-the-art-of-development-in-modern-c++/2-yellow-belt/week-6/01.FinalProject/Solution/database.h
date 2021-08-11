@@ -46,7 +46,22 @@ int Database::RemoveIf(Func func) {
 
 template <typename Func>
 vector<string> Database::FindIf(Func func) {
-    return {""};
+    vector<string> output;
+
+    for (auto& [date, events] : DataBaseStorage) {
+        vector<string> temporary;
+        copy_if(events.begin(), events.end(), back_inserter(temporary), [date, func](const string& event){
+            return func(date, event);
+        });
+
+        for (const auto& event : temporary) {
+            ostringstream topush;
+            topush << date << " " << event;
+            output.push_back(topush.str());
+        }
+    }
+
+    return output;
 }
 
 ostream& operator << (ostream& os, const DBType& DB);
