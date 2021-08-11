@@ -8,6 +8,12 @@ ostream& operator << (ostream& os, const set  <T>& s);
 template <class K,  class V>
 ostream& operator << (ostream& os, const map  <K, V>& m);
 
+template <class L>
+ostream& operator << (ostream& os, const vector <L>& l);
+
+template <class D>
+ostream& operator << (ostream& os, const deque <D>& d);
+
 template <class T,  class U>
 void AssertEqual(const T& t,const U& u, const string& hint);
 

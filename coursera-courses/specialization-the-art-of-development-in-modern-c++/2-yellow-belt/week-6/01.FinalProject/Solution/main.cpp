@@ -51,8 +51,7 @@ int main() {
             } catch (invalid_argument&) {
                 cout << "No entries" << endl;
             }
-        }
-    } else if (command.empty()) {
+        } else if (command.empty()) {
             continue;
         } else {
             throw logic_error("Unknown command: " + command);

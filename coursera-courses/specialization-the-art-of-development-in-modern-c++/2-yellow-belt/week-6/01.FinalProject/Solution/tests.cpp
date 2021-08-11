@@ -538,6 +538,42 @@ void TestClassDBFind() {
     }
 }
 
+void TestClassDBLast(){
+    Database db;
+    db.Add({2017, 1, 1}, "new year");
+    db.Add({2017, 1, 7}, "xmas");
+    {
+        try {
+            istringstream is("2016-12-31");
+            db.Last(ParseDate(is));
+            Assert(false, "last, found no entries");
+        } catch (...){
+            Assert(true, "last, found no entries");
+
+        }
+    }
+    {
+        ostringstream os;
+        istringstream is("2017-01-02");
+        os << db.Last(ParseDate(is));
+        AssertEqual("2017-01-01 new year", os.str(), "greater than date");
+    }
+    {
+        ostringstream os;
+        istringstream is("2017-01-01");
+        os << db.Last(ParseDate(is));
+        AssertEqual("2017-01-01 new year", os.str(), "eq to date");
+    }
+    {
+        ostringstream os;
+        istringstream is("2017-01-10");
+        os << db.Last(ParseDate(is));
+        AssertEqual("2017-01-07 xmas", os.str(), "greater than max date");
+    }
+}
+
+
+
 void TestAll() {
     cerr << "------------------Tests-----------------------" << endl;
     TestRunner tr;
@@ -548,6 +584,7 @@ void TestAll() {
     tr.RunTest(TestClassDBAddPrint, "Test_Class_Datebase_ADD_PRINT");
     tr.RunTest(TestClassDBDel, "Test_Class_Datebase_Del");
     tr.RunTest(TestClassDBFind, "Test_Class_Datebase_Find");
+    tr.RunTest(TestClassDBLast, "Test_Class_Datebase_Find");
 
     cerr << "----------------------------------------------" << endl << endl;
 }

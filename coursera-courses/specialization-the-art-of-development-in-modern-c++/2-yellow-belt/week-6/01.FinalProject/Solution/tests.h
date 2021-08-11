@@ -14,5 +14,6 @@ void TestParseCondition();
 void TestClassDBAddPrint();
 void TestClassDBDel();
 void TestClassDBFind();
+void TestClassDBLast();
 
 void TestAll();

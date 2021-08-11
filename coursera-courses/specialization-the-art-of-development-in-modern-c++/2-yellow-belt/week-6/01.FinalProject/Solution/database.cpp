@@ -22,20 +22,29 @@ void Database::Print(ostream& os) const {
 }
 
 
+
 DBType Database::GetAllData() const {
     return DataBaseStorage;
 }
 
+
+
 // Class operator's redefinitions:
 ostream& operator << (ostream& os, const DBType& DB) {
     for (const auto& [data, event] : DB) {
-        if (!event.empty()) {
-            for (const auto& item : event ){
-                os << data << " " << item << endl;
-            }
+        for (const auto& item : event ) {
+            os << data << " " << item << endl;
         }
     }
     return os;
+}
+
+bool operator < (const pair<Date, vector<string>>& pr, const Date& date) {
+    return pr.first < date;
+}
+
+bool operator < (const Date& date, const pair<Date, vector<string>>& pr) {
+    return date < pr.first;
 }
 
 // Not class member functions:
