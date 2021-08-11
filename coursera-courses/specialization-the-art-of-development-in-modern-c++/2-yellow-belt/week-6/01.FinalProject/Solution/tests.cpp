@@ -299,22 +299,6 @@ void TestParseCondition() {
 
 void TestClassDBAddPrint() {
     {
-        /*{
-
-            istringstream ist("2020-12-30");
-            Date d1 = ParseDate(ist);
-            string e1 = "Test event";
-
-
-            DBType expected = {
-                make_pair(d1, e1), // "2020-12-30" : {"Test event"}
-            };
-
-            Database testing;
-            testing.Add(d1, e1);
-
-            AssertEqual(testing.GetAllData(), expected, "ADD for Datebase testing #1");
-        }*/
         {
             string e1 = "First Event", e2 = "Second Event", e3 = "Third Event";
 
@@ -434,6 +418,7 @@ void TestClassDBAddPrint() {
 }
 
 
+
 int DoRemove (Database& db, const string& str) {
         istringstream is (str);
         auto condition = ParseCondition(is);
@@ -443,7 +428,7 @@ int DoRemove (Database& db, const string& str) {
         return db.RemoveIf(predicate);
 }
 void TestClassDBDel() {
-    {
+    {   // Tests for DEL from gist: https://gist.github.com/SergeiShumilin/a030350c6226b8091b57ed0c7ccba779
         Database db;
         db.Add({2017, 1, 1}, "new year");
         db.Add({2017, 1, 7}, "xmas");
@@ -456,20 +441,68 @@ void TestClassDBDel() {
         db.Print(out);
         AssertEqual("2017-01-07 xmas\n", out.str(), "Remove by date, left");
     }
-
-/*    {
+    {
         Database db;
-        string expected = "Removed 2 entries";
+        ostringstream out;
 
-        db.({Add 2017-06-01}, "1st of June");
-        db.({Add 2017-07-08}, "8th of July");
-        db.({Add 2017-07-08}, "Someone's birthday");
-        Del date == 2017-07-08
-    }*/
+        db.Add({2017, 6, 1}, "1st of June");
+        db.Add({2017, 7, 8}, "8th of July");
+        db.Add({2017, 7, 8}, "Someone's birthday");
+
+        AssertEqual(2, DoRemove(db, R"(date == "2017-07-08")"), "Remove by date, 2 entries");
+
+        db.Print(out);
+        AssertEqual("2017-06-01 1st of June\n", out.str(), "Remove by date, 2 entries");
+    }
+    {
+        Database db;
+        ostringstream out;
+
+        db.Add({1, 1, 1}, "Jesus Birth");               // Does not Del
+        db.Add({1, 1, 1}, "holiday");                   // Del
+        db.Add({2016, 12, 30}, "Some stupid shit");     // Does not Del
+        db.Add({2016, 12, 30}, "holiday");              // Del
+        db.Add({2016, 12, 30}, "sport event");          // Del
+        db.Add({2016, 12, 31}, "New Year");             // Does not Del
+        db.Add({2017, 1, 1}, "Live plz");               // Does not Del
+
+        db.Add({2020, 8, 7}, "holiday");                // Does not Del
+        db.Add({2020, 8, 7}, "sport event");            // Does not Del
+        db.Add({2020, 8, 7}, "Someone's birthday");     // Does not Del
+
+        AssertEqual(3, DoRemove(db, R"(date < 2017-01-01 AND (event == "holiday" OR event == "sport event"))"), "Remove by date, 3 entries");
+
+        db.Print(out);
+        AssertEqual("0001-01-01 Jesus Birth\n2016-12-30 Some stupid shit\n2016-12-31 New Year\n2017-01-01 Live plz\n2020-08-07 holiday\n2020-08-07 sport event\n2020-08-07 Someone's birthday\n", out.str(), "Remove by date, 3 entries. Print");
+    }
+        {
+        Database db;
+        ostringstream out;
+
+        db.Add({1, 1, 1}, "Jesus Birth");               // Del
+        db.Add({1, 1, 1}, "holiday");                   // Del
+        db.Add({2016, 12, 30}, "Some stupid shit");     // Del
+        db.Add({2016, 12, 30}, "holiday");              // Del
+        db.Add({2016, 12, 30}, "sport event");          // Del
+        db.Add({2016, 12, 31}, "New Year");             // Del
+        db.Add({2017, 1, 1}, "Live plz");               // Del
+
+        db.Add({2020, 8, 7}, "holiday");                // Del
+        db.Add({2020, 8, 7}, "sport event");            // Del
+        db.Add({2020, 8, 7}, "Someone's birthday");     // Del
+
+        AssertEqual(10, DoRemove(db, R"()"), "Remove All, 10 entries");
+
+        db.Print(out);
+        AssertEqual("", out.str(), "Remove by date, 10 entries. Print");
+    }
 }
 
+void TestClassDBFind() {
+    {
 
-
+    }
+}
 
 void TestAll() {
     cerr << "------------------Tests-----------------------" << endl;
@@ -477,11 +510,10 @@ void TestAll() {
 
     tr.RunTest(TestClassDate, "Test_Class_Date");
     tr.RunTest(TestParseEvent, "Test_Parse_Event");
-    tr.RunTest(TestParseCondition, "TestParseCondition");
+    tr.RunTest(TestParseCondition, "Test_Parse_Condition");
     tr.RunTest(TestClassDBAddPrint, "Test_Class_Datebase_ADD_PRINT");
     tr.RunTest(TestClassDBDel, "Test_Class_Datebase_Del");
-
-
+    tr.RunTest(TestClassDBFind, "Test_Class_Datebase_Find");
 
     cerr << "----------------------------------------------" << endl << endl;
 }

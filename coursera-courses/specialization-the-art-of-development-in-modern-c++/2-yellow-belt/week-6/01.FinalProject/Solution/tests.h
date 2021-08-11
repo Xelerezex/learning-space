@@ -13,5 +13,6 @@ void TestParseEvent();
 void TestParseCondition();
 void TestClassDBAddPrint();
 void TestClassDBDel();
+void TestClassDBFind();
 
 void TestAll();

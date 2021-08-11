@@ -15,6 +15,9 @@ class Database {
         template <typename Func>
         int RemoveIf(Func eval);
 
+        template <typename Func>
+        vector<string> FindIf(Func func);
+
         DBType GetAllData() const;
     private:
         DBType DataBaseStorage;
@@ -22,13 +25,28 @@ class Database {
 
 template <typename Func>
 int Database::RemoveIf(Func func) {
-    int number_out = 1;
+    int number_out = 0;
 
-    // auto DB_citer = DataBaseStorage.cbegin();
-    // auto DB_cend = DataBaseStorage.cend();
+    for (auto& [date, events] : DataBaseStorage) {
+        size_t old_size = events.size();
 
+        auto it = stable_partition(events.begin(), events.end(), [date, func](const string& event){
+            return func(date, event);
+        });
+
+        if (it != events.begin()) {
+            events.erase(events.begin(), it);
+
+            number_out += static_cast<int>(old_size - events.size());
+        }
+    }
 
     return number_out;
+}
+
+template <typename Func>
+vector<string> Database::FindIf(Func func) {
+    return {""};
 }
 
 ostream& operator << (ostream& os, const DBType& DB);

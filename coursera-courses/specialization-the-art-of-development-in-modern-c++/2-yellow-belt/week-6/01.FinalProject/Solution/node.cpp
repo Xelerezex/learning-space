@@ -80,5 +80,5 @@ bool LogicalOperationNode::Evaluate(const Date& date, const string& event) const
 EmptyNode::EmptyNode() {}
 
 bool EmptyNode::Evaluate(const Date& date, const string& event) const {
-    return NULL;
+    return /*NULL*/ true;
 }

@@ -29,8 +29,10 @@ DBType Database::GetAllData() const {
 // Class operator's redefinitions:
 ostream& operator << (ostream& os, const DBType& DB) {
     for (const auto& [data, event] : DB) {
-        for (const auto& item : event ){
-            os << data << " " << item << endl;
+        if (!event.empty()) {
+            for (const auto& item : event ){
+                os << data << " " << item << endl;
+            }
         }
     }
     return os;
