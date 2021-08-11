@@ -4,7 +4,8 @@
 #include "headers.h"
 #include "date.h"
 
-using DBType = vector< pair<Date, string> >;
+//
+using DBType = map<Date, vector<string>>;
 
 class Database {
     public:
