@@ -31,8 +31,10 @@ class Database {
         string Last(const Date& date) const;
 
         DBType GetAllData() const;
+
     private:
         DBType DataBaseStorage;
+        map<Date, set<string>> Temporary;
 };
 
 
@@ -51,6 +53,11 @@ int Database::RemoveIf(Func func) {
             events.erase(events.begin(), it);
 
             number_out += static_cast<int>(old_size - events.size());
+        }
+
+        // Fixed not to delete from Temporary
+        if (events.empty()) {
+            Temporary[date].clear();
         }
     }
 

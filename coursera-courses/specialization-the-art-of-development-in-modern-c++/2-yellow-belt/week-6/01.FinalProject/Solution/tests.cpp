@@ -654,6 +654,51 @@ void TestClassDBDel() {
         db.Print(out);
         AssertEqual("", out.str(), "Class Database Method Del #1: Remove by date, 10 entries. Right Print after Remove");
     }
+    {
+         Database db;
+        ostringstream out;
+
+        db.Add({1, 1, 1}, "Jesus Birth");               // Del
+        db.Add({1, 1, 2}, "Jesus Birth");               // Del
+
+        AssertEqual(2, Del(db, R"()"), "Class Database Method Del #1: Remove All, 2 entries");
+
+        db.Add({1, 1, 1}, "Jesus Birth");               // Del
+        db.Add({1, 1, 2}, "Jesus Birth");               // Del
+
+        AssertEqual(2, Del(db, R"()"), "Class Database Method Del #2: Remove All, 2 entries !");
+
+        db.Add({1, 1, 1}, "Jesus Birth");
+        db.Add({1, 1, 2}, "Jesus Birth");
+
+        db.Print(out);
+        AssertEqual("0001-01-01 Jesus Birth\n0001-01-02 Jesus Birth\n", out.str(), "Class Database Method Del #3: Remove by date, 2 entries");
+    }
+    {
+         Database db;
+        ostringstream out;
+
+        db.Add({1, 1, 1}, "Jesus Birth");               // Del
+        db.Add({1, 1, 1}, "Judah Birth");
+        db.Add({1, 1, 2}, "Jesus Birth");               // Del
+
+        AssertEqual(2, Del(db, R"(event == "Jesus Birth")"), "Class Database Method Del #1: Remove All, 2 entries");
+
+        db.Add({1, 1, 1}, "Jesus Birth");               // Del
+        db.Add({1, 1, 1}, "Judah Birth");
+        db.Add({1, 1, 2}, "Jesus Birth");               // Del
+
+        // Doesn't Work!!!!!
+        // Ban with Remove_if statue for new main container. Fix it!!!!
+        AssertEqual(2, Del(db, R"(event == "Jesus Birth")"), "Class Database Method Del #2: Remove All, 2 entries !");
+
+        db.Add({1, 1, 1}, "Jesus Birth");
+        db.Add({1, 1, 2}, "Jesus Birth");
+
+        db.Print(out);
+        AssertEqual("0001-01-01 Judah Birth\n0001-01-01 Jesus Birth\n0001-01-02 Jesus Birth\n", out.str(), "Class Database Method Del #3: Remove by date, 2 entries");
+    }
+
 }
 
 
@@ -758,7 +803,87 @@ void TestClassDBLast() {
 
 // Some CUstom test that covers all commands:
 void TestCustom() {
+    {
+        Database db;
+        ostringstream input_1, input_2;
+        const string print_expected_1 = "2020-12-01 First @ Event\n2020-12-01 Second @ Event\n2020-12-02 Third @ Event\n2020-12-02 Fourth @ Event\n2020-12-03 Fifth @ Event\n2020-12-03 Sixth @ Event\n",
+                     print_expected_2 = "2020-11-30 Zero @ Event\n2020-12-01 First @ Event\n2020-12-02 Fourth @ Event\n2020-12-03 ~Sixth @ Event\n";
 
+        db.Add({2020, 12, 1}, "First @ Event");
+        db.Add({2020, 12, 1}, "Second @ Event");
+        db.Add({2020, 12, 2}, "Third @ Event");
+        db.Add({2020, 12, 2}, "Fourth @ Event");
+        db.Add({2020, 12, 3}, "Fifth @ Event");
+        db.Add({2020, 12, 3}, "Sixth @ Event");
+
+        db.Print(input_1);
+
+        AssertEqual(print_expected_1, input_1.str(), "Custom tests #1: Add, then Print");
+
+        AssertEqual(1, Del(db, R"(event == "something" OR event == "Third @ Event")" ), "Custom tests #2: First Del");    //Del 2020-12-02 Fourth @ Event
+
+        AssertEqual(1, Del(db, R"(date == "2020-12-03" AND event != "Fifth @ Event")" ), "Custom tests #3: Second Del");   //Del 2020-12-03 Sixth @ Event
+
+        const DBType expected_map_1 = {
+            {{2020, 12, 1}, {"First @ Event", "Second @ Event"}},
+            {{2020, 12, 2}, {"Fourth @ Event"}},
+            {{2020, 12, 3}, {"Fifth @ Event"}},
+        };
+        AssertEqual(db.GetAllData(), expected_map_1, "Custom tests #4: Checking Hole Database");
+
+        db.Add({2020, 11, 30}, "Zero @ Event");
+
+        AssertEqual("2020-12-03 Fifth @ Event\n1", Find(db, R"(date >= 2020-12-3)"), "Custom tests #5: Add new on pos zero, then Find");
+
+        AssertEqual("2020-12-03 Fifth @ Event", db.Last({2020, 12, 4}), "Custom tests #6: Last after end of map");
+
+        try {
+
+            db.Last({2020, 11, 3});
+            AssertEqual("ERROR", "", "Custom tests #7: Should throw exception");
+
+        }
+        catch(invalid_argument& e) {
+
+            stringstream output;
+            output << e.what();
+            AssertEqual("2020-11-03", output.str(), "Custom tests #8: Only if no Exception");
+        }
+
+        AssertEqual("2020-12-02 Fourth @ Event", db.Last({2020, 12, 2}), "Custom tests #9: Last, that equals");
+
+        AssertEqual("2020-12-01 Second @ Event", db.Last({2020, 12, 1}), "Custom tests #10: Last, that equals, but first in map");
+
+        db.Add({2020, 12, 3}, "~Sixth @ Event");
+        AssertEqual("2020-12-03 ~Sixth @ Event", db.Last({2020, 12, 3}), "Custom tests #11: Last, after adding in map");
+
+        AssertEqual(2, Del(db, R"((event == "Second @ Event" AND event != "First @ Event") OR (event == "Fifth @ Event" AND date == 2020-12-3))" ), "Custom tests #11: Third Del"); // Del 2020-12-01 Second @ Event
+                                                                                                                                                                                    // Del 2020-12-03 Fifth @ Event
+        const DBType expected_map_2 = {
+            {{2020, 11, 30}, {"Zero @ Event"}},
+            {{2020, 12, 1}, {"First @ Event"}},
+            {{2020, 12, 2}, {"Fourth @ Event"}},
+            {{2020, 12, 3}, {"~Sixth @ Event"}},
+        };
+        AssertEqual(db.GetAllData(), expected_map_2, "Custom tests #12: Checking Hole Database");
+
+        db.Print(input_2);
+        AssertEqual(print_expected_2, input_2.str(), "Custom tests #13: Print after all commands");
+
+        AssertEqual(4, Del(db, R"()"), "Custom tests #14: Fourth Del ALL");
+
+        try {
+
+            db.Last({2020, 11, 3});
+            AssertEqual("ERROR", "", "Custom tests #15: Should throw exception");
+
+        } catch(invalid_argument& e) {
+
+            stringstream output;
+            output << e.what();
+            AssertEqual("2020-11-03", output.str(), "Custom tests #16: Only if no Exception");
+        }
+    }
 }
 
 void TestAll() {
@@ -776,7 +901,7 @@ void TestAll() {
     tr.RunTest(TestClassDBDel, "Test_Class_Datebase_Del");
     tr.RunTest(TestClassDBFind, "Test_Class_Datebase_Find");
     tr.RunTest(TestClassDBLast, "Test_Class_Datebase_Last");
-    tr.RunTest(TestCustomly, "Test_Custom");
+    tr.RunTest(TestCustom, "Test_Custom");
 
     cerr << "----------------------------------------------" << endl << endl;
 }

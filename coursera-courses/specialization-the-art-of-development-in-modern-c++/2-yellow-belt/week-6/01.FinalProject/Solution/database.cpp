@@ -22,7 +22,7 @@ bool operator < (const Date& date, const pair<Date, vector<string>>& pr) {
 
 // Methods & Constructors of class Date:
 void Database::Add(const Date& date, const string& event) {
-    auto cont_begin = begin(DataBaseStorage[date]);
+/*    auto cont_begin = begin(DataBaseStorage[date]);
     auto cont_end = end(DataBaseStorage[date]);
     //pair<Date, string> datevent = make_pair(date, event);
 
@@ -31,6 +31,12 @@ void Database::Add(const Date& date, const string& event) {
     bool condition2 = (DataBaseStorage[date]).empty();
 
     if (condition1 || condition2) {
+        DataBaseStorage[date].push_back(event);
+    }*/
+
+
+    auto input = Temporary[date].insert(event);
+    if (input.second == true) {
         DataBaseStorage[date].push_back(event);
     }
 }
@@ -44,7 +50,6 @@ string Database::Last(const Date& date) const {
     bool cond1 = it == DataBaseStorage.begin();
     bool cond2 = date < (it->first);
     bool cond3 = it == DataBaseStorage.end();
-    //bool cond4  = date == ((--it)->first)
 
     if ((!cond1 && cond2) || (!cond1 && cond3)) {
         ostringstream temporary;
@@ -54,8 +59,7 @@ string Database::Last(const Date& date) const {
         return temporary.str();
     }
     else {
-        //                            !!
-        throw invalid_argument(os.str() + "<---!!!");
+        throw invalid_argument(os.str());
     }
 }
 
