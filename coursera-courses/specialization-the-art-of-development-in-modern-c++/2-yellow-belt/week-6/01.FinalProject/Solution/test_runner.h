@@ -26,7 +26,7 @@ template <class T,  class U>
 void AssertEqual(const T& t, const U& u, const string& hint) {
     if (t != u) {
         ostringstream os;
-        os << "Assertion failed: \n" << t << " \n!=\n  " << u <<" \nhint: " << hint;
+        os << "Assertion failed: \n" << t << "\n!=\n" << u <<" \nhint: " << hint;
         throw runtime_error(os.str());
     }
 }

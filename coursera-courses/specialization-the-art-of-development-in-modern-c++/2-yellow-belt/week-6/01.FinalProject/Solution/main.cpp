@@ -57,12 +57,13 @@ int main() {
             throw logic_error("Unknown command: " + command);
         }
     }
-
     return 0;
 }
 
 
-/*no timer*/ /* clear && g++ -std=c++17 -Wall -Werror main.cpp token.cpp tests.cpp test_runner.cpp node.cpp date.cpp database.cpp condition_parser.cpp && ./a.out */
+/*no timer*/ /*
+clear && g++ -std=c++17 -Wall -Werror main.cpp token.cpp tests.cpp test_runner.cpp node.cpp date.cpp database.cpp condition_parser.cpp && ./a.out
+*/
 
 
 /* g++ -std=c++17 -Wall -Werror main.cpp token.cpp timer.cpp tests.cpp test_runner.cpp node.cpp date.cpp database.cpp condition_parser.cpp && ./a.out */

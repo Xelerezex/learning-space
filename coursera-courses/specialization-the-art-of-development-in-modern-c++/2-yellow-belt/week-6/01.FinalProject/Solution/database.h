@@ -1,12 +1,22 @@
 #pragma once
 
-
 #include "headers.h"
 #include "date.h"
 
-//
+
+// Usings:
 using DBType = map<Date, vector<string>>;
 
+
+// Operators:
+ostream& operator << (ostream& os, const DBType& DB);
+
+bool operator < (const pair<Date, vector<string>>& pr, const Date& date);
+
+bool operator < (const Date& date, const pair<Date, vector<string>>& pr);
+
+
+// Class & methods:
 class Database {
     public:
         void Add(const Date& date, const string& event);
@@ -18,42 +28,12 @@ class Database {
         template <typename Func>
         vector<string> FindIf(Func func) const;
 
-        template <typename Date>
         string Last(const Date& date) const;
 
         DBType GetAllData() const;
     private:
         DBType DataBaseStorage;
 };
-
-bool operator < (const pair<Date, vector<string>>& pr, const Date& date);
-
-bool operator < (const Date& date, const pair<Date, vector<string>>& pr);
-
-template <typename Date>
-string Database::Last(const Date& date) const {
-    ostringstream os;
-    os << date;
-
-    auto it = upper_bound(DataBaseStorage.begin(), DataBaseStorage.end(), date);   // First element that equals date or bigger
-
-    bool cond1 = it == DataBaseStorage.begin();
-    bool cond2 = date < (it->first);
-    bool cond3 = it == DataBaseStorage.end();
-    //bool cond4  = date == ((--it)->first)
-
-    if ((!cond1 && cond2) || (!cond1 && cond3)) {
-        ostringstream temporary;
-        Date tempdate = (--it)->first;
-        temporary << tempdate << " " << DataBaseStorage.at(tempdate).back();
-
-        return temporary.str();
-    }
-    else {
-        //                            !!
-        throw invalid_argument(os.str() + "<---!!!");
-    }
-}
 
 
 template <typename Func>
@@ -85,6 +65,7 @@ int Database::RemoveIf(Func func) {
     return number_out;
 }
 
+
 template <typename Func>
 vector<string> Database::FindIf(Func func) const {
     vector<string> output;
@@ -105,6 +86,5 @@ vector<string> Database::FindIf(Func func) const {
     return output;
 }
 
-ostream& operator << (ostream& os, const DBType& DB);
-
+// Outside Functions:
 string ParseEvent(istream& is);
