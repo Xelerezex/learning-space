@@ -40,32 +40,34 @@ class Database {
 
 template <typename Func>
 int Database::RemoveIf(Func func) {
-    int number_out = 0;
+    unsigned number_out = 0;
 
-    for (auto& [date, events] : DataBaseStorage) {
-        size_t old_size = events.size();
 
-        auto it = stable_partition(events.begin(), events.end(), [date1=date, func](const string& event){
+    for (auto db_iter = DataBaseStorage.begin(); db_iter != DataBaseStorage.end();) {
+        // db_iter->first equals: Date type, obj: our date from Date Class
+        // db_iter->second equals: vector<string> type, obj: our vector with events
+
+        size_t old_size = (db_iter->second).size();
+
+        auto lrem_it = stable_partition((db_iter->second).begin(), (db_iter->second).end(), [date1=(db_iter->first), func](const string& event){
             return func(date1, event);
         });
 
-        if (it != events.begin()) {
-            events.erase(events.begin(), it);
 
-            number_out += static_cast<int>(old_size - events.size());
+        for (auto setr = (db_iter->second).begin(); setr != lrem_it; ++setr) {
+            Temporary[db_iter->first].erase(*setr);
         }
 
-        // Fixed not to delete from Temporary
-        if (events.empty()) {
-            Temporary[date].clear();
-        }
-    }
 
-    for (auto iter = DataBaseStorage.begin(); iter != DataBaseStorage.end();) {
-        if(iter->second.empty()) {
-            iter = DataBaseStorage.erase(iter);
+        (db_iter->second).erase((db_iter->second).begin(), lrem_it);
+        number_out += static_cast<unsigned>(old_size - (db_iter->second).size());
+
+
+        if(db_iter->second.empty()) {
+            Temporary.erase(db_iter->first);
+            db_iter = DataBaseStorage.erase(db_iter);
         } else {
-            ++iter;
+            ++db_iter;
         }
     }
 
@@ -77,7 +79,7 @@ template <typename Func>
 vector<string> Database::FindIf(Func func) const {
     vector<string> output;
 
-    for (auto& [date, events] : DataBaseStorage) {
+    for (const auto& [date, events] : DataBaseStorage) {
         vector<string> temporary;
         copy_if(events.begin(), events.end(), back_inserter(temporary), [date1=date, func](const string& event){
             return func(date1, event);
@@ -85,13 +87,14 @@ vector<string> Database::FindIf(Func func) const {
 
         for (const auto& event : temporary) {
             ostringstream topush;
-            topush << date << " " << event;
+            topush << date << ' ' << event;
             output.push_back(topush.str());
         }
     }
 
     return output;
 }
+
 
 // Outside Functions:
 string ParseEvent(istream& is);

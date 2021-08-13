@@ -5,7 +5,7 @@
 ostream& operator << (ostream& os, const DBType& DB) {
     for (const auto& [data, event] : DB) {
         for (const auto& item : event ) {
-            os << data << " " << item << endl;
+            os << data << " " << item << '\n';
         }
     }
     return os;
@@ -22,44 +22,32 @@ bool operator < (const Date& date, const pair<Date, vector<string>>& pr) {
 
 // Methods & Constructors of class Date:
 void Database::Add(const Date& date, const string& event) {
-/*    auto cont_begin = begin(DataBaseStorage[date]);
-    auto cont_end = end(DataBaseStorage[date]);
-    //pair<Date, string> datevent = make_pair(date, event);
-
-    //                !!!!!
-    bool condition1 = (find(cont_begin, cont_end, event) == cont_end);
-    bool condition2 = (DataBaseStorage[date]).empty();
-
-    if (condition1 || condition2) {
-        DataBaseStorage[date].push_back(event);
-    }*/
-
 
     auto input = Temporary[date].insert(event);
     if (input.second == true) {
         DataBaseStorage[date].push_back(event);
     }
+
 }
 
 string Database::Last(const Date& date) const {
     ostringstream os;
     os << date;
 
-    auto it = upper_bound(DataBaseStorage.begin(), DataBaseStorage.end(), date);   // First element that equals date or bigger
+    auto it = DataBaseStorage.upper_bound(date);   // First element that bigger than date or end()
 
     bool cond1 = it == DataBaseStorage.begin();
-    bool cond2 = date < (it->first);
-    bool cond3 = it == DataBaseStorage.end();
 
-    if ((!cond1 && cond2) || (!cond1 && cond3)) {
+    if (!cond1) {
         ostringstream temporary;
         Date tempdate = (--it)->first;
+
         temporary << tempdate << " " << DataBaseStorage.at(tempdate).back();
 
         return temporary.str();
     }
     else {
-        throw invalid_argument(os.str());
+        throw invalid_argument("");
     }
 }
 

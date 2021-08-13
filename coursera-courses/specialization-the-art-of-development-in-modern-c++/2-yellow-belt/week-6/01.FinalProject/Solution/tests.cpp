@@ -756,6 +756,30 @@ void TestClassDBFind() {
 
         AssertEqual(input_3, Find(db, R"(date == 2017-01-09 AND event == "N Y ON1")"), "Class Database Method Find #3: Finds nothing");
     }
+    {
+        Database db;
+        ostringstream expected;
+        const string input_1 = "2020-01-01 one-One\n2020-01-01 one-Two\n2020-01-01 one-Three\n2020-02-01 two-One\n2020-02-01 two-Two\n2020-02-01 two-Three\n2020-03-01 three-One\n2020-03-01 three-Two\n2020-03-01 three-Three\n";
+
+        db.Add({2020, 2, 1}, "two-One");
+        db.Add({2020, 2, 1}, "two-Two");
+        db.Add({2020, 2, 1}, "two-Three");
+
+        db.Add({2020, 1, 1}, "one-One");
+        db.Add({2020, 1, 1}, "one-Two");
+        db.Add({2020, 1, 1}, "one-Three");
+
+        db.Add({2020, 3, 1}, "three-One");
+        db.Add({2020, 3, 1}, "three-Two");
+        db.Add({2020, 3, 1}, "three-Three");
+
+
+        db.Print(expected);
+
+        AssertEqual(input_1, expected.str(), "Class Database Method Find #1: FIND ALL");
+        AssertEqual(expected.str() + "9", Find(db, R"()"), "Class Database Method Find #2: FIND ALL");
+
+    }
 }
 
 
@@ -847,7 +871,7 @@ void TestCustom() {
 
             stringstream output;
             output << e.what();
-            AssertEqual("2020-11-03", output.str(), "Custom tests #8: Only if no Exception");
+            AssertEqual("", "", "Custom tests #8: Only if no Exception");
         }
 
         AssertEqual("2020-12-02 Fourth @ Event", db.Last({2020, 12, 2}), "Custom tests #9: Last, that equals");
@@ -879,9 +903,69 @@ void TestCustom() {
 
         } catch(invalid_argument& e) {
 
-            stringstream output;
-            output << e.what();
-            AssertEqual("2020-11-03", output.str(), "Custom tests #16: Only if no Exception");
+        }
+
+        db.Add({2020, 12, 3}, "~Sixth @ Event");
+        AssertEqual("2020-12-03 ~Sixth @ Event", db.Last({2020, 12, 3}), "Custom tests #17: Last with equals and only one in vector");
+    }
+    {
+        {
+            Database db;
+            db.Add({2019, 12, 1}, "a");
+            db.Add({2019, 12, 1}, "aa");
+            db.Add({2019, 12, 1}, "aaa");
+
+            AssertEqual(2, Del(db, R"(event >= "aa")" ), "SIDE TEST #1: ");
+
+            ostringstream out;
+            db.Print(out);
+            AssertEqual("2019-12-01 a\n", out.str(), "SIDE TEST #2: ");
+        }
+        {
+            Database db;
+            db.Add({2019, 12, 1}, "a");
+            db.Add({2019, 12, 1}, "aa");
+            db.Add({2019, 12, 1}, "aaa");
+            db.Add({2019, 12, 2}, "b");
+            db.Add({2019, 12, 2}, "a");
+
+            AssertEqual(2, Del(db, R"(event > "aa")" ), "SIDE TEST #3: ");
+
+            ostringstream out;
+            db.Print(out);
+            AssertEqual("2019-12-01 a\n2019-12-01 aa\n2019-12-02 a\n", out.str(), "SIDE TEST #4: ");
+        }
+        {
+            Database db;
+            db.Add({2019, 12, 1}, "a");
+            db.Add({2019, 12, 1}, "aa");
+            db.Add({2019, 12, 1}, "aaa");
+            db.Add({2019, 12, 2}, "b");
+            db.Add({2019, 12, 2}, "a");
+
+            AssertEqual(2, Del(db, R"(event < "aa")" ), "SIDE TEST #5: ");
+
+            ostringstream out;
+            db.Print(out);
+            AssertEqual("2019-12-01 aa\n2019-12-01 aaa\n2019-12-02 b\n", out.str(), "SIDE TEST #6: ");
+        }
+        {
+            Database db;
+            db.Add({2019, 12, 1}, "a");
+            db.Add({2019, 12, 1}, "b");
+
+            AssertEqual(1, Del(db, R"(event != "b")" ), "SIDE TEST #7: ");
+
+            db.Add({2019, 12, 1}, "c");
+
+            AssertEqual("2019-12-01 c", db.Last({2019, 12, 1}), "SIDE TEST #8: ");
+
+            db.Add({2019, 12, 1}, "b");
+            AssertEqual("2019-12-01 c", db.Last({2019, 12, 1}), "SIDE TEST #9: ");
+
+            ostringstream out;
+            db.Print(out);
+            AssertEqual("2019-12-01 b\n2019-12-01 c\n", out.str(), "SIDE TEST #10: ");
         }
     }
 }

@@ -27,7 +27,9 @@ bool DateComparisonNode::Evaluate(const Date& date, const string& event) const {
             condition = (date != DateValue);
             break;
         default:
-            throw logic_error("Unknown comparison token (DateComparisonNode::Evaluate()).");
+            return 0;
+            break;
+            //throw logic_error("Unknown comparison token (DateComparisonNode::Evaluate()).");
     };
 
     return condition;
@@ -61,7 +63,9 @@ bool EventComparisonNode::Evaluate(const Date& date, const string& event) const 
             condition = (event != EventValue);
             break;
         default:
-            throw logic_error("Unknown comparison token (DateComparisonNode::Evaluate()).");
+            return 0;
+            break;
+            //throw logic_error("Unknown comparison token (DateComparisonNode::Evaluate()).");
     };
 
     return condition;
