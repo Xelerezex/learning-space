@@ -23,11 +23,11 @@
 | How To Pass | Pass all graded assignments to complete the course. |
 | User Ratings | Average User Rating 4.8 [See what learners said](https://www.coursera.org/learn/c-plus-plus-yellow#ratings)|
 
-* WEEK 1 ---> [Open](https://github.com/Xelerezex/learning-space/tree/learning-space/coursera-courses/specialization-the-art-of-development-in-modern-c%2B%2B/1-yellow-belt/week-1)
-* WEEK 2 ---> [Open](https://github.com/Xelerezex/learning-space/tree/learning-space/coursera-courses/specialization-the-art-of-development-in-modern-c%2B%2B/1-yellow-belt/week-2)
-* WEEK 3 ---> [Open](https://github.com/Xelerezex/learning-space/tree/learning-space/coursera-courses/specialization-the-art-of-development-in-modern-c%2B%2B/1-yellow-belt/week-3)
-* WEEK 4 ---> [Open](https://github.com/Xelerezex/learning-space/tree/learning-space/coursera-courses/specialization-the-art-of-development-in-modern-c%2B%2B/1-yellow-belt/week-4)
-* WEEK 5 ---> [Open](https://github.com/Xelerezex/learning-space/tree/learning-space/coursera-courses/specialization-the-art-of-development-in-modern-c%2B%2B/1-yellow-belt/week-5)
-* WEEK 6 ---> [Open](https://github.com/Xelerezex/learning-space/tree/learning-space/coursera-courses/specialization-the-art-of-development-in-modern-c%2B%2B/1-yellow-belt/week-6)
+* WEEK 1 ---> [Open](https://github.com/Xelerezex/learning-space/tree/learning-space/coursera-courses/specialization-the-art-of-development-in-modern-c%2B%2B/2-yellow-belt/week-1)
+* WEEK 2 ---> [Open](https://github.com/Xelerezex/learning-space/tree/learning-space/coursera-courses/specialization-the-art-of-development-in-modern-c%2B%2B/2-yellow-belt/week-2)
+* WEEK 3 ---> [Open](https://github.com/Xelerezex/learning-space/tree/learning-space/coursera-courses/specialization-the-art-of-development-in-modern-c%2B%2B/2-yellow-belt/week-3)
+* WEEK 4 ---> [Open](https://github.com/Xelerezex/learning-space/tree/learning-space/coursera-courses/specialization-the-art-of-development-in-modern-c%2B%2B/2-yellow-belt/week-4)
+* WEEK 5 ---> [Open](https://github.com/Xelerezex/learning-space/tree/learning-space/coursera-courses/specialization-the-art-of-development-in-modern-c%2B%2B/2-yellow-belt/week-5)
+* WEEK 6 ---> [Open](https://github.com/Xelerezex/learning-space/tree/learning-space/coursera-courses/specialization-the-art-of-development-in-modern-c%2B%2B/2-yellow-belt/week-6)
 
 [Основы разработки на C++: красный](https://github.com/Xelerezex/learning-space/tree/learning-space/coursera-courses/specialization-the-art-of-development-in-modern-c%2B%2B/3-red-belt)
