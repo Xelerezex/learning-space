@@ -9,7 +9,7 @@
 -    пары и кортежи
 -    шаблоны функций
 -    наследование и полиморфизм
--   итераторы и стандартные алгоритмы
+-    итераторы и стандартные алгоритмы
 -    распределение кода по нескольким файлам
 
 Кроме того, в курсе рассмотрено использование юнит-тестов для отладки программ и обеспечения надёжности кода, а также продемонстрировано, как, пользуясь знаниями только "Белого" и "Жёлтого" поясов, разработать свой собственный unit test framework.
@@ -30,4 +30,4 @@
 * WEEK 5 ---> [Open](https://github.com/Xelerezex/learning-space/tree/learning-space/coursera-courses/specialization-the-art-of-development-in-modern-c%2B%2B/1-yellow-belt/week-5)
 * WEEK 6 ---> [Open](https://github.com/Xelerezex/learning-space/tree/learning-space/coursera-courses/specialization-the-art-of-development-in-modern-c%2B%2B/1-yellow-belt/week-6)
 
-[Основы разработки на C++: красный (????) ]()
+[Основы разработки на C++: красный](https://github.com/Xelerezex/learning-space/tree/learning-space/coursera-courses/specialization-the-art-of-development-in-modern-c%2B%2B/3-red-belt)
