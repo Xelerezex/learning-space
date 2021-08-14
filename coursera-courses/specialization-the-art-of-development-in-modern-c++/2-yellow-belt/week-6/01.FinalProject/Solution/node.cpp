@@ -27,7 +27,9 @@ bool DateComparisonNode::Evaluate(const Date& date, const string& event) const {
             condition = (date != DateValue);
             break;
         default:
-            throw logic_error("Unknown comparison token (DateComparisonNode::Evaluate()).");
+            return 0;
+            break;
+            //throw logic_error("Unknown comparison token (DateComparisonNode::Evaluate()).");
     };
 
     return condition;
@@ -42,6 +44,18 @@ bool EventComparisonNode::Evaluate(const Date& date, const string& event) const 
     bool condition;
 
     switch (CompType) {
+        case Comparison::Less:
+            condition = (event < EventValue);
+            break;
+        case Comparison::LessOrEqual:
+            condition = (event <= EventValue);
+            break;
+        case Comparison::Greater:
+            condition = (event > EventValue);
+            break;
+        case Comparison::GreaterOrEqual:
+            condition = (event >= EventValue);
+            break;
         case Comparison::Equal:
             condition = (event == EventValue);
             break;
@@ -49,7 +63,9 @@ bool EventComparisonNode::Evaluate(const Date& date, const string& event) const 
             condition = (event != EventValue);
             break;
         default:
-            throw logic_error("Unknown comparison token (EventComparisonNode::Evaluate()).");
+            return 0;
+            break;
+            //throw logic_error("Unknown comparison token (DateComparisonNode::Evaluate()).");
     };
 
     return condition;
@@ -80,5 +96,5 @@ bool LogicalOperationNode::Evaluate(const Date& date, const string& event) const
 EmptyNode::EmptyNode() {}
 
 bool EmptyNode::Evaluate(const Date& date, const string& event) const {
-    return NULL;
+    return /*NULL*/ true;
 }

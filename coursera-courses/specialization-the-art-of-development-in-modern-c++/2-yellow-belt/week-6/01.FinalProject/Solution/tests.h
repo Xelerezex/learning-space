@@ -11,7 +11,14 @@
 void TestClassDate();
 void TestParseEvent();
 void TestParseCondition();
-void TestClassDBAddPrint();
+void TestEmptyNode();
+void TestDateComparisonNode();
+void TestEventComparisonNode();
+void TestClassDBAdd();
+void TestClassDBPrint();
 void TestClassDBDel();
+void TestClassDBFind();
+void TestClassDBLast();
+void TestCustom();
 
 void TestAll();

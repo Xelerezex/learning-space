@@ -8,6 +8,12 @@ ostream& operator << (ostream& os, const set  <T>& s);
 template <class K,  class V>
 ostream& operator << (ostream& os, const map  <K, V>& m);
 
+template <class L>
+ostream& operator << (ostream& os, const vector <L>& l);
+
+template <class D>
+ostream& operator << (ostream& os, const deque <D>& d);
+
 template <class T,  class U>
 void AssertEqual(const T& t,const U& u, const string& hint);
 
@@ -20,7 +26,7 @@ template <class T,  class U>
 void AssertEqual(const T& t, const U& u, const string& hint) {
     if (t != u) {
         ostringstream os;
-        os << "Assertionfailed: " << t << " !=  " << u <<" hint: " << hint;
+        os << "Assertion failed: \n" << t << "\n!=\n" << u <<" \nhint: " << hint;
         throw runtime_error(os.str());
     }
 }
