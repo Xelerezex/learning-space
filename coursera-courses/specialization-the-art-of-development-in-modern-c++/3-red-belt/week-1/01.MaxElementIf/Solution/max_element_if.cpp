@@ -1,0 +1,142 @@
+#include "test_runner.h"
+
+#include <string>
+#include <vector>
+#include <list>
+#include <forward_list>
+#include <numeric>
+#include <iterator>
+#include <algorithm>
+
+using namespace std;
+
+
+template<typename ForwardIterator, typename UnaryPredicate>
+ForwardIterator max_element_if(ForwardIterator first, ForwardIterator last, UnaryPredicate pred) {
+    if (first == last) {
+        return last;
+    }
+
+
+    ForwardIterator largest = last;
+    bool initializer = true;
+    bool flag = false;
+
+
+    for (auto iter = first; iter != last; ++iter) {
+        if (pred(*iter) && initializer) {
+             largest = iter;
+             initializer = false;
+             flag = true;
+        }
+        if (pred(*iter) && *largest < *iter) {
+            largest = iter;
+            flag = true;
+        }
+    }
+
+
+    return flag ? largest : last;
+}
+
+void TestUniqueMax() {
+    auto IsEven = [](int x) {
+        return x % 2 == 0;
+    };
+
+    const list<int> hill{2, 4, 8, 9, 6, 4, 2};
+    auto max_iterator = hill.begin();
+    advance(max_iterator, 2);                       // advance() - ???
+
+    vector<int> numbers(10);
+    iota(numbers.begin(), numbers.end(), 1);        // iota() - ???
+
+    /*
+      Мы не используем AssertEqual, потому что для итераторов
+      отсутствует перегрузка оператора вывода в поток ostream.
+      Разыменование здесь также недопустимо, так как оно может повлечь
+      неопределенное поведение, если функция max_element_if, к примеру,
+      вернула итератор, указывающий на конец контейнера.
+    */
+    Assert(
+        max_element_if(numbers.begin(), numbers.end(), IsEven) == --numbers.end(),
+        "Expect the last element"
+    );
+    Assert(
+        max_element_if(hill.begin(), hill.end(), IsEven) == max_iterator,
+        "Expect the maximal even number"
+    );
+}
+
+void TestSeveralMax() {
+    struct IsCapitalized {
+        bool operator()(const string &s) {
+            return !s.empty() && isupper(s.front());
+        }
+    };
+
+    const forward_list<string> text{"One", "two", "Three", "One", "Two",
+        "Three", "one", "Two", "three"};
+    auto max_iterator = text.begin();
+    advance(max_iterator, 4);
+
+    Assert(
+        max_element_if(text.begin(), text.end(), IsCapitalized()) == max_iterator,
+        "Expect the first \"Two\""
+    );
+}
+
+void TestNoMax() {
+    const vector<int> empty;
+    const string str = "Non-empty string";
+
+    auto AlwaysTrue = [](int) {
+      return true;
+    };
+    Assert(
+        max_element_if(empty.begin(), empty.end(), AlwaysTrue) == empty.end(),
+        "Expect end for empty container"
+    );
+
+    auto AlwaysFalse = [](char) {
+        return false;
+    };
+    Assert(
+        max_element_if(str.begin(), str.end(), AlwaysFalse) == str.end(),
+        "Expect end for AlwaysFalse predicate"
+    );
+}
+
+void TestOneElement() {
+    const vector<int> storage = {42};
+    const vector<int> storage2 = {42, 42, 42, 42};
+    const vector<int> storage3 = {84, 42};
+
+    auto Predicate = [](const int& number) {
+      return number == 42;
+    };
+
+    Assert(
+        max_element_if(storage.begin(), storage.end(), Predicate) == storage.begin(),
+        "Expect begin in container with one value"
+    );
+
+    Assert(
+        max_element_if(storage2.begin(), storage2.end(), Predicate) == storage2.begin(),
+        "#2"
+    );
+
+     Assert(
+        max_element_if(storage3.begin(), storage3.end(), Predicate) == (storage3.begin() + 1),
+        "#3"
+    );
+}
+
+int main() {
+    TestRunner tr;
+    tr.RunTest(TestUniqueMax, "TestUniqueMax");
+    tr.RunTest(TestSeveralMax, "TestSeveralMax");
+    tr.RunTest(TestNoMax, "TestNoMax");
+    tr.RunTest(TestOneElement, "TestOneElement");
+    return 0;
+}
