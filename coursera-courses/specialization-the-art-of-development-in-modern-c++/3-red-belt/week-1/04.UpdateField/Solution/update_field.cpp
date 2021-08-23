@@ -3,7 +3,69 @@
 
 using namespace std;
 
-#define UPDATE_FIELD(ticket, field, values)  // Реализуйте этот макрос, а также необходимые операторы для классов Date и Time
+
+bool operator == (const Date& ldate, const Date& rdate) {
+    return make_tuple(ldate.year, ldate.month, ldate.day) ==
+           make_tuple(rdate.year, rdate.month, rdate.day);
+}
+
+bool operator != (const Date& ldate, const Date& rdate) {
+    return make_tuple(ldate.year, ldate.month, ldate.day) !=
+           make_tuple(rdate.year, rdate.month, rdate.day);
+}
+
+bool operator < (const Date& ldate, const Date& rdate) {
+    return make_tuple(ldate.year, ldate.month, ldate.day) <
+           make_tuple(rdate.year, rdate.month, rdate.day);
+}
+
+ostream& operator << (ostream& os, const Date& date) {
+    return os << date.year << "-" << date.month << "-" << date.day << '\n';
+}
+
+istream& operator >> (istream& is, Date& date) {
+    is >> date.year;
+    is.ignore(1);
+    is >> date.month;
+    is.ignore(1);
+    is >> date.day;
+    return is;
+}
+
+bool operator == (const Time& ltime, const Time& rtime) {
+    return make_tuple(ltime.hours, ltime.minutes) ==
+           make_tuple(rtime.hours, rtime.minutes);
+}
+
+bool operator != (const Time& ltime, const Time& rtime) {
+    return make_tuple(ltime.hours, ltime.minutes) !=
+           make_tuple(rtime.hours, rtime.minutes);
+}
+
+bool operator < (const Time& ltime, const Time& rtime) {
+    return make_tuple(ltime.hours, ltime.minutes) <
+           make_tuple(rtime.hours, rtime.minutes);
+}
+
+ostream& operator << (ostream& os, const Time& time) {
+    return os << time.hours << ":" << time.minutes << '\n';
+}
+
+istream& operator >> (istream& is, Time& time) {
+    is >> time.hours;
+    is.ignore(1);
+    is >> time.minutes;
+    return is;
+}
+
+#define UPDATE_FIELD(ticket, field, values) {     \
+    auto it = values.find(#field);                \
+    if (it != values.end()) {                     \
+        istringstream is(it->second);             \
+        is >> ticket.field;                       \
+    }                                             \
+}
+
 
 void TestUpdate() {
   AirlineTicket t;
