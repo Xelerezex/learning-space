@@ -1,63 +1,85 @@
-## Sort By
+## Update Field
 
-Давайте представим, что вы разрабатываете инновационный сервис поиска авиабилетов AviaScanner.
-В вашем сервисе авиабилет представляется в виде структуры
+Продолжим работу над сервисом поиска авиабилетов AviaScanner.
+Наш сервис хранит базу данных билетов в виде vector<AirlineTicket>,
+где AirlineTicket — такая же структура, как и в предыдущей задаче.
 
-```cpp
-struct Date {
-  int year, month, day;
-};
-
-struct Time {
-  int hours, minutes;
-};
-
-struct AirlineTicket {
-  string from;
-  string to;
-  string airline;
-  Date departure_date;
-  Time departure_time;
-  Date arrival_date;
-  Time arrival_time;
-  uint64_t price;
-};
-```
-
-В данный момент вы работаете над функцией сортировки результатов поиска.
-Пользователь вводит свой запрос и получает список подходящих билетов.
-Дальше он может задавать параметры сортировки этого списка.
-Например, сначала по цене, затем по времени вылета и, наконец, по аэропорту прилёта.
-
-Чтобы реализовать сортировку как в примере, можно воспользоваться [алгоритмом цифровой сортировки](http://neerc.ifmo.ru/wiki/index.php?title=%D0%A6%D0%B8%D1%84%D1%80%D0%BE%D0%B2%D0%B0%D1%8F_%D1%81%D0%BE%D1%80%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0):
+Периодически наш сервис обходит сайты авиакомпаний, собирает свежую информацию о доступных билетах и обновляет записи в своей базе данных.
+Делается это с помощью функции void UpdateTicket(AirlineTicket& ticket, const map<string, string>& updates).
+Параметр updates содержит пары (имя поля; новое значение). При этом он содержит только те поля, которые поменялись.
+Пример работы функции UpdateTicket:
 
 ```cpp
-void SortTickets(vector<AirlineTicket>& tixs) {
-  stable_sort(begin(tixs), end(tixs), [](const AirlineTicket& lhs, const AirlineTicket& rhs) {
-    return lhs.to < rhs.to;
-  });
-  stable_sort(begin(tixs), end(tixs), [](const AirlineTicket& lhs, const AirlineTicket& rhs) {
-    return lhs.departure_time < rhs.departure_time;
-  });
-  stable_sort(begin(tixs), end(tixs), [](const AirlineTicket& lhs, const AirlineTicket& rhs) {
-    return lhs.price < rhs.price;
-  });
+void UpdateTicketExample() {
+    AirlineTicket t;
+    t.price = 5000;
+    t.from = "DME";
+    t.to = "AER";
+
+    const map<string, string> updates = {
+        {"price", "3500"},
+        {"from", "VKO"}
+    };
+    UpdateTicket(t, updates);
+    ASSERT_EQUAL(t.from, "VKO");
+    ASSERT_EQUAL(t.to, "AER");
+    ASSERT_EQUAL(t.price, 3500);
 }
 ```
 
-Напишите макрос SORT_BY, который принимает в качестве параметра имя поля структуры AirlineTicket.
-Вызов sort(begin(tixs), end(tixs), SORT_BY(some_field)) должен приводить к сортировке вектора tixs
-по полю some_field.
+Функцию UpdateTicket можно было бы реализовать так:
 
-Вам дан файл airline_ticket.h, содержащий объявления структур Time, Date и AirlineTicket,
-а также заготовка решения в виде cpp-файла sort_by.cpp. Пришлите на проверку cpp-файл, который
+```cpp
+void UpdateTicket(AirlineTicket& ticket, const map<string, string>& updates) {
+    map<string, string>::const_iterator it;
+
+    it = updates.find("to");
+    if (it != updates.end()) {
+        ticket.to = it->second;
+    }
+
+    it = updates.find("from");
+    if (it != updates.end()) {
+        ticket.from = it->second;
+    }
+
+    it = updates.find("price");
+    if (it != updates.end()) {
+        istringstream is(it->second);
+        is >> ticket.price;
+    }
+
+    ...
+}
+```
+
+Здесь налицо дублирование кода — блоки кода внутри функции UpdateTicket отличаются только именем поля
+(конечно, первые два блока не такие, как третий, но их легко к нему свести).
+При этом имя поля используется не только для обращения к структуре AirlineTicket, но и как строковый литерал.
+Поэтому можно написать макрос, который существенно упростит функцию UpdateTicket:
+
+```cpp
+#define UPDATE_FIELD(ticket, field, values) ...
+
+void UpdateTicket(AirlineTicket& ticket, const map<string, string>& updates) {
+    UPDATE_FIELD(ticket, to, updates);
+    UPDATE_FIELD(ticket, from, updates);
+    UPDATE_FIELD(ticket, price, updates);
+    UPDATE_FIELD(ticket, airline, updates);
+    ...
+}
+```
+
+Напишите макрос UPDATE_FIELD. Вам дан файл airline_ticket.h, содержащий объявления структур Time, Date и AirlineTicket,
+а также заготовка решения в виде cpp-файла update_field.cpp.
+Пришлите на проверку cpp-файл, который:
 
 -    подключает заголовочный файл airline_ticket.h
 
--    содержит макрос SORT_BY
+-    содержит макрос UPDATE_FIELD
 
--    содержит определения операторов, необходимых для использования классов Date и Time в алгоритме сортировки и макросе ASSERT_EQUAL (формат вывода в поток можете выбрать произвольный)
+-    содержит определения операторов, необходимых для считывания классов Date и Time из потока istream и их использования в макросе ASSERT_EQUAL (формат ввода смотрите в юнит-тестах в файле update_field.cpp)
 
->   [airline_ticket.h](https://d3c33hcgiwev3.cloudfront.net/fPFKHWAuEeiEZRKxXgWFpg_7d46e380602e11e88d73c38a9a838951_airline_ticket.h?Expires=1629763200&Signature=NJIfatz9Sgk66bAFP55NbVVCQXornze8ueJyakrp20WI41ueuzrSN4jqIlsWA~vfSKLoklHaEqwwiqh0LQbc87knvYWen8BxaqSL9QkdbdBcdD1yoxAXNM~yk8de823yyONKzTWNDpkbwauIeJ0jByQjsjUXqF8Au5TaLIA5sgA_&Key-Pair-Id=APKAJLTNE6QMUY6HBC5A)
+> [update_field.cpp](https://d3c33hcgiwev3.cloudfront.net/ssnUDGAzEeiEZRKxXgWFpg_b3233df0603311e8a8bf61ae6cf3b33d_update_field.cpp?Expires=1629849600&Signature=RPAptbrIOxqQnMbG-m~PNb6ovnvR8N8rg-VlTteHq6VWwjmQH1MHrfNHeeq1GBa~eL6rxHD4-D1QnKz9Ee9ntu7Zp2sLBE~GwsUn3XBT18WuAHXWr~gT-0LrmZgrwCxpH-XZUyUO6A9l9igCZYvD5Rpr4i9Syn7IqE0RMMm0i6Q_&Key-Pair-Id=APKAJLTNE6QMUY6HBC5A)
 
->   [sort_by.cpp](https://d3c33hcgiwev3.cloudfront.net/fPFKHWAuEeiEZRKxXgWFpg_7d46e380602e11e88d73c38a9a838951_airline_ticket.h?Expires=1629763200&Signature=NJIfatz9Sgk66bAFP55NbVVCQXornze8ueJyakrp20WI41ueuzrSN4jqIlsWA~vfSKLoklHaEqwwiqh0LQbc87knvYWen8BxaqSL9QkdbdBcdD1yoxAXNM~yk8de823yyONKzTWNDpkbwauIeJ0jByQjsjUXqF8Au5TaLIA5sgA_&Key-Pair-Id=APKAJLTNE6QMUY6HBC5A)
+> [airline_ticket.h](https://d3c33hcgiwev3.cloudfront.net/fPFKHWAuEeiEZRKxXgWFpg_7d46e380602e11e88d73c38a9a838951_airline_ticket.h?Expires=1629849600&Signature=NPnV5FgV7Ix93LxdybIkr9SB8XhbTXD1RGNLQL3Pj9z7MfYC32quEr~2ycasbFbAW4RkLll5cYfTATnW-4Eg0aBRxLWsB7yYHwGtYCfDzcD8ZAY9l0R~GdSRqi5OChL71rCwCMlsR9B1yCZuDG4eI4WiphWXXLhFeGLZ~WYePfg_&Key-Pair-Id=APKAJLTNE6QMUY6HBC5A)
