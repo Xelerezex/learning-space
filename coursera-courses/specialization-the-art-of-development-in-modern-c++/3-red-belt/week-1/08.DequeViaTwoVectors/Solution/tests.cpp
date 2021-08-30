@@ -1,8 +1,11 @@
 #include "tests.h"
 
 
-void TestTest() {
-    ASSERT_EQUAL(true, true);
+
+void TestBasic() {
+    {
+        ASSERT_EQUAL(true, false);
+    }
 }
 
 
@@ -10,7 +13,7 @@ void TestAll() {
     cerr << "------------------Tests-----------------------" << endl;
     TestRunner tr;
 
-    RUN_TEST(tr, TestTest);
+    RUN_TEST(tr, TestBasic);
 
     cerr << "----------------------------------------------" << endl << endl;
 }

@@ -3,7 +3,7 @@
 
 
 // TESTING OBJECT'S:
-void TestTest();
+void TestBasic();
 
 
 void TestAll();
