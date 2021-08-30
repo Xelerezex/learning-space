@@ -1,17 +1,8 @@
 #include "test_runner.h"
 #include "tests.h"
-
-template<typename Type>
-class Deque {
-    public:
-        Deque() {}
-    private:
-        vector<Type> Front;
-        vector<Type> Back;
-};
+#include "deque_via_two_vectors.h"
 
 int main() {
     TestAll();
-
     return 0;
 }
