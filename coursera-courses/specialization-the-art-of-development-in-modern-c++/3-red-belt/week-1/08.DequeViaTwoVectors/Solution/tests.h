@@ -7,5 +7,7 @@
 void TestBasic();
 void TestEmptySize();
 void TestPushBackFront();
+void TestBackFront();
+void TestOperator();
 
 void TestAll();
