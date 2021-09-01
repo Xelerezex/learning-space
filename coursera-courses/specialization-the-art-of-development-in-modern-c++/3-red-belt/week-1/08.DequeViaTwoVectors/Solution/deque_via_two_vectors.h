@@ -63,29 +63,99 @@ class Deque {
         }
 
         // 5 PAR
-/*        Type& At(size_t index) {
+        Type& At(size_t index) {
+            bool cond1 = FrontData.empty();
+            bool cond2 = BackData.empty();
+            bool cond3 = ((index >= 0) && (index < FrontData.size() + BackData.size()));
 
-        }*/
+            if ((!cond1 && !cond2) && cond3) {
 
-/*        const Type& At(size_t index) const {
+                if (index < FrontData.size()) {
+                    auto iter = (FrontData.end() - 1) - static_cast<int>(index);
+                    return *iter;
 
-        }*/
+                } else if (index >= FrontData.size()) {
+
+                    return BackData[static_cast<int>(index) - (FrontData.size())];
+                }
+            } else if ((cond1 && !cond2) && cond3) {
+                return BackData[static_cast<int>(index)];
+            } else if ((!cond1 && cond2) && cond3) {
+                auto iter = (FrontData.end() - 1) - static_cast<int>(index);
+                return *iter;
+            } else {
+                throw out_of_range("");
+            }
+        }
+
+        const Type& At(size_t index) const {
+            bool cond1 = FrontData.empty();
+            bool cond2 = BackData.empty();
+            bool cond3 = ((index >= 0) && (index < FrontData.size() + BackData.size()));
+
+            if ((!cond1 && !cond2) && cond3) {
+
+                if (index < FrontData.size()) {
+                    auto iter = (FrontData.end() - 1) - static_cast<int>(index);
+                    return *iter;
+
+                } else if (index >= FrontData.size()) {
+
+                    return BackData[static_cast<int>(index) - (FrontData.size())];
+                }
+            } else if ((cond1 && !cond2) && cond3) {
+                return BackData[static_cast<int>(index)];
+            } else if ((!cond1 && cond2) && cond3) {
+                auto iter = (FrontData.end() - 1) - static_cast<int>(index);
+                return *iter;
+            } else {
+                throw out_of_range("");
+            }
+        }
 
         // 6 PAR
-         Type& Front() {
-            return FrontData.back();
+        Type& Front() {
+            bool cond1 = FrontData.empty();
+            bool cond2 = BackData.empty();
+
+            if (cond1 && !cond2) {
+                return BackData.front();
+            } else {
+                return FrontData.back();
+            }
         }
 
         const Type& Front() const {
-            return FrontData.back();
+            bool cond1 = FrontData.empty();
+            bool cond2 = BackData.empty();
+
+            if (cond1 && !cond2) {
+                return BackData.front();
+            } else {
+                return FrontData.back();
+            }
         }
 
         Type& Back() {
-            return BackData.back();
+            bool cond1 = FrontData.empty();
+            bool cond2 = BackData.empty();
+
+            if (!cond1 && cond2) {
+                return FrontData.front();
+            } else {
+                return BackData.back();
+            }
         }
 
         const Type& Back() const {
-            return BackData.back();
+            bool cond1 = FrontData.empty();
+            bool cond2 = BackData.empty();
+
+            if (!cond1 && cond2) {
+                return FrontData.front();
+            } else {
+                return BackData.back();
+            }
         }
 
         // 7 PAR

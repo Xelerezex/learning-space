@@ -9,5 +9,6 @@ void TestEmptySize();
 void TestPushBackFront();
 void TestBackFront();
 void TestOperator();
+void TestAt();
 
 void TestAll();
