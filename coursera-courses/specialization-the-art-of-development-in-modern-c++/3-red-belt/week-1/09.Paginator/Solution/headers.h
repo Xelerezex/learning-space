@@ -25,6 +25,8 @@
 #include <memory>
 #include <chrono>
 
+#include <iterator>
+
 //----------------NAMESPACES
 using namespace std::chrono;
 using namespace std;

@@ -151,6 +151,8 @@ ostream& operator << (ostream& os, const deque <D>& d) {
 
 
 //-------------------------------------------MACROS---------------------------------------------//
+
+
 #define ASSERT_EQUAL(x, y) {               \
     ostringstream os;                      \
     os << #x << " != " << #y << ", "       \
