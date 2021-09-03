@@ -8,6 +8,9 @@
 #include <deque>
 #include <utility>
 
+//-----------------MATH
+#include <cmath>
+
 //-----------------ALGORITHMIC
 #include <algorithm>
 #include <numeric>
@@ -25,6 +28,7 @@
 #include <memory>
 #include <chrono>
 
+//----------------ITERATION
 #include <iterator>
 
 //----------------NAMESPACES

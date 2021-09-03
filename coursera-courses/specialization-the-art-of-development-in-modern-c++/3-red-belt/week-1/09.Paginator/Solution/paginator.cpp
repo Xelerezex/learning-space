@@ -1,5 +1,6 @@
 #include "test_runner.h"
 
+/* UNCOMMENT FOR COURSERA SERVER PUSH
 #include <string>
 #include <vector>
 #include <algorithm>
@@ -9,10 +10,9 @@
 #include <exception>
 #include <stdexcept>
 #include <cmath>
-/*#include <iterator>*/
 
 using namespace std;
-
+*/
 
 
 template <typename Iterator>
@@ -28,11 +28,11 @@ class Paginator {
             public:
                 IteratorRange(iterator f, iterator l) : first(f), last(l) {}
 
-                iterator begin() const {
+                auto begin() const {
                     return first;
                 }
 
-                iterator end() const {
+                auto end() const {
                     return last;
                 }
 
@@ -51,18 +51,18 @@ class Paginator {
             Iterator t_end = End;
 
             for (size_t i = 0; i < sz; ++i) {
-                IteratorRange iter = {t_beg, next(t_beg, min(static_cast<size_t>(t_end - t_beg), Page_Size))};
+                IteratorRange<Iterator> iter = {t_beg, next(t_beg, min(static_cast<size_t>(t_end - t_beg), Page_Size))};
                 t_beg = next(t_beg, min(static_cast<size_t>(t_end - t_beg), Page_Size));
                 Pages.push_back(iter);
             }
 
         }
 
-        auto begin() const {
+        auto begin()  {
             return Pages.begin();
         }
 
-        auto end() const {
+        auto end()  {
             return Pages.end();
         }
 
@@ -105,9 +105,7 @@ void TestLooping() {
         os << '\n';
     }
 
-    /*cout << os.str() << endl;*/
-    string osstr = os.str();
-    ASSERT_EQUAL(osstr, "1 2 3 4 5 6 \n7 8 9 10 11 12 \n13 14 15 \n");
+    ASSERT_EQUAL(os.str(), "1 2 3 4 5 6 \n7 8 9 10 11 12 \n13 14 15 \n");
 }
 
 
@@ -189,24 +187,3 @@ int main() {
 
     return 0;
 }
-
-/*
-Compile error: b"/tmp/submission4gh_ihpi/tmpi4z3rguv.cpp:268:3: warning: 'const' qualifier on reference type 'belts::Page' (aka 'const Paginator<__gnu_cxx::__normal_iterator<int *, std::vector<int, std::allocator<int> > > >::IteratorRange<__gnu_cxx::__normal_iterator<int *, std::vector<int, std::allocator<int> > > > &') has no effect [-Wignored-qualifiers]
-  CHECK_METHODC(Page, size, size_t);
-    ^
-    include/detector.h:146:5: note: expanded from macro 'CHECK_METHODC'
-        const,                                                                                \\
-            ^
-            /tmp/submission4gh_ihpi/tmpi4z3rguv.cpp:53:31: fatal error: no viable constructor or deduction guide for deduction of template arguments of 'IteratorRange'
-                            IteratorRange iter = {t_beg, next(t_beg, min(static_cast<size_t>(t_end - t_beg), Page_Size))};
-                                                          ^
-                                                          /tmp/submission4gh_ihpi/tmpi4z3rguv.cpp:76:12: note: in instantiation of member function 'Paginator<__gnu_cxx::__normal_iterator<int *, std::vector<int, std::allocator<int> > > >::Paginator' requested here
-                                                              return Paginator { c.begin(), c.end(), page_size };
-                                                                         ^\
-                                                                         /tmp/submission4gh_ihpi/tmpi4z3rguv.cpp:24:15: note: candidate function template not viable: requires 1 argument, but 2 were provided
-                                                                                 class IteratorRange {
-                                                                                               ^
-                                                                                               /tmp/submission4gh_ihpi/tmpi4z3rguv.cpp:24:15: note: candidate function template not viable: requires 0 arguments, but 2 were provided
-                                                                                               1 warning and 1 error generated.
-                                                                                               "
-*/

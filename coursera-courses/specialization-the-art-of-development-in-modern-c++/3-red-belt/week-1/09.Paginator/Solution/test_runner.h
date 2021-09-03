@@ -26,12 +26,15 @@ inline void Assert(bool b, const string& hint);
 template<class T, class U>
 void AssertEqual(const T& t, const U& u, const string& hint) {
     if (!(t == u)) {
-        ostringstream os;
-        os << "Assertion failed: " << t << " != " << u;
+        ostringstream __assert_equal_private_os;
+        __assert_equal_private_os
+        << "Assertion failed: "
+        << t << " != " << u;
         if (!hint.empty()) {
-            os << " hint: " << hint;
+            __assert_equal_private_os
+            << " hint: " << hint;
         }
-            throw runtime_error(os.str());
+            throw runtime_error(__assert_equal_private_os.str());
     }
 }
 
@@ -154,17 +157,19 @@ ostream& operator << (ostream& os, const deque <D>& d) {
 
 
 #define ASSERT_EQUAL(x, y) {               \
-    ostringstream os;                      \
-    os << #x << " != " << #y << ", "       \
-      << __FILE__ << ":" << __LINE__;      \
-    AssertEqual(x, y, os.str());           \
+    ostringstream __assert_equal_private_os;                      \
+    __assert_equal_private_os   \
+    << #x << " != " << #y << ", "       \
+    << __FILE__ << ":" << __LINE__;      \
+    AssertEqual(x, y, __assert_equal_private_os.str());           \
 }
 
 #define ASSERT(x) {                       \
-    ostringstream os;                     \
-    os << #x << " is false, "             \
-      << __FILE__ << ":" << __LINE__;     \
-    Assert(x, os.str());                  \
+    ostringstream __assert_equal_private_os;                     \
+    __assert_equal_private_os       \
+    << #x << " is false, "             \
+    << __FILE__ << ":" << __LINE__;     \
+    Assert(x, __assert_equal_private_os.str());                  \
 }
 
 #define RUN_TEST(tr, func)        \
