@@ -5,7 +5,7 @@
 using namespace std;
 
 //Оптимизируйте эту функцию
-bool Compare(Student first, Student second) {
+bool Compare(const Student& first, const Student& second) {
     return first.Less(second);
 }
 
@@ -33,7 +33,12 @@ void TestComparison() {
         },
         10.0
     };
-    ASSERT(Compare(guru, newbie));
+    // !!!
+    {
+        LOG_DURATION("First Compare()")
+        ASSERT(Compare(guru, newbie));
+    }
+
     ASSERT(Compare(guru, cpp_expert));
     ASSERT(!Compare(newbie, cpp_expert));
 }
@@ -46,7 +51,10 @@ void TestSorting() {
         {"Petr", "Petrov", {{"maths", 3.}}, 3.},
         {"Alexander", "Alexandrov", {{"maths", 1.}}, 1.}
     };
-    sort(students.begin(), students.end(), Compare);
+    {
+        LOG_DURATION("sort(begin, end, Compare)")
+        sort(students.begin(), students.end(), Compare);
+    }
     ASSERT(is_sorted(students.begin(), students.end(),
         [](Student first, Student second) {
             return first.Less(second);
