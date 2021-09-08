@@ -19,6 +19,7 @@
 #include <iostream>
 #include <sstream>
 #include <iomanip>
+#include <fstream>
 
 //----------------EXCEPTIONS
 #include <exception>
