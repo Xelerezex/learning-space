@@ -33,7 +33,7 @@ multiple choice questions that you usually find in MOOCs.
 #### Courses:
 | № | name |  github | language | sertificate | done |
 | :--- | :--- | :---: | :---: | :---: | :---: |
-| 1 | [Algorithmic Toolbox](https://www.coursera.org/learn/algorithmic-toolbox?specialization=data-structures-algorithms) | [github]() | [<img src="https://github.com/Xelerezex/account-decoration/blob/main/cpp-logo.png" width="25" />](https://en.cppreference.com/w/) | [sertificate]() | ❌ |
+| 1 | [Algorithmic Toolbox](https://www.coursera.org/learn/algorithmic-toolbox?specialization=data-structures-algorithms) | [github](https://github.com/Xelerezex/learning-space/tree/learning-space/coursera-courses/specialization-algorithms-data-structures/01-algorithmic-toolbox) | [<img src="https://github.com/Xelerezex/account-decoration/blob/main/cpp-logo.png" width="25" />](https://en.cppreference.com/w/) | [sertificate]() | ❌ |
 | 2 | [Data Structures](https://www.coursera.org/learn/data-structures?specialization=data-structures-algorithms) | []() | [<img src="https://github.com/Xelerezex/account-decoration/blob/main/cpp-logo.png" width="25" />](https://en.cppreference.com/w/) | []() | ❌ |
 | 3 | [Algorithms on Graphs](https://www.coursera.org/learn/algorithms-on-graphs?specialization=data-structures-algorithms) | []() | [<img src="https://github.com/Xelerezex/account-decoration/blob/main/cpp-logo.png" width="25" />](https://en.cppreference.com/w/) | []() | ❌ |
 | 4 | [Algorithms on Strings](https://www.coursera.org/learn/algorithms-on-strings?specialization=data-structures-algorithms) | []() | [<img src="https://github.com/Xelerezex/account-decoration/blob/main/cpp-logo.png" width="25" />](https://en.cppreference.com/w/) | []() | ❌ |
