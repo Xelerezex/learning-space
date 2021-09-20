@@ -16,11 +16,11 @@ computational problems, designing new algorithms, and implementing solutions eff
 | How To Pass | Pass all graded assignments to complete the course. |
 | User Ratings | Average User Rating 4.6 [See what learners said](https://www.coursera.org/specializations/data-structures-algorithms#ratings)|
 
-* WEEK 1 ---> [Open](/week-1)
-* WEEK 2 ---> [Open](/week-2)
-* WEEK 3 ---> [Open](/week-3)
-* WEEK 4 ---> [Open](/week-4)
-* WEEK 5 ---> [Open](/week-5)
-* WEEK 6 ---> [Open](/week-6)
+* WEEK 1 ---> [Open](https://github.com/Xelerezex/learning-space/tree/learning-space/coursera-courses/specialization-algorithms-data-structures/01-algorithmic-toolbox/week-1)
+* WEEK 2 ---> [Open](https://github.com/Xelerezex/learning-space/tree/learning-space/coursera-courses/specialization-algorithms-data-structures/01-algorithmic-toolbox/week-2)
+* WEEK 3 ---> [Open](https://github.com/Xelerezex/learning-space/tree/learning-space/coursera-courses/specialization-algorithms-data-structures/01-algorithmic-toolbox/week-3)
+* WEEK 4 ---> [Open](https://github.com/Xelerezex/learning-space/tree/learning-space/coursera-courses/specialization-algorithms-data-structures/01-algorithmic-toolbox/week-4)
+* WEEK 5 ---> [Open](https://github.com/Xelerezex/learning-space/tree/learning-space/coursera-courses/specialization-algorithms-data-structures/01-algorithmic-toolbox/week-5)
+* WEEK 6 ---> [Open](https://github.com/Xelerezex/learning-space/tree/learning-space/coursera-courses/specialization-algorithms-data-structures/01-algorithmic-toolbox/week-6)
 
-[(????)]()
+[Data Structures (????)]()
