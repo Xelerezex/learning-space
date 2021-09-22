@@ -1,3 +1,4 @@
+# For Python
 __pycache__/
 .ipynb_checkpoints/
 
@@ -12,3 +13,5 @@ __pycache__/
 
 # Unignore all dirs
 !*/
+!Makefile
+!Makefile-*
