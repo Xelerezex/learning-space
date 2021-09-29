@@ -12,15 +12,36 @@ using namespace std;
 template <class T>
 class ObjectPool {
     public:
-        T* Allocate();
-        T* TryAllocate();
+        T* Allocate() {
+            if (released.empty()) {
+                T* pNewObj = new T;
+                allocated.push(pNewObj);
+                return pNewObj;
+            } else {
+                T* pNewObj = new T(*released.front());
+                released.pop();
+                allocated.push(pNewObj);
+                return pNewObj;
+            }
+        }
+
+        T* TryAllocate() {
+            if (released.empty()) {
+                T* pNewObj = new T;
+                allocated.push(pNewObj);
+                return pNewObj;
+            } else {
+                return nullptr;
+            }
+        }
 
         void Deallocate(T* object);
 
         ~ObjectPool();
 
     private:
-        // Добавьте сюда поля
+        queue<T*> allocated;
+        queue<T*> released;
 };
 
 
