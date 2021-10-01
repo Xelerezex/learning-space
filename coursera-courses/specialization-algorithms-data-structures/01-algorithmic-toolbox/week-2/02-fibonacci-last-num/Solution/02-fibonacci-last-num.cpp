@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
 
-int Fibonacci(int number) {
+int FibLastNum(int number) {
     std::vector<int> output;
     output.push_back(0);
     output.push_back(1);
@@ -17,5 +17,5 @@ int Fibonacci(int number) {
 int main() {
     int number = 0;
     std::cin >> number;
-    std::cout << Fibonacci(number) << '\n';
+    std::cout << FibLastNum(number) << '\n';
 }
