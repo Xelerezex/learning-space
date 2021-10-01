@@ -5,7 +5,7 @@ CC = g++
 CPPFLAGS = -std=c++17 -ggdb3 -pipe -O2 -Wall -Werror
 
 # COMPILED FILE NAME
-CMPFILENAME = 02-fibonacci-last-num
+CMPFILENAME = 03-gcd
 
 # EXECUTABLE FILE NAME
 EXENAME = output
