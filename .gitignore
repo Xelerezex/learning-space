@@ -9,7 +9,10 @@ __pycache__/
 # Unignore all with extensions
 !*.*
 
+
+# Ignore all object & output files
 *.out
+*.o
 
 # Unignore all dirs
 !*/
