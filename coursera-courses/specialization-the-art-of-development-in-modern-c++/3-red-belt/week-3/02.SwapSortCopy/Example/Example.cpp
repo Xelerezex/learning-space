@@ -44,3 +44,24 @@ void ReversedCopy(T* source, size_t count, T* destination) {
         reverse(source_begin, dest_end);
     }
 }
+
+template <typename T>
+void ReversedCopy_2(T* source, size_t count, T* destination) {
+    auto source_begin = source;
+    auto source_end = source + count;
+    auto dest_begin = destination;
+
+    for (size_t i = 0; i < count; i++) {
+        T* source_curr = source_end - i - 1;
+        T* dest_curr = dest_begin + i;
+
+        // Не пересекающаяся часть диапазонов — смело "копируем" элемент на
+        // требуемую позицию
+        if (dest_curr < source_begin || dest_curr >= source_end) {
+            *dest_curr = *source_curr;
+            // Пересекающаяся часть диапазонов — разворачиваем её до/относительно центра
+        } else if (dest_curr < source_curr) {
+            Swap(source_curr, dest_curr);
+        }
+    }
+}
