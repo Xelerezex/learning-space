@@ -11,15 +11,37 @@ public:
         Node* next = nullptr;
     };
 
-    ~LinkedList();
+    void PushFront(const T& value) {
+        if (head == nullptr) {
+            head = new Node;
+            head->value = value;
+            head->next  = nullptr;
+            cerr << "head == nullptr" << endl;
+        } else {
+            Node* newNode = new Node;
+            // head->next = newNode;
 
-    void PushFront(const T& value);
+            newNode->value = value;
+            newNode->next  = head;
+
+            head = newNode;
+
+            cerr << "else" << endl;
+        }
+    }
+
+/*
     void InsertAfter(Node* node, const T& value);
     void RemoveAfter(Node* node);
     void PopFront();
+*/
 
     Node* GetHead() { return head; }
     const Node* GetHead() const { return head; }
+
+    ~LinkedList() {
+
+    }
 
 private:
     Node* head = nullptr;
@@ -34,13 +56,16 @@ vector<T> ToVector(const LinkedList<T>& list) {
     return result;
 }
 
+
 void TestPushFront() {
     LinkedList<int> list;
 
     list.PushFront(1);
     ASSERT_EQUAL(list.GetHead()->value, 1);
+
     list.PushFront(2);
     ASSERT_EQUAL(list.GetHead()->value, 2);
+
     list.PushFront(3);
     ASSERT_EQUAL(list.GetHead()->value, 3);
 
@@ -48,6 +73,7 @@ void TestPushFront() {
     ASSERT_EQUAL(ToVector(list), expected);
 }
 
+/*
 void TestInsertAfter() {
     LinkedList<string> list;
 
@@ -64,7 +90,8 @@ void TestInsertAfter() {
     const vector<string> expected2 = {"a", "c", "b"};
     ASSERT_EQUAL(ToVector(list), expected2);
 }
-
+*/
+/*
 void TestRemoveAfter() {
     LinkedList<int> list;
     for (int i = 1; i <= 5; ++i) {
@@ -86,7 +113,8 @@ void TestRemoveAfter() {
     }
     ASSERT_EQUAL(list.GetHead()->value, 5);
 }
-
+*/
+/*
 void TestPopFront() {
     LinkedList<int> list;
 
@@ -98,12 +126,15 @@ void TestPopFront() {
     }
     ASSERT(list.GetHead() == nullptr);
 }
+*/
 
 int main() {
     TestRunner tr;
     RUN_TEST(tr, TestPushFront);
+    /*
     RUN_TEST(tr, TestInsertAfter);
     RUN_TEST(tr, TestRemoveAfter);
     RUN_TEST(tr, TestPopFront);
+    */
     return 0;
 }
