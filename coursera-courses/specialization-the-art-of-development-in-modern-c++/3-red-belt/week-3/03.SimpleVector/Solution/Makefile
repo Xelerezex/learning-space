@@ -7,6 +7,10 @@ CPPFLAGS = -std=c++17 -ggdb3 -pipe -O2 -Wall -Werror
 # COMPILED FILE NAME
 CMPFILENAME = simple_vector
 
+CMPTESTRUNH = test_runner
+CMPPROFILEH = test_runner
+
+
 # EXECUTABLE FILE NAME
 EXENAME = output
 
@@ -18,7 +22,7 @@ input: $(CMPFILENAME)
 $(CMPFILENAME): $(CMPFILENAME).o
 	$(CC) $(CPPFLAGS) $(CMPFILENAME).o -o $(EXENAME)
 
-$(CMPFILENAME).o: $(CMPFILENAME).cpp
+$(CMPFILENAME).o: $(CMPFILENAME).cpp $(CMPFILENAME).h $(CMPTESTRUNH).h $(CMPPROFILEH).h
 	$(CC) -c $(CPPFLAGS) $(CMPFILENAME).cpp
 
 clean:
