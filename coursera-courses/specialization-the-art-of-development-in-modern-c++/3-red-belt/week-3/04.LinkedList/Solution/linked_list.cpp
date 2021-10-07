@@ -3,6 +3,7 @@
 #include <vector>
 using namespace std;
 
+
 template <typename T>
 class LinkedList {
 public:
@@ -12,40 +13,80 @@ public:
     };
 
     void PushFront(const T& value) {
-        if (head == nullptr) {
-            head = new Node;
-            head->value = value;
-            head->next  = nullptr;
-            cerr << "head == nullptr" << endl;
+        Node* newNode = new Node;
+        newNode->value = value;
+        newNode->next  = head;
+        head = newNode;
+    }
+
+
+    void InsertAfter(Node* node, const T& value) {
+        if (node == nullptr) {
+            PushFront(value);
+        } else if (node->next == nullptr) {
+            Node* newNode = new Node;
+            newNode->value = value;
+            newNode->next  = nullptr;
+            node->next = newNode;
         } else {
             Node* newNode = new Node;
-            // head->next = newNode;
-
             newNode->value = value;
-            newNode->next  = head;
-
-            head = newNode;
-
-            cerr << "else" << endl;
+            newNode->next  = node->next;
+            node->next = newNode;
         }
     }
 
-/*
-    void InsertAfter(Node* node, const T& value);
-    void RemoveAfter(Node* node);
-    void PopFront();
-*/
+
+    void PopFront() {
+        if (head != nullptr) {
+            auto forDel = head;
+            head = head->next;
+            delete forDel;
+            forDel = nullptr;
+        }
+    }
+
+
+    void RemoveAfter(Node* node) {
+        if (node == nullptr) {
+            PopFront();
+        } else if (node->next == nullptr) {
+            return;
+        } else {
+            auto deleted = node->next;
+            node->next = (node->next)->next;
+            delete deleted;
+            deleted = nullptr;
+        }
+    }
+
 
     Node* GetHead() { return head; }
     const Node* GetHead() const { return head; }
 
     ~LinkedList() {
+        // auto == LinkedList<int>::Node *
+        for (auto node = head; node;) {
 
+            node = node->next;
+            delete head;
+            head = node;
+
+            if (head == nullptr) {
+                delete node;
+                node = nullptr;
+            }
+        }
+        delete head;
+        head = nullptr;
     }
 
 private:
     Node* head = nullptr;
 };
+
+template <class L>
+ostream& operator << (ostream& os, LinkedList <L>& l);
 
 template <typename T>
 vector<T> ToVector(const LinkedList<T>& list) {
@@ -69,15 +110,20 @@ void TestPushFront() {
     list.PushFront(3);
     ASSERT_EQUAL(list.GetHead()->value, 3);
 
-    const vector<int> expected = {3, 2, 1};
+    list.PushFront(4);
+    ASSERT_EQUAL(list.GetHead()->value, 4);
+
+    const vector<int> expected = {4, 3, 2, 1};
     ASSERT_EQUAL(ToVector(list), expected);
+
+    cerr << list << endl;
 }
 
-/*
+
 void TestInsertAfter() {
     LinkedList<string> list;
 
-    list.PushFront("a");
+    list.InsertAfter(nullptr, "a");
     auto head = list.GetHead();
     ASSERT(head);
     ASSERT_EQUAL(head->value, "a");
@@ -89,9 +135,14 @@ void TestInsertAfter() {
     list.InsertAfter(head, "c");
     const vector<string> expected2 = {"a", "c", "b"};
     ASSERT_EQUAL(ToVector(list), expected2);
+
+    auto last = (list.GetHead()->next)->next;
+    list.InsertAfter(last, "Z");
+    const vector<string> expected3 = {"a", "c", "b", "Z"};
+    ASSERT_EQUAL(ToVector(list), expected3);
 }
-*/
-/*
+
+
 void TestRemoveAfter() {
     LinkedList<int> list;
     for (int i = 1; i <= 5; ++i) {
@@ -113,10 +164,12 @@ void TestRemoveAfter() {
     }
     ASSERT_EQUAL(list.GetHead()->value, 5);
 }
-*/
-/*
+
+
 void TestPopFront() {
     LinkedList<int> list;
+
+    list.PopFront();
 
     for (int i = 1; i <= 5; ++i) {
         list.PushFront(i);
@@ -126,15 +179,24 @@ void TestPopFront() {
     }
     ASSERT(list.GetHead() == nullptr);
 }
-*/
+
 
 int main() {
     TestRunner tr;
     RUN_TEST(tr, TestPushFront);
-    /*
     RUN_TEST(tr, TestInsertAfter);
     RUN_TEST(tr, TestRemoveAfter);
     RUN_TEST(tr, TestPopFront);
-    */
+
     return 0;
+}
+
+
+//-------------FOR-LINKED-LIST
+template <class L>
+ostream& operator << (ostream& os, LinkedList <L>& l) {
+    for (auto node = l.GetHead(); node; node = node->next) {
+        os << node->next << " : " << node->value << "; ";
+    }
+    return os;
 }
