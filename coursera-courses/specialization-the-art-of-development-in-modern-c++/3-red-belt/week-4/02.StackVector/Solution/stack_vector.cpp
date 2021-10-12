@@ -31,6 +31,16 @@ void TestPushBack() {
         v.PushBack(i);
     }
 
+    for (size_t i = 0; i < v.Capacity(); ++i) {
+        if (i == 0) {
+            cerr << "[" << v[i] << ", ";
+        } else if( i == (v.Capacity() - 1)) {
+            cerr << v[i] << "]";
+        } else {
+            cerr << v[i] << ", ";
+        }
+    } cerr << endl;
+
     try {
         v.PushBack(0);
         Assert(false, "Expect overflow_error for PushBack in full vector");
