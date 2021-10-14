@@ -113,6 +113,24 @@ ostream& operator << (ostream& os,const map <K, V>& m) {
     return os <<"}";
 }
 
+//-------------FOR-MAP-FUNC
+template <class K, class V, class F>
+ostream& operator << (ostream& os,const map <K, V, F>& m) {
+    os <<"{";
+    bool first = true;
+
+    for(const auto& kv : m) {
+        if (!first) {
+            os << ", ";
+        }
+
+        first = false;
+        os << kv.first << ": " << kv.second;
+
+    }
+    return os <<"}.";
+}
+
 
 //-------------FOR-VECTOR
 template <class L>
