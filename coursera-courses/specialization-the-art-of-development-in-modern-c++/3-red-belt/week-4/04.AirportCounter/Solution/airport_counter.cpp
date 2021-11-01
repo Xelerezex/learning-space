@@ -7,6 +7,7 @@
 #include <random>
 #include <vector>
 
+
 using namespace std;
 
 // TAirport should be enum with sequential items and last item TAirport::Last_
@@ -14,43 +15,62 @@ template <typename TAirport>
 class AirportCounter {
 public:
     // конструктор по умолчанию: список элементов пока пуст
-    AirportCounter();
+    AirportCounter() = default;
 
     // конструктор от диапазона элементов типа TAirport
     template <typename TIterator>
-    AirportCounter(TIterator begin, TIterator end);
+    AirportCounter(TIterator begin, TIterator end) {
+        for (auto it = 0; it < Data.size(); ++it) {
+            Data[it] = make_pair(static_cast<TAirport>(it), 0);
+        }
+
+        for (auto it = begin; it != end; ++it) {
+            Data[static_cast<int>(*it)].second += 1;
+        }
+
+    }
 
     // получить количество элементов, равных данному
-    size_t Get(TAirport airport) const;
+    size_t Get(TAirport airport) const {
+        return Data[static_cast<int>(airport)].second;
+    }
 
     // добавить данный элемент
-    void Insert(TAirport airport);
+    void Insert(TAirport airport) {
+        Data[static_cast<int>(airport)].second += 1;
+    }
 
     // удалить одно вхождение данного элемента
-    void EraseOne(TAirport airport);
+    void EraseOne(TAirport airport) {
+        Data[static_cast<int>(airport)].second -= 1;
+    }
 
     // удалить все вхождения данного элемента
-    void EraseAll(TAirport airport);
+    void EraseAll(TAirport airport) {
+        Data[static_cast<int>(airport)].second = 0;
+    }
 
-    using Item = pair<TAirport, size_t>;
-    using Items = /* ??? */;
+    using Item  = pair<TAirport, size_t>;
+    using Items = array<Item, static_cast<int>(TAirport::Last_)>;
 
     // получить некоторый объект, по которому можно проитерироваться,
     // получив набор объектов типа Item - пар (аэропорт, количество),
     // упорядоченных по аэропорту
-    Items GetItems() const;
+    Items GetItems() const {
+        return Data;
+    }
 
 private:
-    // ???
+    Items Data;
 };
 
 void TestMoscow() {
     enum class MoscowAirport {
-        VKO,
-        SVO,
-        DME,
-        ZIA,
-        Last_
+        VKO,        // 0
+        SVO,        // 1
+        DME,        // 2
+        ZIA,        // 3
+        Last_       // 4 - Factical number of Airports : {VKO, SVO, DME, ZIA}
     };
 
     const vector<MoscowAirport> airports = {
@@ -73,6 +93,7 @@ void TestMoscow() {
     }
     ASSERT_EQUAL(items.size(), 4);
 
+
 #define ASSERT_EQUAL_ITEM(idx, expected_enum, expected_count) \
     do { \
         ASSERT_EQUAL(static_cast<size_t>(items[idx].first), static_cast<size_t>(MoscowAirport::expected_enum)); \
@@ -94,6 +115,7 @@ void TestMoscow() {
     ASSERT_EQUAL(airport_counter.Get(MoscowAirport::VKO), 0);
 }
 
+
 enum class SmallCountryAirports {
     Airport_1,
     Airport_2,
@@ -112,6 +134,7 @@ enum class SmallCountryAirports {
     Airport_15,
     Last_
 };
+
 
 void TestManyConstructions() {
     default_random_engine rnd(20180623);
@@ -139,6 +162,7 @@ enum class SmallTownAirports {
     Last_
 };
 
+
 void TestManyGetItems() {
     default_random_engine rnd(20180701);
     uniform_int_distribution<size_t> gen_airport(
@@ -161,6 +185,7 @@ void TestManyGetItems() {
     // Assert to use variable total so that compiler doesn't optimize it out
     ASSERT(total > 0);
 }
+
 
 void TestMostPopularAirport() {
     default_random_engine rnd(20180624);
@@ -213,5 +238,6 @@ int main() {
     RUN_TEST(tr, TestManyConstructions);
     RUN_TEST(tr, TestManyGetItems);
     RUN_TEST(tr, TestMostPopularAirport);
+
     return 0;
 }
