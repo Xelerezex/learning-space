@@ -5,7 +5,7 @@ CC = clang++
 CPPFLAGS = -std=c++17 -ggdb3 -pipe -O2 -Wall -Werror
 
 # COMPILED FILE NAME
-CMPFILENAME = airport_counter
+CMPFILENAME = text_editor
 
 CMPTESTRUNH = test_runner
 CMPPROFILEH = profile
