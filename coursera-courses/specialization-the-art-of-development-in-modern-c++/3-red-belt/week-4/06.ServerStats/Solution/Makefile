@@ -1,31 +1,21 @@
-# COMPILER
 CC = clang++
+CFLAGS = -std=c++17 -ggdb3 -pipe -O2 -Wall -Werror
 
-# FLAGS
-CPPFLAGS = -std=c++17 -ggdb3 -pipe -O2 -Wall -Werror
+all : execute
 
-# COMPILED FILE NAME
-CMPFILENAME = server_stats
+execute : output
+	./output
 
-CMPTESTRUNH = test_runner.h headers.h
-CMPPROFILEH = profile
+output : stats.o server_stats.o
+	$(CC) $(CFLAGS) stats.o server_stats.o -o output
 
-HFILES = stats.h http_request.h
+# Main
+server_stats.o: server_stats.cpp stats.h http_request.h
+	$(CC) -c $(CFLAGS) server_stats.cpp
 
-# EXECUTABLE FILE NAME
-EXENAME = output
+stats.o: stats.cpp stats.h http_request.h test_runner.h profile.h
+	$(CC) -c  $(CFLAGS) stats.cpp
 
-all: input
 
-input: $(CMPFILENAME)
-	./$(EXENAME)
-
-$(CMPFILENAME): $(CMPFILENAME).o
-	$(CC) $(CPPFLAGS) $(CMPFILENAME).o -o $(EXENAME)
-
-# PATTERN: file.o: file.cpp  file.h other_header.h
-$(CMPFILENAME).o: $(CMPFILENAME).cpp $(HFILES) $(CMPTESTRUNH) $(CMPPROFILEH).h
-	$(CC) -c $(CPPFLAGS) $(CMPFILENAME).cpp
-
-clear:
-	rm -rf *o && rm -rf $(EXENAME)
+clear :
+	rm -rf *o && rm -rf output

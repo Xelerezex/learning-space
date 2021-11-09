@@ -1,6 +1,7 @@
 #include "http_request.h"
 #include "stats.h"
 
+#include <string_view>
 
 using namespace std;
 
