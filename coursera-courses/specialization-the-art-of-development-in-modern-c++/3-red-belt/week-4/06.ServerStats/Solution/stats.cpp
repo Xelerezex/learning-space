@@ -20,7 +20,22 @@ const map<string_view, int>& Stats::GetUriStats() const {
 }
 
 HttpRequest ParseRequest(string_view line) {
-    string str1 = "123";
-    HttpRequest output = {str1, str1, str1};
+    string str {""};
+    HttpRequest output;
+
+    line.remove_prefix(line.find_first_not_of(' '));
+
+    output.method = line.substr(0, line.find('/'));
+    auto end_method = output.method.size() - output.method.find(' ');
+    output.method.remove_suffix(end_method);
+
+    line.remove_prefix(output.method.size() - output.method.find(' '));
+
+    output.uri = line.substr(0, line.find(' '));
+    line.remove_prefix(line.find_first_of(' '));
+
+    line.remove_prefix(line.find_first_not_of(' '));
+    output.protocol = line.substr(0, line.npos);
+
     return output;
 }
