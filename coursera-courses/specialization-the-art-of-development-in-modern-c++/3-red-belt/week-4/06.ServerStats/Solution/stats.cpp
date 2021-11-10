@@ -1,12 +1,54 @@
 #include "stats.h"
 
+Stats::Stats() :
+    Methods(
+        {
+            {"GET", 0},
+            {"POST", 0},
+            {"PUT", 0},
+            {"DELETE", 0},
+            {"UNKNOWN", 0}
+        }
+    ),
+    Uris(
+        {
+            {"/", 0},
+            {"/order", 0},
+            {"/product", 0},
+            {"/basket", 0},
+            {"/help", 0},
+            {"unknown", 0}
+        }
+    ){}
 
 void Stats::AddMethod(string_view method) {
-
+    if (method == "GET") {
+        Methods[method] += 1;
+    } else if (method == "POST") {
+        Methods[method] += 1;
+    } else if (method == "PUT") {
+        Methods[method] += 1;
+    } else if (method == "DELETE") {
+        Methods[method] += 1;
+    } else {
+        Methods["UNKNOWN"] += 1;
+    }
 }
 
 void Stats::AddUri(string_view uri) {
-
+    if (uri == "/") {
+        Uris[uri] += 1;
+    } else if (uri == "/order") {
+        Uris[uri] += 1;
+    } else if (uri == "/product") {
+        Uris[uri] += 1;
+    } else if (uri == "/basket") {
+        Uris[uri] += 1;
+    } else if (uri == "/help") {
+        Uris[uri] += 1;
+    } else {
+        Uris["unknown"] += 1;
+    }
 }
 
 const map<string_view, int>& Stats::GetMethodStats() const {

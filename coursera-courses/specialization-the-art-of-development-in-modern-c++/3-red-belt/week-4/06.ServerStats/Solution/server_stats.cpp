@@ -1,15 +1,15 @@
+#include "test_runner.h"
 #include "http_request.h"
 #include "stats.h"
 
+#include <map>
 #include <string_view>
-
 using namespace std;
 
 Stats ServeRequests(istream& input) {
     Stats result;
     for (string line; getline(input, line); ) {
         const HttpRequest req = ParseRequest(line);
-        cerr << "{" << req.method << ", " << req.uri << ", " << req.protocol << "}" << endl;
         result.AddUri(req.uri);
         result.AddMethod(req.method);
     }
