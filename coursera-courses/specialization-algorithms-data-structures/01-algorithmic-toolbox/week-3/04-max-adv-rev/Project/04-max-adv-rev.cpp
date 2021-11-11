@@ -1,10 +1,21 @@
 #include "test_runner.h"
 #include "profile.h"
+#include "random_generate.h"
 
-long long max_dot_product(vector<int> a, vector<int> b) {
-  long long result = 0;
+int64_t max_dot_product(vector<int64_t> first, vector<int64_t> second) {    // ~ O(3·N·log(N)) -> O(N·log(N))
+    if (first.size() != second.size()) {
+        return -1;
+    }
+    int64_t result = 0;
 
-  return result;
+    sort(first.begin(), first.end());           // O(N·log(N))
+    sort(second.begin(), second.end());         // O(N·log(N))
+
+    for (size_t it = 0; it < first.size(); ++it) {  // O(N)
+        result += (first[it] * second[it]);
+    }
+
+    return result;
 }
 
 int main() {
@@ -31,7 +42,10 @@ int main() {
         ASSERT_EQUAL(max_dot_product(first, second), 23);
     }
     {
-        LOG_DURATION("Max value Test: (Create after prog. works)");
-        ASSERT_EQUAL(1, -1);
+        vector<int> first = generate_random_vector(1'000, -100'000, 100'000, 42);
+        vector<int> second = generate_random_vector(1'000, -100'000, 100'000, 69);
+
+        LOG_DURATION("Max value Test:");
+        ASSERT_EQUAL(max_dot_product(first, second), 178754324962);
     }
 }
