@@ -5,15 +5,20 @@
 #include <numeric>
 #include <vector>
 #include <iostream>
+#include <utility>
 
 using namespace std;
 
 template <typename RandomIt>
 void MakeJosephusPermutation(RandomIt first, RandomIt last, uint32_t step_size) {
-    vector<typename RandomIt::value_type> pool(first, last);
+    vector<typename RandomIt::value_type> pool;
+    for (auto it = first; it != last; ++it) {
+        pool.push_back(move(*it));
+    }
+
     size_t cur_pos = 0;
     while (!pool.empty()) {
-        *(first++) = pool[cur_pos];
+        *(first++) = move(pool[cur_pos]);
         pool.erase(pool.begin() + cur_pos);
         if (pool.empty()) {
             break;
@@ -29,14 +34,13 @@ vector<int> MakeTestVector() {
 }
 
 void TestIntVector() {
-    const vector<int> numbers = MakeTestVector();
     {
-        vector<int> numbers_copy = numbers;
+        vector<int> numbers_copy = MakeTestVector();
         MakeJosephusPermutation(begin(numbers_copy), end(numbers_copy), 1);
-        ASSERT_EQUAL(numbers_copy, numbers);
+        ASSERT_EQUAL(numbers_copy, MakeTestVector());
     }
     {
-        vector<int> numbers_copy = numbers;
+        vector<int> numbers_copy = MakeTestVector();
         MakeJosephusPermutation(begin(numbers_copy), end(numbers_copy), 3);
         ASSERT_EQUAL(numbers_copy, vector<int>({0, 3, 6, 9, 4, 8, 5, 2, 7, 1}));
     }
