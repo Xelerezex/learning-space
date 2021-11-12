@@ -18,6 +18,9 @@ ostream& operator << (ostream& os, const deque <D>& d);
 template<class T, class U>
 void AssertEqual(const T& t, const U& u, const string& hint = {});
 
+template <class FP, class SP>
+ostream& operator << (ostream& os, const pair<FP, SP>& pair);
+
 inline void Assert(bool b, const string& hint);
 //----------------------------------------------------------------------------------------------//
 
@@ -149,6 +152,12 @@ ostream& operator << (ostream& os, const deque <D>& d) {
     }
 
     return os << "]";
+}
+
+//-------------FOR-PAIR
+template <class FP, class SP>
+ostream& operator << (ostream& os, const pair<FP, SP>& pair) {
+    return os << "[" << pair.first << ", " << pair.second << "]";
 }
 //----------------------------------------------------------------------------------------------//
 
