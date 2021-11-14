@@ -5,7 +5,20 @@ using std::vector;
 
 vector<int> optimal_summands(int n) {
     vector<int> summands;
-    //write your code here
+
+    int diff = 0,
+        number = 1;
+
+    while (diff < n) {
+        if (diff + number <= n) {
+            summands.push_back(number);
+            diff += number;
+        } else {
+            summands[summands.size() - 1] += n - diff;
+            break;
+        }
+        ++number;
+    }
     return summands;
 }
 
