@@ -6,24 +6,26 @@
 #include <vector>
 #include <iostream>
 #include <utility>
+#include <list>
 
 using namespace std;
 
 template <typename RandomIt>
 void MakeJosephusPermutation(RandomIt first, RandomIt last, uint32_t step_size) {
-    vector<typename RandomIt::value_type> pool;
-    for (auto it = first; it != last; ++it) {
-        pool.push_back(move(*it));
-    }
+    list<typename RandomIt::value_type> pool(make_move_iterator(first), make_move_iterator(last));
 
-    size_t cur_pos = 0;
+    size_t count = 0;
     while (!pool.empty()) {
-        *(first++) = move(pool[cur_pos]);
-        pool.erase(pool.begin() + cur_pos);
-        if (pool.empty()) {
-            break;
+        for (auto it = pool.begin(); it != pool.end();) {
+            if (count <= 1) {
+                *(first++) = move(*it);
+                it = pool.erase(it);
+                count = step_size;
+            } else {
+                ++it;
+                --count;
+            }
         }
-        cur_pos = (cur_pos + step_size - 1) % pool.size();
     }
 }
 
@@ -74,8 +76,8 @@ ostream& operator << (ostream& os, const NoncopyableInt& v) {
 
 void TestAvoidsCopying() {
     vector<NoncopyableInt> numbers;
-    numbers.push_back({1});
-    numbers.push_back({2});
+    numbers.push_back({1});         // 1 2 3 4 5
+    numbers.push_back({2});         // 1 3 5 4 2
     numbers.push_back({3});
     numbers.push_back({4});
     numbers.push_back({5});
