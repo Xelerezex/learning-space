@@ -5,7 +5,7 @@ CC = clang++
 CPPFLAGS = -std=c++17 -ggdb3 -pipe -O2 -Wall -Werror
 
 # COMPILED FILE NAME
-CMPFILENAME = josephus_permutation
+CMPFILENAME = group_heavy_strings
 
 CMPTESTRUNH = test_runner
 CMPPROFILEH = profile
