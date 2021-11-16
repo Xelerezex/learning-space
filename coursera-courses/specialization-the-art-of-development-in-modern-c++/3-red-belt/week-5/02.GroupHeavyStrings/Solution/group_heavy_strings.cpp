@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <string>
 #include <vector>
+#include <deque>
 
 using namespace std;
 
@@ -20,10 +21,32 @@ using Group = vector<String>;
 template <typename String>
 using Char = typename String::value_type;
 
+
+template <typename String>
+String GetGroups(String string) {
+    sort(string.begin(), string.end());
+    auto last = unique(string.begin(), string.end());
+    string.erase(last, string.end());
+    return string;
+}
+
+// Напишите реализацию функции,
+// использовав не более 1 копирования каждого символа
 template <typename String>
 vector<Group<String>> GroupHeavyStrings(vector<String> strings) {
-    // Напишите реализацию функции,
-    // использовав не более 1 копирования каждого символа
+    map<String, vector<String>> Groups;
+    vector<Group<String>> Data;
+
+    for (auto &string : strings) {
+        Groups[GetGroups(string)].push_back(move(string));
+    }
+    // cerr << Groups << endl;
+
+    for (auto &group : Groups) {
+        Data.push_back(move(group.second));
+    }
+
+    return Data;
 }
 
 
