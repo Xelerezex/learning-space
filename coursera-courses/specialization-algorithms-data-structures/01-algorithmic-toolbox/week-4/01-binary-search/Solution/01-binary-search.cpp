@@ -10,13 +10,13 @@ RandomIt my_binary_search(RandomIt first, RandomIt last, Value element) {
 
     while (first != last) {
         RandomIt middle = first + ((last - first) / 2);
-
-        if (element == *middle) {
-            return middle;
-        } else if (element < *middle) {
-            last = --middle;
+        //cerr << *middle << endl;
+        if (element < *middle) {
+            last = middle;
         } else if (element > *middle) {
             first = ++middle;
+        } else {
+            return middle;
         }
     }
 
@@ -30,7 +30,9 @@ vector<int> bunch_of_search(const vector<int> data, const vector<int> &to_find) 
         if (my_binary_search(data.begin(), data.end(), element) == data.end()) {
             temporary.push_back(-1);
         } else {
-            temporary.push_back(*my_binary_search(data.begin(), data.end(), element));
+            temporary.push_back(distance(data.begin(),
+                                         my_binary_search(data.begin(), data.end(), element))
+                                );
         }
     }
     return temporary;
