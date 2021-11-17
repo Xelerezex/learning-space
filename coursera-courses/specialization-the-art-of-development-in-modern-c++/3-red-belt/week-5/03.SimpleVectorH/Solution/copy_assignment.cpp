@@ -20,7 +20,9 @@ void TestCopyAssignment() {
     ASSERT(equal(dest.begin(), dest.end(), numbers.begin()));
 }
 
+
 int main() {
     TestRunner tr;
+
     RUN_TEST(tr, TestCopyAssignment);
 }

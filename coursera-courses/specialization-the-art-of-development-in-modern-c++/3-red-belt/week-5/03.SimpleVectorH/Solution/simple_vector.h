@@ -1,5 +1,8 @@
 #include "headers.h"
 
+// #include <iostream>
+// using namespace std;
+
 template <typename T>
 class SimpleVector {
     public:
@@ -8,6 +11,7 @@ class SimpleVector {
         SimpleVector(const SimpleVector& other);
         ~SimpleVector();
 
+        void operator=(const SimpleVector& other);
         T& operator[] (size_t index);
 
         T* begin();
@@ -45,6 +49,21 @@ SimpleVector<T>::SimpleVector(const SimpleVector<T>& other)
 template <typename T>
 SimpleVector<T>::~SimpleVector() {
     delete[] data;
+}
+
+
+template <typename T>
+void SimpleVector<T>::operator=(const SimpleVector<T>& other) {
+    if (other.size <= capacity) {
+        copy(other.begin(), other.end(), begin());
+        size = other.size;
+    } else {
+        // copy-&-swap paradigm
+        SimpleVector<T> tmp(other);     // copy constructor
+        swap(tmp.data, data);
+        swap(tmp.size, size);
+        swap(tmp.capacity, capacity);
+    }
 }
 
 template <typename T>
