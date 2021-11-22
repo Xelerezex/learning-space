@@ -1,7 +1,7 @@
 #include "test_runner.h"
 
-// #include <vector>
-// using namespace std;
+#include <vector>
+using namespace std;
 
 // Объявляем Sentence<Token> для произвольного типа Token
 // синонимом vector<Token>.
@@ -14,7 +14,28 @@ using Sentence = vector<Token>;
 // Класс Token имеет метод bool IsEndSentencePunctuation() const
 template <typename Token>
 vector<Sentence<Token>> SplitIntoSentences(vector<Token> tokens) {
-    // Напишите реализацию функции, не копируя объекты типа Token
+    auto it = tokens.begin();
+
+    size_t index = 0;
+    vector<Sentence<Token>> sentences;
+
+    sentences.push_back({});
+
+    for (auto &item : tokens) {
+        if(item.IsEndSentencePunctuation() &&
+            ( !(*next(it)).IsEndSentencePunctuation() || next(it) == tokens.end()) ) {
+            sentences[index++].push_back(move(item));
+
+            if(next(it) != tokens.end()) {
+                sentences.push_back({});
+            }
+        } else {
+            sentences[index].push_back(move(item));
+        }
+        ++it;
+    }
+
+    return sentences;
 }
 
 
