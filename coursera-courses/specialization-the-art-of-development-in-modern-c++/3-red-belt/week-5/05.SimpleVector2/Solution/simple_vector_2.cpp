@@ -1,6 +1,5 @@
 #include "simple_vector_2.h"
 #include "test_runner.h"
-#include "profile.h"
 
 #include <algorithm>
 #include <iostream>
