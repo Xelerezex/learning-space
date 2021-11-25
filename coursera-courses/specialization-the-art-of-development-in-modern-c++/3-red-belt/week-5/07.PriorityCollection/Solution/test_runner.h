@@ -15,6 +15,9 @@ ostream& operator << (ostream& os, const vector <L>& l);
 template <class D>
 ostream& operator << (ostream& os, const deque <D>& d);
 
+template <class P1, class P2>
+ostream& operator << (ostream& os, const pair <P1, P2>& p);
+
 template<class T, class U>
 void AssertEqual(const T& t, const U& u, const string& hint = {});
 
@@ -168,7 +171,16 @@ ostream& operator << (ostream& os, const deque <D>& d) {
 
     return os << "]";
 }
+
+template <class P1, class P2>
+ostream& operator << (ostream& os, const pair <P1, P2>& p) {
+    return os << "[" << p.first << ", " << p.second << "]";
+}
+
 //----------------------------------------------------------------------------------------------//
+
+
+
 
 
 //-------------------------------------------MACROS---------------------------------------------//
