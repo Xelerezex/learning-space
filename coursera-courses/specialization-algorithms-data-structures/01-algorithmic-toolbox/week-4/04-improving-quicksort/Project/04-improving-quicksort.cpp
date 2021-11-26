@@ -5,41 +5,72 @@
 using std::vector;
 using std::swap;
 
-int partition2(vector<int> &a, int l, int r) {
-  int x = a[l];
-  int j = l;
-  for (int i = l + 1; i <= r; i++) {
-    if (a[i] <= x) {
-      j++;
-      swap(a[i], a[j]);
+template<typename S>
+void Swap(S &first, S &second) {
+    S temp = first;
+    first = second;
+    second = temp;
+}
+
+template<typename P>
+int partition(vector<P> &array, int &start, int &end) {
+    int iteration = start + 1; //next element after start
+    P pivot = array[start];
+
+    for (int it = iteration; it <= end; ++it){
+        if (array[it] < pivot) {
+            Swap(array[iteration], array[it]);
+            ++iteration;
+        }
     }
-  }
-  swap(a[l], a[j]);
-  return j;
+
+    Swap(array[start], array[iteration - 1]);
+
+    return iteration - 1;
+
 }
 
-void randomized_quick_sort(vector<int> &a, int l, int r) {
-  if (l >= r) {
-    return;
-  }
 
-  int k = l + rand() % (r - l + 1);
-  swap(a[l], a[k]);
-  int m = partition2(a, l, r);
 
-  randomized_quick_sort(a, l, m - 1);
-  randomized_quick_sort(a, m + 1, r);
+template<typename T>
+void randomized_quick_sort(vector<T> &array, int start, int end) {
+    if (start < end) {
+        int random = start + rand( ) % (end - start + 1) ;
+        Swap(array[random] , array[start]);        //swap pivot with 1st element.
+
+        int pivot = partition(array, start, end);
+
+        randomized_quick_sort(array, start, (pivot - 1));
+        randomized_quick_sort(array, (pivot + 1), end);
+    }
 }
+
 
 int main() {
-  int n;
-  std::cin >> n;
-  vector<int> a(n);
-  for (size_t i = 0; i < a.size(); ++i) {
-    std::cin >> a[i];
-  }
-  randomized_quick_sort(a, 0, a.size() - 1);
-  for (size_t i = 0; i < a.size(); ++i) {
-    std::cout << a[i] << ' ';
-  }
+    {
+        std::vector<int> RandomVector = generate_data<int>(100'000'000, -100'000, 100'000);
+        //cout << RandomVector << endl;
+        std::vector<int> RandomSortedVector(begin(RandomVector), end(RandomVector));
+        sort(begin(RandomSortedVector), end(RandomSortedVector));
+
+        {
+            LOG_DURATION("Quicksort (random partial) of 100'000'000");
+            SortContainer(RandomVector, true);
+        }
+
+        ASSERT_EQUAL(RandomVector, RandomSortedVector);
+    }
+    {
+        std::vector<int> RandomVector = generate_data<int>(100'000'000, -100'000, 100'000);
+        //cout << RandomVector << endl;
+        std::vector<int> RandomSortedVector(begin(RandomVector), end(RandomVector));
+        sort(begin(RandomSortedVector), end(RandomSortedVector));       // Quicksort (random partial) of 100'000: 15722 ms
+
+        {
+            LOG_DURATION("Quicksort (first element partial) of 100'000'000");
+            SortContainer(RandomVector, false);                         // Quicksort (first element partial) of 100'000: 14790 ms
+        }
+
+        ASSERT_EQUAL(RandomVector, RandomSortedVector);
+    }
 }
