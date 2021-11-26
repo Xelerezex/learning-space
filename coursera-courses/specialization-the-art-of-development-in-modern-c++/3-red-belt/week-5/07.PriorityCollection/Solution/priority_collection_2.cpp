@@ -20,7 +20,7 @@ public:
     // Добавить объект с нулевым приоритетом
     // с помощью перемещения и вернуть его идентификатор
     Id Add(T object) { // O(log n)
-        return Data.insert({make_pair(0,id++), move(object)}).first;
+        return Data.insert({make_pair(0, id++), move(object)}).first;
     }
 
     // Добавить все элементы диапазона [range_begin, range_end)
@@ -46,9 +46,8 @@ public:
 
     // Увеличить приоритет объекта на 1
     void Promote(Id id) { // O(1)
-        // map<pair<priority, id>, object> Data;
-        int priority = move((id->first).first);
-        int identificator = move((id->first).second);
+        int priority = (id->first).first;
+        int identificator = (id->first).second;
 
         auto key_handler = Data.extract(id);
         key_handler.key() = make_pair(++priority, identificator);
@@ -58,14 +57,13 @@ public:
 
     // Получить объект с максимальным приоритетом и его приоритет
     pair<const T&, int> GetMax() const { // O(1)
-        auto last = (--Data.end());
-        //      value         priority
+        auto last = prev(Data.end());
         return {last->second, last->first.first};
     }
 
     // Аналогично GetMax, но удаляет элемент из контейнера
     pair<T, int> PopMax() { // O(1)
-        auto last = --Data.end();
+        auto last = prev(Data.end());
         auto temp = move(*last);
         Data.erase(last);
 
