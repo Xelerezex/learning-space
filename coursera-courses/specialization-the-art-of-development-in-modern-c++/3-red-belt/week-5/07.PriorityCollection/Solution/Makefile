@@ -2,7 +2,7 @@
 CC = clang++
 
 # FLAGS
-CPPFLAGS = -std=c++17 -ggdb3 -pipe -O2 -Wall -Werror
+CPPFLAGS = -std=c++17 -Og -ggdb3 -pipe -O2 -Wall -Werror
 
 # COMPILED FILE NAME
 CMPFILENAME = priority_collection_2
