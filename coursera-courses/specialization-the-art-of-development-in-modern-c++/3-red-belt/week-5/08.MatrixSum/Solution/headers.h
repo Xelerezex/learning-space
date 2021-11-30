@@ -33,6 +33,9 @@
 #include <memory>
 #include <chrono>
 
+//----------------ASYNC
+#include <future>
+
 //----------------RANDOM
 #include <random>
 
