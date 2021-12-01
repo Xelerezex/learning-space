@@ -34,6 +34,7 @@
 #include <chrono>
 
 //----------------ASYNC
+#include <functional>
 #include <future>
 
 //----------------RANDOM
