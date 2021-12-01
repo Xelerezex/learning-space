@@ -53,16 +53,6 @@ Stats ExploreLine(const std::set<std::string>& key_words, const std::string& lin
     return words;
 }
 
-Stats ExploreKeyWordsSingleThread(const std::set<std::string>& key_words, std::istream& input)
-{
-    Stats result;
-    for (std::string line; getline(input, line); )
-    {
-        result += ExploreLine(key_words, line);
-    }
-    return result;
-}
-
 Stats ExploreBatch(const std::set<std::string>& key_words, std::vector<std::string> lines)
 {
     Stats result;
@@ -77,7 +67,7 @@ Stats ExploreKeyWords(const std::set<std::string>& key_words, std::istream& inpu
 {
     Stats result;
     std::vector<std::future<Stats>> futures;
-    const size_t max_batch_size = 5000;
+    const size_t max_batch_size = 5'000;
 
     std::vector<std::string> batch;
     batch.reserve(max_batch_size);
@@ -95,8 +85,10 @@ Stats ExploreKeyWords(const std::set<std::string>& key_words, std::istream& inpu
         }
     }
 
+
     if (!batch.empty())
     {
+        cerr << batch << endl;
         result += ExploreBatch(key_words, move(batch));
     }
 
