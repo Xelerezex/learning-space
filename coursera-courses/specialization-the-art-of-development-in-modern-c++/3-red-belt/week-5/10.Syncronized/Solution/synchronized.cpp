@@ -14,23 +14,27 @@ using namespace std;
 template <typename T>
 class Synchronized {
 public:
-    explicit Synchronized(T initial = T());
+    explicit Synchronized(T initial = T()) : value(move(initial)) {};
 
     struct Access {
         T& ref_to_value;
+        lock_guard<mutex> guard;
     };
 
-    Access GetAccess();
+    Access GetAccess() {
+        return {value, lock_guard(m)};
+    }
 private:
     T value;
+    mutex m;
 };
 
 void TestConcurrentUpdate() {
     Synchronized<string> common_string;
 
-    const size_t add_count = 50000;
-    auto updater = [&common_string, add_count] {
-        for (size_t i = 0; i < add_count; ++i) {
+    // const size_t add_count = 50000;
+    auto updater = [&common_string/*, add_count*/] {
+        for (size_t i = 0; i < 50000; ++i) {
             auto access = common_string.GetAccess();
             access.ref_to_value += 'a';
         }
@@ -42,7 +46,7 @@ void TestConcurrentUpdate() {
     f1.get();
     f2.get();
 
-    ASSERT_EQUAL(common_string.GetAccess().ref_to_value.size(), 2 * add_count);
+    ASSERT_EQUAL(common_string.GetAccess().ref_to_value.size(), 2 * 50000/*add_count*/);
 }
 
 vector<int> Consume(Synchronized<deque<int>>& common_queue) {
