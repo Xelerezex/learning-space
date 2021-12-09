@@ -11,18 +11,46 @@ using namespace std;
 
 template <typename K, typename V>
 class ConcurrentMap {
-public:
-    static_assert(is_integral_v<K>, "ConcurrentMap supports only integer keys");
+    public:
+        static_assert(is_integral_v<K>, "ConcurrentMap supports only integer keys");
 
-    struct Access {
-        V& ref_to_value;
-    };
+        struct Access
+        {
+            lock_guard<mutex> guard;
+            V& ref_to_value;
+        };
 
-    explicit ConcurrentMap(size_t bucket_count);
+        explicit ConcurrentMap(size_t bucket_count)
+        {
+/*            Mutexs.reserve(bucket_count);
+            Data.reserve(bucket_count);*/
+            for (size_t it = 0; it < bucket_count; ++it)
+            {
+                mutex M;
+                Mutexs.push_back(move(M));
 
-    Access operator[](const K& key);
+                map<K, V> Bucket;
+                Data.push_back(Bucket);
+            }
+        }
 
-    map<K, V> BuildOrdinaryMap();
+        Access operator[](const K& key)
+        {
+            Data[0][key] = 1;
+            return Access{lock_guard(m), Data[0][key]};
+        }
+
+        map<K, V> BuildOrdinaryMap()
+        {
+            return Output;
+        }
+    private:
+        vector<map<K, V>> Data;
+        vector<mutex> Mutexs;
+        map<K, V> Output;
+
+        mutex m;
+        V v;
 };
 
 void RunConcurrentUpdates(
