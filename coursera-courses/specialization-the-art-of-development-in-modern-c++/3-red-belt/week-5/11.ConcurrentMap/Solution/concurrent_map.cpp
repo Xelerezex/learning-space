@@ -21,36 +21,35 @@ class ConcurrentMap {
         };
 
         explicit ConcurrentMap(size_t bucket_count)
+            : BUCKETS_COUNT(bucket_count),
+              Mutexes(bucket_count),
+              Data(bucket_count)
         {
-/*            Mutexs.reserve(bucket_count);
-            Data.reserve(bucket_count);*/
-            for (size_t it = 0; it < bucket_count; ++it)
+            for (size_t it = 0; it < BUCKETS_COUNT; ++it)
             {
-                mutex M;
-                Mutexs.push_back(move(M));
-
                 map<K, V> Bucket;
-                Data.push_back(Bucket);
+                Data[it] = move(Bucket);
             }
         }
 
         Access operator[](const K& key)
         {
-            Data[0][key] = 1;
-            return Access{lock_guard(m), Data[0][key]};
+            return Access{lock_guard(Mutexes[key % BUCKETS_COUNT]), Data[key % BUCKETS_COUNT][key]};
         }
 
         map<K, V> BuildOrdinaryMap()
         {
+            for (auto &from : Data)
+            {
+                Output.merge(from);
+            }
             return Output;
         }
     private:
+        const size_t BUCKETS_COUNT;
+        vector<mutex> Mutexes;
         vector<map<K, V>> Data;
-        vector<mutex> Mutexs;
         map<K, V> Output;
-
-        mutex m;
-        V v;
 };
 
 void RunConcurrentUpdates(
