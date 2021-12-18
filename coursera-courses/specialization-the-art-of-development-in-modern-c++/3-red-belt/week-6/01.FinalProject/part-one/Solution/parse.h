@@ -8,13 +8,15 @@
 using namespace std;
 
 template <typename Container>
-string Join(char c, const Container& cont) {
-  ostringstream os;
-  for (const auto& item : Head(cont, cont.size() - 1)) {
-    os << item << c;
-  }
-  os << *rbegin(cont);
-  return os.str();
+string Join(char c, const Container& cont)
+{
+    ostringstream os;
+    for (const auto& item : Head(cont, cont.size() - 1))
+    {
+        os << item << c;
+    }
+    os << *rbegin(cont);
+    return os.str();
 }
 
 string_view Strip(string_view s);
