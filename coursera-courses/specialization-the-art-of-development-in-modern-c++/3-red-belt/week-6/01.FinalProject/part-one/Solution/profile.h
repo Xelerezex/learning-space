@@ -4,22 +4,22 @@
 class LogDuration
 {
     public:
-        explicit LogDuration(const string& msg = "")
+        explicit LogDuration(const std::string& msg = "")
             : message(msg + ": "),
-              start(steady_clock::now())
+              start(std::chrono::steady_clock::now())
         {}
 
         ~LogDuration()
         {
-            auto finish = steady_clock::now();
+            auto finish = std::chrono::steady_clock::now();
             auto dur = finish - start;
-            cerr << message
-                 << duration_cast<milliseconds>(dur).count()
-                 << " ms" << endl;
+            std::cerr << message
+                 << std::chrono::duration_cast<std::chrono::milliseconds>(dur).count()
+                 << " ms" << std::endl;
         }
     private:
-        string message;
-        steady_clock::time_point start;
+        std::string message;
+        std::chrono::steady_clock::time_point start;
 };
 
 #define UNIQ_ID_IMPL(lineno) _a_local_var_##lineno
