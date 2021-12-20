@@ -4,37 +4,37 @@
 
 //---------------------------------IMPLEMENTATION-----------------------------------------------//
 template <class T>
-ostream& operator << (ostream& os, const set<T>& s);
+std::ostream& operator << (std::ostream& os, const std::set<T>& s);
 
 template <class K,  class V>
-ostream& operator << (ostream& os, const map<K, V>& m);
+std::ostream& operator << (std::ostream& os, const std::map<K, V>& m);
 
 template <class K, class V, class F>
-ostream& operator << (ostream& os,const map<K, V, F>& m);
+std::ostream& operator << (std::ostream& os,const std::map<K, V, F>& m);
 
 template <class L>
-ostream& operator << (ostream& os, const vector<L>& l);
+std::ostream& operator << (std::ostream& os, const std::vector<L>& l);
 
 template <class D>
-ostream& operator << (ostream& os, const deque<D>& d);
+std::ostream& operator << (std::ostream& os, const std::deque<D>& d);
 
 template <class P1, class P2>
-ostream& operator << (ostream& os, const pair<P1, P2>& p);
+std::ostream& operator << (std::ostream& os, const std::pair<P1, P2>& p);
 
 template<class T, class U>
-void AssertEqual(const T& t, const U& u, const string& hint = {});
+void AssertEqual(const T& t, const U& u, const std::string& hint = {});
 
-inline void Assert(bool b, const string& hint);
+inline void Assert(bool b, const std::string& hint);
 //----------------------------------------------------------------------------------------------//
 
 
 //----------------------------------------------------------------------------------------------//
 template<class T, class U>
-void AssertEqual(const T& t, const U& u, const string& hint)
+void AssertEqual(const T& t, const U& u, const std::string& hint)
 {
     if (!(t == u))
     {
-        ostringstream __assert_equal_private_os;
+        std::ostringstream __assert_equal_private_os;
         __assert_equal_private_os
             << "Assertion failed: "
             << t << " != " << u;
@@ -43,14 +43,14 @@ void AssertEqual(const T& t, const U& u, const string& hint)
             __assert_equal_private_os
             << " hint: " << hint;
         }
-        throw runtime_error(__assert_equal_private_os.str());
+        throw std::runtime_error(__assert_equal_private_os.str());
     }
 }
 //----------------------------------------------------------------------------------------------//
 
 
 //----------------------------------------------------------------------------------------------//
-inline void Assert(bool b, const string& hint)
+inline void Assert(bool b, const std::string& hint)
 {
     AssertEqual(b, true, hint);
 }
@@ -62,22 +62,22 @@ class TestRunner
 {
     public:
         template <class TestFunc>
-        void RunTest(TestFunc func, const string& test_name)
+        void RunTest(TestFunc func, const std::string& test_name)
         {
             try
             {
                 func();
-                cerr << test_name << " OK" << endl;
+                std::cerr << test_name << " OK" << std::endl;
             }
-            catch (exception& e)
+            catch (std::exception& e)
             {
                 ++fail_count;
-                cerr << test_name << " fail: " << e.what() << endl;
+                std::cerr << test_name << " fail: " << e.what() << std::endl;
             }
             catch (...)
             {
                 ++fail_count;
-                cerr << "Unknown exception caught" << endl;
+                std::cerr << "Unknown exception caught" << std::endl;
             }
         }
 
@@ -85,7 +85,7 @@ class TestRunner
         {
             if (fail_count > 0)
             {
-                cerr << fail_count << " unit tests failed. Terminate" << endl;
+                std::cerr << fail_count << " unit tests failed. Terminate" << std::endl;
                 exit(1);
             }
         }
@@ -97,9 +97,9 @@ class TestRunner
 
 
 //------------------------------OUTPUT-OPERATOR-FOR-CONTAINERS----------------------------------//
-//-------------FOR-SET
+//-------------FOR-STD::SET
 template <class T>
-ostream& operator << (ostream& os, const set <T>& s)
+std::ostream& operator << (std::ostream& os, const std::set <T>& s)
 {
     os << "{";
     bool first = true;
@@ -119,9 +119,9 @@ ostream& operator << (ostream& os, const set <T>& s)
 }
 
 
-//-------------FOR-MAP
+//-------------FOR-STD::MAP
 template <class K, class V>
-ostream& operator << (ostream& os,const map<K, V>& m)
+std::ostream& operator << (std::ostream& os,const std::map<K, V>& m)
 {
     os << "{";
     bool first = true;
@@ -139,9 +139,9 @@ ostream& operator << (ostream& os,const map<K, V>& m)
     return os <<"}";
 }
 
-//-------------FOR-MAP-ALOC
+//-------------FOR-STD::MAP-ALOC
 template <class K, class V, class F>
-ostream& operator << (ostream& os,const map<K, V, F>& m)
+std::ostream& operator << (std::ostream& os,const std::map<K, V, F>& m)
 {
     os << "{";
     bool first = true;
@@ -160,9 +160,9 @@ ostream& operator << (ostream& os,const map<K, V, F>& m)
 }
 
 
-//-------------FOR-VECTOR
+//-------------FOR-STD::VECTOR
 template <class L>
-ostream& operator << (ostream& os, const vector<L>& l)
+std::ostream& operator << (std::ostream& os, const std::vector<L>& l)
 {
     os << "[";
     bool first = true;
@@ -181,9 +181,9 @@ ostream& operator << (ostream& os, const vector<L>& l)
 }
 
 
-//-------------FOR-DEQUE
+//-------------FOR-STD::DEQUE
 template <class D>
-ostream& operator << (ostream& os, const deque <D>& d)
+std::ostream& operator << (std::ostream& os, const std::deque <D>& d)
 {
     os << "d[";
     bool first = true;
@@ -202,7 +202,7 @@ ostream& operator << (ostream& os, const deque <D>& d)
 }
 
 template <class P1, class P2>
-ostream& operator << (ostream& os, const pair <P1, P2>& p)
+std::ostream& operator << (std::ostream& os, const std::pair <P1, P2>& p)
 {
     return os << "[" << p.first << ", " << p.second << "]";
 }
@@ -213,7 +213,7 @@ ostream& operator << (ostream& os, const pair <P1, P2>& p)
 
 
 #define ASSERT_EQUAL(x, y) {                            \
-    ostringstream __assert_equal_private_os;            \
+    ostd::stringstream __assert_equal_private_os;            \
     __assert_equal_private_os                           \
         << #x << " != " << #y << ", "                   \
         << __FILE__ << ":" << __LINE__;                 \
@@ -221,7 +221,7 @@ ostream& operator << (ostream& os, const pair <P1, P2>& p)
 }
 
 #define ASSERT(x) {                             \
-    ostringstream __assert_equal_private_os;    \
+    ostd::stringstream __assert_equal_private_os;    \
     __assert_equal_private_os                   \
         << #x << " is false, "                  \
         << __FILE__ << ":" << __LINE__;         \
