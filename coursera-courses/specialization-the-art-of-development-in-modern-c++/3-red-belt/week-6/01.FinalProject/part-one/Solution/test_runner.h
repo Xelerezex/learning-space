@@ -213,7 +213,7 @@ std::ostream& operator << (std::ostream& os, const std::pair <P1, P2>& p)
 
 
 #define ASSERT_EQUAL(x, y) {                            \
-    ostd::stringstream __assert_equal_private_os;            \
+    std::ostringstream __assert_equal_private_os;            \
     __assert_equal_private_os                           \
         << #x << " != " << #y << ", "                   \
         << __FILE__ << ":" << __LINE__;                 \
@@ -221,7 +221,7 @@ std::ostream& operator << (std::ostream& os, const std::pair <P1, P2>& p)
 }
 
 #define ASSERT(x) {                             \
-    ostd::stringstream __assert_equal_private_os;    \
+    std::ostringstream __assert_equal_private_os;    \
     __assert_equal_private_os                   \
         << #x << " is false, "                  \
         << __FILE__ << ":" << __LINE__;         \
