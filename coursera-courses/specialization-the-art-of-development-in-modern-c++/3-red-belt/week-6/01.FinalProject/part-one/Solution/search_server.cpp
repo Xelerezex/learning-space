@@ -6,7 +6,7 @@
 #include <sstream>
 #include <iostream>
 
-vector<string> SplitIntoWords(const string& line)
+vector<string> SplitIntoWords(const string& line)                               // O(N)
 {
     istringstream words_input(line);
     return {istream_iterator<string>(words_input), istream_iterator<string>()};
@@ -74,7 +74,7 @@ void SearchServer::AddQueriesStream(
     }
 }
 
-void InvertedIndex::Add(const string& document)
+void InvertedIndex::Add(const string& document)                     // O(N)
 {
     docs.push_back(document);
 
@@ -85,7 +85,7 @@ void InvertedIndex::Add(const string& document)
     }
 }
 
-list<size_t> InvertedIndex::Lookup(const string& word) const
+list<size_t> InvertedIndex::Lookup(const string& word) const        // O(log N)
 {
     if (auto it = index.find(word); it != index.end())
     {

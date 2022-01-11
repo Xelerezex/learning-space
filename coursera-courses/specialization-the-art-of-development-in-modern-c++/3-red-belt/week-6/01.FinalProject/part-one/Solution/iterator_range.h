@@ -32,7 +32,7 @@ class IteratorRange
 };
 
 template <typename Container>
-auto Head(Container& c, int top)
+auto Head(Container& c, int top)                    // O(1)
 {
     return IteratorRange(
         begin(c),

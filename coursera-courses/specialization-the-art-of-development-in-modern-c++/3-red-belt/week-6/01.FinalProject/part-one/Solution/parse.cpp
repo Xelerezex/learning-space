@@ -1,6 +1,6 @@
 #include "parse.h"
 
-string_view Strip(string_view s)
+string_view Strip(string_view s)                           // O(1)
 {
     while (!s.empty() && isspace(s.front()))
     {
@@ -13,7 +13,7 @@ string_view Strip(string_view s)
     return s;
 }
 
-vector<string_view> SplitBy(string_view s, char sep)
+vector<string_view> SplitBy(string_view s, char sep)        // O(N)
 {
     vector<string_view> result;
     while (!s.empty())

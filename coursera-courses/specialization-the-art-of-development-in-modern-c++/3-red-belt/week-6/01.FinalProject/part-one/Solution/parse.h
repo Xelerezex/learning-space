@@ -8,7 +8,7 @@
 using namespace std;
 
 template <typename Container>
-string Join(char c, const Container& cont)
+string Join(char c, const Container& cont)              // O(N)
 {
     ostringstream os;
     for (const auto& item : Head(cont, cont.size() - 1))

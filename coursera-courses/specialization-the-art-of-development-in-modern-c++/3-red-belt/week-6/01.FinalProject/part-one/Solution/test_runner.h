@@ -18,6 +18,9 @@ std::ostream& operator << (std::ostream& os, const std::vector<L>& l);
 template <class D>
 std::ostream& operator << (std::ostream& os, const std::deque<D>& d);
 
+template <class J>
+std::ostream& operator << (std::ostream& os, const std::list<J>& j);
+
 template <class P1, class P2>
 std::ostream& operator << (std::ostream& os, const std::pair<P1, P2>& p);
 
@@ -201,6 +204,27 @@ std::ostream& operator << (std::ostream& os, const std::deque <D>& d)
     return os << "]";
 }
 
+//-------------FOR-STD::LIST
+template <class J>
+std::ostream& operator << (std::ostream& os, const std::list<J>& j)
+{
+    os << "(";
+    bool first = true;
+
+    for(const auto& i : j)
+    {
+        if (!first)
+        {
+            os << ", ";
+        }
+
+        first = false;
+        os << i;
+    }
+    return os << ")";
+}
+
+//-------------FOR-STD::PAIR
 template <class P1, class P2>
 std::ostream& operator << (std::ostream& os, const std::pair <P1, P2>& p)
 {

@@ -15,7 +15,7 @@ class InvertedIndex
         void Add(const string& document);
         list<size_t> Lookup(const string& word) const;
 
-        const string& GetDocument(size_t id) const
+        const string& GetDocument(size_t id) const          // ~O(1)
         {
             return docs[id];
         }
