@@ -1,21 +1,50 @@
 #include "search_server.h"
 #include "iterator_range.h"
 
+
 #include <algorithm>
 #include <iterator>
 #include <sstream>
 #include <iostream>
 
-vector<string> SplitIntoWords(const string& line)                               // O(N)
-{
+
+vector<string> SplitIntoWords(const string& line)
+{   // O(N)
     istringstream words_input(line);
     return {istream_iterator<string>(words_input), istream_iterator<string>()};
 }
+
+
+void InvertedIndex::Add(const string& document)
+{   // O(N)
+    docs.push_back(document);
+
+    const size_t docid = docs.size() - 1;
+    for (const auto& word : SplitIntoWords(document))
+    {
+        index[word].push_back(docid);
+    }
+}
+
+
+list<size_t> InvertedIndex::Lookup(const string& word) const
+{   // O(log N)
+    if (auto it = index.find(word); it != index.end())
+    {
+        return it->second;
+    }
+    else
+    {
+        return {};
+    }
+}
+
 
 SearchServer::SearchServer(istream& document_input)
 {
     UpdateDocumentBase(document_input);
 }
+
 
 void SearchServer::UpdateDocumentBase(istream& document_input)
 {
@@ -28,6 +57,7 @@ void SearchServer::UpdateDocumentBase(istream& document_input)
 
     index = move(new_index);
 }
+
 
 void SearchServer::AddQueriesStream(
     istream& query_input,
@@ -71,28 +101,5 @@ void SearchServer::AddQueriesStream(
                 << "hitcount: " << hitcount << '}';
         }
         search_results_output << endl;
-    }
-}
-
-void InvertedIndex::Add(const string& document)                     // O(N)
-{
-    docs.push_back(document);
-
-    const size_t docid = docs.size() - 1;
-    for (const auto& word : SplitIntoWords(document))
-    {
-        index[word].push_back(docid);
-    }
-}
-
-list<size_t> InvertedIndex::Lookup(const string& word) const        // O(log N)
-{
-    if (auto it = index.find(word); it != index.end())
-    {
-        return it->second;
-    }
-    else
-    {
-        return {};
     }
 }

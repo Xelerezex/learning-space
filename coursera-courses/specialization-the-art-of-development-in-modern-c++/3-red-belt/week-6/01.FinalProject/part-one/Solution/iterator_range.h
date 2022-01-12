@@ -31,6 +31,7 @@ class IteratorRange
         It first, last;
 };
 
+// Gets out iterable space of part-container
 template <typename Container>
 auto Head(Container& c, int top)                    // O(1)
 {
