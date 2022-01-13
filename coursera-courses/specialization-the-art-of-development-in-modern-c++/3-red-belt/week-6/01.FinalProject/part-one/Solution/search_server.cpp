@@ -15,15 +15,14 @@ vector<string> SplitIntoWords(const string& line)
 }
 
 
-void InvertedIndex::Add(const string& document)
+void InvertedIndex::Add(string document)
 {   // O(N)
-    docs.push_back(document);
-
-    const size_t docid = docs.size() - 1;
+    const size_t docid = docs.size();
     for (const auto& word : SplitIntoWords(document))
     {
         index[word].push_back(docid);
     }
+    docs.push_back(move(document));
 }
 
 
@@ -78,15 +77,17 @@ void SearchServer::AddQueriesStream(
         }
 
         vector<pair<size_t, size_t>> search_results(
-            docid_count.begin(),
-            docid_count.end()
+            make_move_iterator(docid_count.begin()),
+            make_move_iterator(docid_count.end())
         );
+
         sort(
             begin(search_results),
             end(search_results),
             [](pair<size_t, size_t> lhs, pair<size_t, size_t> rhs) {
                 int64_t lhs_docid = lhs.first;
                 auto lhs_hit_count = lhs.second;
+
                 int64_t rhs_docid = rhs.first;
                 auto rhs_hit_count = rhs.second;
                 return make_pair(lhs_hit_count, -lhs_docid) > make_pair(rhs_hit_count, -rhs_docid);

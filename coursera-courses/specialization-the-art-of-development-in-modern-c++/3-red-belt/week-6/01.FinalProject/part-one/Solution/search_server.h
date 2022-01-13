@@ -15,7 +15,7 @@ vector<string> SplitIntoWords(const string& line);
 class InvertedIndex
 {
     public:
-        void Add(const string& document);                   // Added string document to vector of docs.
+        void Add(string document);                          // Added string document to vector of docs.
                                                             // And generate map of words with ids of
                                                             // documents, where did that words came from.
 
