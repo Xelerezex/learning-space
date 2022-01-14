@@ -95,12 +95,12 @@ void SearchServer::AddQueriesStream(
         );
 
         search_results_output << current_query << ':';
-        for (auto [docid, hitcount] : Head(search_results, 5))
+        for (const auto &[docid, hitcount] : Head(search_results, 5))
         {
             search_results_output << " {"
                 << "docid: " << docid << ", "
                 << "hitcount: " << hitcount << '}';
         }
-        search_results_output << endl;
+        search_results_output << '\n';
     }
 }
