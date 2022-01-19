@@ -1,6 +1,7 @@
 #include "search_server.h"
 #include "parse.h"
 #include "test_runner.h"
+#include "profile.h"
 
 
 void TestFunctionality (
@@ -197,6 +198,24 @@ void TestBasicSearch ()
     TestFunctionality(docs, queries, expected);
 }
 
+void HugeTest()
+{
+    // const vector<string> doc = generate_random_documents(50'000, 1'000, 15'000, 100, 42);
+    const vector<string> doc = generate_random_documents(1, 10, 100, 10, 42);
+    std::cerr << doc << std::endl;
+    /*const vector<string>& docs =*/
+    //const vector<string>& queries = {"a"};
+
+
+/*    istringstream docs_input(Join('\n', docs));
+    istringstream queries_input(Join('\n', queries));
+
+    SearchServer srv;
+    srv.UpdateDocumentBase(docs_input);
+    ostringstream queries_output;
+    srv.AddQueriesStream(queries_input, queries_output);*/
+}
+
 int main()
 {
     TestRunner tr;
@@ -205,4 +224,5 @@ int main()
     RUN_TEST(tr, TestHitcount);
     RUN_TEST(tr, TestRanking);
     RUN_TEST(tr, TestBasicSearch);
+    RUN_TEST(tr, HugeTest);
 }
