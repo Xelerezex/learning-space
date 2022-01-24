@@ -1,13 +1,7 @@
 #pragma once
 
-#include <istream>
-#include <ostream>
-#include <set>
-#include <list>
-#include <vector>
-#include <map>
-#include <string>
-using namespace std;
+#include "search_server.h"
+#include "iterator_range.h"
 
 // Split string with spaces. And gets us vector of string "a b c" -> ["a", "b", "c"].
 vector<string> SplitIntoWords(const string& line);

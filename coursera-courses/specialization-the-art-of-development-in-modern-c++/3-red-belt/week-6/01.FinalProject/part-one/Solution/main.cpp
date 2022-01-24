@@ -1,8 +1,6 @@
 #include "search_server.h"
 #include "parse.h"
-#include "test_runner.h"
-#include "profile.h"
-
+#include "generators.h"
 
 void TestFunctionality (
     const vector<string>& docs,
@@ -198,31 +196,41 @@ void TestBasicSearch ()
     TestFunctionality(docs, queries, expected);
 }
 
-void HugeTest()
+void HugeTimeTest()
 {
-    // const vector<string> doc = generate_random_documents(50'000, 1'000, 15'000, 100, 42);
-    const vector<string> doc = generate_random_documents(1, 10, 100, 10, 42);
-    std::cerr << doc << std::endl;
-    /*const vector<string>& docs =*/
-    //const vector<string>& queries = {"a"};
-
-
-/*    istringstream docs_input(Join('\n', docs));
-    istringstream queries_input(Join('\n', queries));
 
     SearchServer srv;
-    srv.UpdateDocumentBase(docs_input);
+    {
+        const vector<string>& docs = generate_random_documents(50'000 / 100, 1'000, 15'000 / 100, 50, 42);
+        istringstream docs_input(Join('\n', docs));
+
+        LOG_DURATION("srv.UpdateDocumentBase(docs_input)");
+        srv.UpdateDocumentBase(docs_input);
+    }
+
     ostringstream queries_output;
-    srv.AddQueriesStream(queries_input, queries_output);*/
+    {
+        //                                          500'000 / 10'000,
+        const vector<string>& queries = generate_random_documents(50, 10, 50, 50, 42);
+        istringstream queries_input(Join('\n', queries));
+
+        LOG_DURATION("srv.AddQueriesStream(queries_input, queries_output)");
+        srv.AddQueriesStream(queries_input, queries_output);
+    }
+    // std::cerr << queries_output.str() << std::endl;
 }
 
 int main()
 {
     TestRunner tr;
     RUN_TEST(tr, TestSerpFormat);
+    cerr << endl;
+/*
     RUN_TEST(tr, TestTop5);
+
     RUN_TEST(tr, TestHitcount);
     RUN_TEST(tr, TestRanking);
     RUN_TEST(tr, TestBasicSearch);
-    RUN_TEST(tr, HugeTest);
+    RUN_TEST(tr, HugeTimeTest);
+*/
 }

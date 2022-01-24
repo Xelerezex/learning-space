@@ -8,6 +8,6 @@ set(CMAKE_CXX_COMPILER clang++)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -pthread -Og -ggdb3 -pipe -O2 -Wall -Werror -Wextra")
 
-set(SOURCES main.cpp parse.cpp search_server.cpp)
+set(SOURCES main.cpp generators.cpp parse.cpp search_server.cpp)
 
 add_executable(final ${SOURCES})
