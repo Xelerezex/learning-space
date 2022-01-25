@@ -7,26 +7,26 @@ vector<string> SplitIntoWords(const string& line)
 }
 
 
-void InvertedIndex::Add(string document)
-{   // O(N)
-    const size_t docid = docs.size();
+void InvertedIndex::Add(const string& document)
+{
+    docs.push_back(document);
+    const size_t docid = docs.size() - 1;
     for (const auto& word : SplitIntoWords(document))
     {
-        index[word].push_back(docid);
+        index[word].push_back({docid, 1});
     }
-    docs.push_back(move(document));
 }
 
 
-list<size_t> InvertedIndex::Lookup(const string& word) const
-{   // O(log N)
+vector<pair<size_t, size_t>> const & InvertedIndex::Lookup(const string& word) const
+{
     if (auto it = index.find(word); it != index.end())
     {
         return it->second;
     }
     else
     {
-        return {};
+        return nothing;
     }
 }
 
@@ -55,7 +55,7 @@ void SearchServer::AddQueriesStream(
     ostream& search_results_output
 )
 {
-    vector<pair<size_t, size_t>> docid_count(50'000);
+    vector<pair<size_t, size_t>> docid_count(50'000); //GetDocument()
     for (string current_query; getline(query_input, current_query); )
     {
         //------------------------------------------------------------
@@ -68,9 +68,10 @@ void SearchServer::AddQueriesStream(
         //------------------------------------------------------------
         for (const auto& word : words)
         {
-            for (const size_t docid : index.Lookup(word))
+            for (const pair<size_t, size_t> &docid : index.Lookup(word))
             {
-                docid_count[docid] = make_pair(docid, (docid_count[docid].second)++);
+                // size_t hitcount = ++docid_count[docid.first].second;
+                docid_count[docid.first] = {docid.first, docid.second};
             }
         }
         //------------------------------------------------------------
@@ -94,17 +95,14 @@ void SearchServer::AddQueriesStream(
         for (const auto &[docid, hitcount] : Head(docid_count, 5))
         {
              cerr << docid << " : " << hitcount << std::endl;
-        }
+        } cerr << std::endl;
+
         // Fourth part
         //------------------------------------------------------------
         search_results_output << current_query << ':';
         for (const auto &[docid, hitcount] : Head(docid_count, 5))
         {
-            if (hitcount == 0)
-            {
-                continue;
-            }
-            else
+            if (hitcount != 0)
             {
                 search_results_output << " {"
                     << "docid: " << docid << ", "

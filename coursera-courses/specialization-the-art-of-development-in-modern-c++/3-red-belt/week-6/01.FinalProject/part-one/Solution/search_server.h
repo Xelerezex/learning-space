@@ -1,6 +1,5 @@
 #pragma once
 
-#include "search_server.h"
 #include "iterator_range.h"
 
 // Split string with spaces. And gets us vector of string "a b c" -> ["a", "b", "c"].
@@ -9,12 +8,12 @@ vector<string> SplitIntoWords(const string& line);
 class InvertedIndex
 {
     public:
-        void Add(string document);                          // Added string document to vector of docs.
+        void Add(const string& document);                   // Added string document to vector of docs.
                                                             // And generate map of words with ids of
                                                             // documents, where did that words came from.
 
-        list<size_t> Lookup(const string& word) const;      // If some word found in map (index), give
-                                                            // list of ids
+        vector<pair<size_t, size_t>> const & Lookup(const string& word) const; // If some word found in map (index), give
+                                                                              // list of ids
 
         const string& GetDocument(size_t id) const          // Gives vector of input documents
         {   // ~O(1)
@@ -22,7 +21,8 @@ class InvertedIndex
         }
 
     private:
-        map<string, list<size_t>> index;
+        map<string, vector<pair<size_t, size_t>>> index;
+        vector<pair<size_t, size_t>> nothing = {};
         vector<string> docs;
 };
 
