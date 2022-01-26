@@ -201,7 +201,7 @@ void HugeTimeTest()
 
     SearchServer srv;
     {
-        const vector<string>& docs = generate_random_documents(50'000 / 100, 1'000, 15'000 / 100, 50, 42);
+        const vector<string>& docs = generate_random_documents(50'000 / 10, 1'000, 15'000 / 10, 99, 42);
         istringstream docs_input(Join('\n', docs));
 
         LOG_DURATION("srv.UpdateDocumentBase(docs_input)");
@@ -210,8 +210,8 @@ void HugeTimeTest()
 
     ostringstream queries_output;
     {
-        //                                          500'000 / 10'000,
-        const vector<string>& queries = generate_random_documents(50, 10, 50, 50, 42);
+        //
+        const vector<string>& queries = generate_random_documents(500'000, 10, 150, 99, 42);
         istringstream queries_input(Join('\n', queries));
 
         LOG_DURATION("srv.AddQueriesStream(queries_input, queries_output)");
@@ -227,10 +227,12 @@ int main()
 
     RUN_TEST(tr, TestTop5);
 
-/*
     RUN_TEST(tr, TestHitcount);
+
     RUN_TEST(tr, TestRanking);
+
     RUN_TEST(tr, TestBasicSearch);
+
     RUN_TEST(tr, HugeTimeTest);
-*/
+/**/
 }
