@@ -1,0 +1,41 @@
+#pragma once
+#include "profile.h"
+#include "test_runner.h"
+
+template <typename It>
+class IteratorRange
+{
+    public:
+        IteratorRange(It first, It last)
+            : first(first),
+              last(last)
+        {}
+
+        It begin() const
+        {
+            return first;
+        }
+
+        It end() const
+        {
+            return last;
+        }
+
+        size_t size() const
+        {
+            return last - first;
+        }
+
+    private:
+        It first, last;
+};
+
+// Gets out iterable space of part-container
+template <typename Container>
+auto Head(Container& c, int top)                    // O(1)
+{
+    return IteratorRange(
+        begin(c),
+        begin(c) + min<size_t>(max(top, 0), c.size())
+    );
+}
