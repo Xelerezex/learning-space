@@ -75,8 +75,8 @@ void SearchServer::AddQueriesStream(
         //------------------------------------------------------------
         for (const auto& word : SplitIntoWords(current_query))
         {
-            for (const pair<size_t, size_t> &docid : index.Lookup(word))
-            {
+            for (const pair<size_t, size_t> &docid : index.Lookup(word))        // Accessing to
+            {                                                                   // the index
                 docid_count[docid.first].first   = docid.first;
                 docid_count[docid.first].second += docid.second;
             }
