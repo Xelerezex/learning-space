@@ -35,16 +35,31 @@ class SearchServer
         explicit SearchServer(istream& document_input);     // Constructor of class, just calling
                                                             // UpdateDocumentBase() function.
 
+        InvertedIndex & GetIndex();
+
+
         void UpdateDocumentBase(istream& document_input);   // Drops old InvertedIndex index &
                                                             // generates new. Added our document
                                                             //  to InvertedIndex.
+
+        void AddQueriesSingleThread(
+            istream& query_input,
+            ostream& search_results_output
+        );
 
         void AddQueriesStream(                              // Takes words that should find, output
                 istream& query_input,                       // var. Generates map of doc id &
                 ostream& search_results_output              // count of words. Then writes answer to
         );                                                  // search_results_output
 
+
+
     private:
+        // Potentialy delete:
         InvertedIndex index;
+
+        std::shared_mutex shm;
+        Synchronized<InvertedIndex> synchronized_index;
+        vector<future<void>> futures;
 };
 

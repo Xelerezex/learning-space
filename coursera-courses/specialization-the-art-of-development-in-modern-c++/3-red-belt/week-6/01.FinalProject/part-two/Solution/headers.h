@@ -34,6 +34,7 @@
 #include <chrono>
 
 //----------------ASYNC
+#include <shared_mutex>
 #include <functional>
 #include <future>
 #include <mutex>
