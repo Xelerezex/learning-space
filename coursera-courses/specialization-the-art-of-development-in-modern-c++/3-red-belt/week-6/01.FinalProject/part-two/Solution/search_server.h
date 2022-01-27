@@ -1,6 +1,6 @@
 #pragma once
 
-#include "iterator_range.h"
+#include "syncronized.h"
 
 // Split string with spaces. And gets us vector of string "a b c" -> ["a", "b", "c"].
 vector<string> SplitIntoWords(const string& line);

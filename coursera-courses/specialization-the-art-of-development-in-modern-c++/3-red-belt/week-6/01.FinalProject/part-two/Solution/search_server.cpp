@@ -57,8 +57,8 @@ void SearchServer::UpdateDocumentBase(istream& document_input)
         new_index.Add(move(current_document));
     }
 
-    index = move(new_index);
-}
+    index = move(new_index);                    // Accessing to
+}                                               // the index
 
 
 void SearchServer::AddQueriesStream(
