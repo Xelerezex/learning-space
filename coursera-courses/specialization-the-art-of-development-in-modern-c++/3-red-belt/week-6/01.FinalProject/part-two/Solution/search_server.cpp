@@ -44,11 +44,11 @@ size_t InvertedIndex::GetDocumentSize() const
 
 SearchServer::SearchServer(istream& document_input)
 {
-    UpdateDocumentBase(document_input);
+    UpdateDocumentBaseSingleThread(document_input);
 }
 
 
-void SearchServer::UpdateDocumentBase(istream& document_input)
+void SearchServer::UpdateDocumentBaseSingleThread(istream& document_input)
 {
     InvertedIndex new_index;
 
@@ -58,11 +58,22 @@ void SearchServer::UpdateDocumentBase(istream& document_input)
     }
 
     {
-        std::unique_lock<shared_mutex> lock {shared};    // Accessing to
-        index = move(new_index);                         // the index.
+        std::unique_lock<shared_mutex> lock {shared};
+        index = move(new_index);
     }
 }
 
+void SearchServer::UpdateDocumentBase(istream& document_input)
+{
+    futures.push_back(
+        async(
+            std::launch::async,
+            &SearchServer::UpdateDocumentBaseSingleThread,
+            this,
+            ref(document_input)
+        )
+    );
+}
 
 void SearchServer::AddQueriesSingleThread(
     istream& query_input,
@@ -77,14 +88,12 @@ void SearchServer::AddQueriesSingleThread(
         {
             shared_lock<shared_mutex> lock{shared};
             const size_t docs_size = index.GetDocumentSize();
-
-            // docid_count.resize(docs_size);
             docid_count.assign(docs_size, pair{0, 0});
 
             for (const auto& word : SplitIntoWords(current_query))
             {
-                for (const pair<size_t, size_t> &docid : index.Lookup(word))        // Accessing to
-                {                                                                   // the index.
+                for (const pair<size_t, size_t> &docid : index.Lookup(word))
+                {
                     docid_count[docid.first].first   = docid.first;
                     docid_count[docid.first].second += docid.second;
                 }

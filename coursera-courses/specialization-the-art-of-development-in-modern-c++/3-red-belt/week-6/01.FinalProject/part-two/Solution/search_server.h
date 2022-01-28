@@ -1,5 +1,4 @@
 #pragma once
-
 #include "syncronized.h"
 
 // Split string with spaces. And gets us vector of string "a b c" -> ["a", "b", "c"].
@@ -22,7 +21,6 @@ class InvertedIndex
         size_t GetDocumentSize() const;                          // Gives size of document's vector
 
     private:
-        // map<string, vector<pair<size_t, size_t>>> index;
         unordered_map<string, vector<pair<size_t, size_t>>> index;
         vector<pair<size_t, size_t>> nothing {};
         size_t docs_size = 0;
@@ -36,8 +34,8 @@ class SearchServer
         explicit SearchServer(istream& document_input);     // Constructor of class, just calling
                                                             // UpdateDocumentBase() function.
 
-        // InvertedIndex & GetIndex();
 
+        void UpdateDocumentBaseSingleThread(istream& document_input);
 
         void UpdateDocumentBase(istream& document_input);   // Drops old InvertedIndex index &
                                                             // generates new. Added our document
@@ -56,7 +54,6 @@ class SearchServer
     private:
         std::shared_mutex shared;
         InvertedIndex index;
-        // Synchronized<InvertedIndex> synchronized_index;
         vector<future<void>> futures;
 };
 

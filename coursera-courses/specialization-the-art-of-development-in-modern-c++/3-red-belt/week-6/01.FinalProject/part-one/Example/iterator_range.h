@@ -1,15 +1,15 @@
 #pragma once
-#include "profile.h"
-#include "test_runner.h"
+
+#include <algorithm>
+using namespace std;
 
 template <typename It>
 class IteratorRange
 {
     public:
-        IteratorRange(It first, It last)
-            : first(first),
-              last(last)
-        {}
+        IteratorRange(It first, It last) : first(first), last(last)
+        {
+        }
 
         It begin() const
         {
@@ -30,12 +30,8 @@ class IteratorRange
         It first, last;
 };
 
-// Gets out iterable space of part-container
 template <typename Container>
 auto Head(Container& c, int top)
 {
-    return IteratorRange(
-        begin(c),
-        begin(c) + min<size_t>(max(top, 0), c.size())
-    );
+    return IteratorRange(begin(c), begin(c) + min<size_t>(max(top, 0), c.size()));
 }

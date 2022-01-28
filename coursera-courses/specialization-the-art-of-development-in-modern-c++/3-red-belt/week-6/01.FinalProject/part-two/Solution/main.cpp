@@ -122,9 +122,6 @@ int main()
 {
     TestRunner tr;
     RUN_TEST(tr, TestSerpFormat);
-
     RUN_TEST(tr, TestTop5);
-
-
     RUN_TEST(tr, CuncurrencyTest);
 }
