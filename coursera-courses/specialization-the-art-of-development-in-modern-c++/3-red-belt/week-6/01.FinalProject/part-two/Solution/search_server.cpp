@@ -7,7 +7,7 @@ vector<string> SplitIntoWords(const string& line)
 }
 
 
-void InvertedIndex::Add(string document)
+void InvertedIndex::Add(const string &document)
 {
     unordered_map<string, size_t> local;
 
@@ -48,12 +48,6 @@ SearchServer::SearchServer(istream& document_input)
 }
 
 
-InvertedIndex & SearchServer::GetIndex()
-{
-        return synchronized_index.GetAccess().ref_to_value;
-}
-
-
 void SearchServer::UpdateDocumentBase(istream& document_input)
 {
     InvertedIndex new_index;
@@ -63,33 +57,37 @@ void SearchServer::UpdateDocumentBase(istream& document_input)
         new_index.Add(move(current_document));
     }
 
-    std::shared_lock<shared_mutex> lock(shm);
-    lock.lock();
-    index = move(new_index);                    // Accessing to
-    lock.unlock();
-}                                                    // the index.
-                                                     // Future - ?
+    {
+        std::unique_lock<shared_mutex> lock {shared};    // Accessing to
+        index = move(new_index);                         // the index.
+    }
+}
+
 
 void SearchServer::AddQueriesSingleThread(
     istream& query_input,
     ostream& search_results_output
 )
 {
-    const size_t docs_size = index.GetDocumentSize();                      // Accessing to
-    vector<pair<size_t, size_t>> docid_count(docs_size);                        // the index.
-
+    vector<pair<size_t, size_t>> docid_count;
     for (string current_query; getline(query_input, current_query); )
     {
-        std::shared_lock<shared_mutex> lock(shm);
         // First Part
         //------------------------------------------------------------
-        lock.lock();
-        for (const auto& word : SplitIntoWords(current_query))
         {
-            for (const pair<size_t, size_t> &docid : index.Lookup(word))   // Accessing to
-            {                                                                   // the index.
-                docid_count[docid.first].first   = docid.first;
-                docid_count[docid.first].second += docid.second;
+            shared_lock<shared_mutex> lock{shared};
+            const size_t docs_size = index.GetDocumentSize();
+
+            // docid_count.resize(docs_size);
+            docid_count.assign(docs_size, pair{0, 0});
+
+            for (const auto& word : SplitIntoWords(current_query))
+            {
+                for (const pair<size_t, size_t> &docid : index.Lookup(word))        // Accessing to
+                {                                                                   // the index.
+                    docid_count[docid.first].first   = docid.first;
+                    docid_count[docid.first].second += docid.second;
+                }
             }
         }
         //------------------------------------------------------------
@@ -109,7 +107,6 @@ void SearchServer::AddQueriesSingleThread(
                 return make_pair(lhs_hit_count, -lhs_docid) > make_pair(rhs_hit_count, -rhs_docid);
             }
         );
-        lock.unlock();
         //------------------------------------------------------------
 
         // Third part
@@ -124,9 +121,8 @@ void SearchServer::AddQueriesSingleThread(
                     << "hitcount: " << hitcount << '}';
             }
         }
-        search_results_output << '\n';
+        search_results_output << endl;
         //------------------------------------------------------------
-        fill(docid_count.begin(), docid_count.end(), pair{0, 0});
     }
 }
 
@@ -136,26 +132,13 @@ void SearchServer::AddQueriesStream(
     ostream& search_results_output
 )
 {
-/*    const size_t max_batch_size = 500'000 / 5; // 5 - Threads; 100'00 in one batch
-
-    std::vector<std::string> batch;
-    batch.reserve(max_batch_size);
-    for (string current_query; getline(query_input, current_query); )
-    {*/
-
-/*        batch.push_back(move(current_query));
-        if (batch.size() >= max_batch_size)
-        {*/
-            futures.push_back(
-                async(
-                    std::launch::async,
-                    &SearchServer::AddQueriesSingleThread,
-                    this,
-                    ref(query_input),
-                    ref(search_results_output)
-                )
-            );
-/*            batch.reserve(max_batch_size);
-        }*/
-/*    }*/
+    futures.push_back(
+        async(
+            std::launch::async,
+            &SearchServer::AddQueriesSingleThread,
+            this,
+            ref(query_input),
+            ref(search_results_output)
+        )
+    );
 }

@@ -36,6 +36,7 @@
 //----------------ASYNC
 #include <shared_mutex>
 #include <functional>
+#include <thread>
 #include <future>
 #include <mutex>
 

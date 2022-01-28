@@ -9,7 +9,7 @@ class InvertedIndex
 {
     public:
 
-        void Add(string document);                               // Added string document to vector
+        void Add(const string &document);                        // Added string document to vector
                                                                  // of docs. And generate map of words
                                                                  // with ids of documents, where
                                                                  // did that words came from.
@@ -22,7 +22,8 @@ class InvertedIndex
         size_t GetDocumentSize() const;                          // Gives size of document's vector
 
     private:
-        map<string, vector<pair<size_t, size_t>>> index;
+        // map<string, vector<pair<size_t, size_t>>> index;
+        unordered_map<string, vector<pair<size_t, size_t>>> index;
         vector<pair<size_t, size_t>> nothing {};
         size_t docs_size = 0;
 };
@@ -35,7 +36,7 @@ class SearchServer
         explicit SearchServer(istream& document_input);     // Constructor of class, just calling
                                                             // UpdateDocumentBase() function.
 
-        InvertedIndex & GetIndex();
+        // InvertedIndex & GetIndex();
 
 
         void UpdateDocumentBase(istream& document_input);   // Drops old InvertedIndex index &
@@ -52,14 +53,10 @@ class SearchServer
                 ostream& search_results_output              // count of words. Then writes answer to
         );                                                  // search_results_output
 
-
-
     private:
-        // Potentialy delete:
+        std::shared_mutex shared;
         InvertedIndex index;
-
-        std::shared_mutex shm;
-        Synchronized<InvertedIndex> synchronized_index;
+        // Synchronized<InvertedIndex> synchronized_index;
         vector<future<void>> futures;
 };
 
