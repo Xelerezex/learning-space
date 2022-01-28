@@ -1,6 +1,6 @@
 # Основы разработки на C++: Коричневый пояс
 
-![alt-текст](<img src="https://github.com/Xelerezex/learning-space/blob/learning-space/coursera-courses/specialization-the-art-of-development-in-modern-c%2B%2B/4-brown-belt/brown-belt-img.png" width="70" />)
+<img src="https://github.com/Xelerezex/learning-space/blob/learning-space/coursera-courses/specialization-the-art-of-development-in-modern-c%2B%2B/4-brown-belt/brown-belt-img.png" width="200"/>
 
 ### About:
 Основная цель этого курса — научить идиомам языка C++, то есть показать, как с помощью различных
