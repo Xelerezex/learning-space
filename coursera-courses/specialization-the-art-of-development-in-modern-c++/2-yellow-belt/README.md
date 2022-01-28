@@ -30,4 +30,5 @@
 * WEEK 5 ---> [Open](https://github.com/Xelerezex/learning-space/tree/learning-space/coursera-courses/specialization-the-art-of-development-in-modern-c%2B%2B/2-yellow-belt/week-5)
 * WEEK 6 ---> [Open](https://github.com/Xelerezex/learning-space/tree/learning-space/coursera-courses/specialization-the-art-of-development-in-modern-c%2B%2B/2-yellow-belt/week-6)
 
+
 [Основы разработки на C++: красный](https://github.com/Xelerezex/learning-space/tree/learning-space/coursera-courses/specialization-the-art-of-development-in-modern-c%2B%2B/3-red-belt)
