@@ -21,6 +21,9 @@ std::ostream& operator << (std::ostream& os, const std::deque<D>& d);
 template <class J>
 std::ostream& operator << (std::ostream& os, const std::list<J>& j);
 
+template <class Z>
+std::ostream& operator << (std::ostream& os,const std::forward_list<Z>& fl);
+
 template <class P1, class P2>
 std::ostream& operator << (std::ostream& os, const std::pair<P1, P2>& p);
 
@@ -212,6 +215,26 @@ std::ostream& operator << (std::ostream& os, const std::list<J>& j)
     bool first = true;
 
     for(const auto& i : j)
+    {
+        if (!first)
+        {
+            os << ", ";
+        }
+
+        first = false;
+        os << i;
+    }
+    return os << ")";
+}
+
+//-------------FOR-STD::LIST
+template <class Z>
+std::ostream& operator << (std::ostream& os,const std::forward_list<Z>& fl)
+{
+    os << "(";
+    bool first = true;
+
+    for(const auto& i : fl)
     {
         if (!first)
         {
