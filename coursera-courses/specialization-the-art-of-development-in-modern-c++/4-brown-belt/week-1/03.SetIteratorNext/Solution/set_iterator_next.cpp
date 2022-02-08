@@ -1,7 +1,6 @@
-#include "test_runner.h"
 
-/*
 #include "test_runner.h"
+/*
 #include <cassert>
 #include <deque>
 #include <iostream>
@@ -55,7 +54,52 @@ private:
 
 Node* Next(Node* me)
 {
+    if (me->parent == nullptr && me->right == nullptr && me->left == nullptr)
+    {
+        return me->parent;
+    }
 
+    // У текущей вершины есть правое поддерево
+    if (me->right != nullptr)
+    {
+        Node* output = me->right;
+        while (output->left)
+        {
+            output = output->left;
+        }
+        return output;
+    }
+    // У текущей вершины нет правого поддерева, а она сама является левым ребёнком у её родителя
+    else if (me->right == nullptr & me->parent->left == me)
+    {
+        return me->parent;
+    }
+    // У текущей вершины нет правого поддерева, а она сама является правым ребёнком у её родителя
+    // Поднимайтесь из текущей вершины по родителям вверх, пока не окажетесь на левом ребёнке.
+    // Следующей вершиной будет родитель текущей вершины
+
+    else if (me->right == nullptr & me->parent->right == me)
+    {
+        Node* output = me->parent;
+
+        while (output != output->parent->left && output->parent != nullptr)
+        {
+            output = output->parent;
+        }
+
+        if (output == nullptr)
+        {
+            return nullptr;
+        }
+        else
+        {
+            return output->parent;
+        }
+    }
+    else
+    {
+        return nullptr;
+    }
 }
 
 
@@ -79,16 +123,18 @@ void Test1()
     l = nb.CreateLeftSon(r, 90);
     nb.CreateRightSon(r, 101);
 
-    nb.CreateLeftSon(l, 89);
+    Node* z = nb.CreateLeftSon(l, 89);
     r = nb.CreateRightSon(l, 91);
 
-    ASSERT_EQUAL( Next(l)->value, 91);
     ASSERT_EQUAL( Next(root)->value, 89 );
+    ASSERT_EQUAL( Next(z)->value,  90 );
+    ASSERT_EQUAL( Next(l)->value,  91 );
     ASSERT_EQUAL( Next(min)->value, 2 );
-    ASSERT_EQUAL( Next(r)->value, 100);
+    ASSERT_EQUAL( Next(r)->value, 100 );
 
     while (min)
     {
+        if (min == nullptr) { std::cout << "WORKING!" << std::endl; }
         std::cout << min->value << '\n';
         min = Next(min);
     }
@@ -99,7 +145,7 @@ void TestRootOnly()
 {
     NodeBuilder nb;
     Node* root = nb.CreateRoot(42);
-    ASSERT( Next(root) == nullptr);
+    ASSERT(Next(root) == nullptr);
 };
 
 
