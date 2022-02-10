@@ -12,8 +12,25 @@ struct Address
 
     bool operator==(const Address& other) const
     {
-        // реализуйте оператор
+        return tie(city, street) == tie(other.city, other.street)
+               && (building == other.building);
     }
+};
+
+struct AddressHasher
+{
+    size_t operator() (const Address& a) const
+    {
+        size_t r1 = shash(a.city);
+        size_t r2 = shash(a.street);
+        size_t r3 = a.building;
+        // Ax^2 + Bx + C
+        size_t x = 2142;
+
+        return (r1 * x * x) + (r2 * x) + r3;
+    }
+
+    std::hash<std::string> shash;
 };
 
 struct Person
@@ -25,18 +42,31 @@ struct Person
 
     bool operator==(const Person& other) const
     {
-        // реализуйте оператор
+        return (name    == other.name)
+            && (height  == other.height)
+            && (weight  == other.weight)
+            && (address == other.address);
     }
 };
 
-struct AddressHasher
-{
-    // реализуйте структуру
-};
 
 struct PersonHasher
 {
-    // реализуйте структуру
+    size_t operator() (const Person& p) const
+    {
+        size_t r1 = shash(p.name);
+        size_t r2 = p.height;
+        size_t r3 = dhash(p.weight);
+        size_t r4 = ahash(p.address);
+        // Ax^3 + Bx^2 + Cx + D
+        size_t x = 2142;
+
+        return (r1 * x * x * x) +(r2 * x * x) + (r3 * x) + r4;
+    }
+
+    std::hash<std::string> shash;
+    std::hash<double>      dhash;
+    AddressHasher          ahash;
 };
 
 // сгенерированы командой:
