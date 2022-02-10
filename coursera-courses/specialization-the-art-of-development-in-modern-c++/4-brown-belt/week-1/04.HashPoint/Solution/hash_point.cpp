@@ -15,13 +15,23 @@ struct Point3D
 
     bool operator==(const Point3D& other) const
     {
-        // реализуйте оператор
+        return (x == other.x)
+            && (y == other.y)
+            && (z == other.z);
     }
 };
 
 struct Hasher
 {
-    // реализуйте структуру
+    size_t operator() (const Point3D& p) const
+    {
+        size_t x = 42;
+        size_t A = p.x;
+        size_t B = p.y;
+        size_t C = p.z;
+
+        return (A * x * x) + (B * x) + C;
+    }
 };
 
 void TestSmoke()
