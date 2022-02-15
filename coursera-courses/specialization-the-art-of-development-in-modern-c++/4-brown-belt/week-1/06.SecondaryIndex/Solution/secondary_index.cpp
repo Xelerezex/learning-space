@@ -14,25 +14,109 @@ struct Record
     string user;
     int timestamp;
     int karma;
+
+    bool operator== (const Record &other) const
+    {
+        return (id == other.id)
+            && (title == other.title)
+            && (user == other.user)
+            && (timestamp == other.timestamp)
+            && (karma == other.karma);
+    }
+
+    bool operator< (const Record &other) const
+    {
+        return (id < other.id)
+            && (title < other.title)
+            && (user < other.user)
+            && (timestamp < other.timestamp)
+            && (karma < other.karma);
+    }
+};
+
+struct RecordHasher
+{
+    const size_t coef = 2142;
+
+    const hash<string> id_hasher;
+    const hash<string> title_hasher;
+    const hash<string> user_hasher;
+    const hash<int>    timestamp_hasher;
+    const hash<int>    karma_hasher;
+
+    size_t operator() (const Record& address) const {
+        return (coef * coef * coef * coef * id_hasher(address.id))
+             + (coef * coef * coef * title_hasher(address.title))
+             + (coef * coef * user_hasher(address.user))
+             + (coef * timestamp_hasher(address.timestamp))
+             + (karma_hasher(address.karma));
+    }
 };
 
 // Реализуйте этот класс
 class Database
 {
-public:
-    bool Put(const Record& record);
-    const Record* GetById(const string& id) const;
-    bool Erase(const string& id);
 
-    template <typename Callback>
-    void RangeByTimestamp(int low, int high, Callback callback) const;
+    public:
+        // Database() {}
+        // True, if insertion is successfull, else false
+        bool Put(const Record& record)
+        {
+            auto returned = DataSet.insert({record, (++count_data)});
+            return returned.second;
+        }
 
-    template <typename Callback>
-    void RangeByKarma(int low, int high, Callback callback) const;
+        // Find obj by id, return nullptr if there is no object
+/*        const Record* GetById(const string& id) const {}*/
 
-    template <typename Callback>
-    void AllByUser(const string& user, Callback callback) const;
+        // Find than delete obj, if there is no obj return false
+/*        bool Erase(const string& id) {}*/
+
+        // Analog: Count in diapasone
+        // Goes from [low, high] of timestamp, call callback, if callback == false, stop iteration
+/*        template <typename Callback>
+        void RangeByTimestamp(int low, int high, Callback callback) const {}*/
+
+        // Analog: Count in diapasone
+        // Goes from [low, high] of karma, call callback, if callback == false, stop iteration
+/*        template <typename Callback>
+        void RangeByKarma(int low, int high, Callback callback) const {}*/
+
+        // Analog: Count in diapasone
+        // Goes from [low, high] of user, call callback, if callback == false, stop iteration
+/*        template <typename Callback>
+        void AllByUser(const string& user, Callback callback) const {}*/
+
+
+        auto begin() const { return DataSet.begin(); }
+        auto end()   const { return DataSet.end(); }
+    private:
+        size_t count_data = 0;
+        unordered_map<Record, size_t, RecordHasher> DataSet;
+        multimap<string, typename unordered_map<Record, string>::iterator> RefData;
 };
+
+ostream& operator << (ostream& os, Database DataSet)
+{
+    os << "[";
+    bool first = true;
+
+    for(const auto &[ref, sz] : DataSet)
+    {
+        if (!first)
+        {
+            os << ", ";
+        }
+        first = false;
+        os << sz            << " : ("
+           << ref.id        << ", "
+           << ref.title     << ", "
+           << ref.user      << ", "
+           << ref.timestamp << ", "
+           << ref.karma     << ")";
+    }
+    return os << "]";
+}
 
 void TestRangeBoundaries()
 {
@@ -40,9 +124,12 @@ void TestRangeBoundaries()
     const int bad_karma = -10;
 
     Database db;
-    db.Put({"id1", "Hello there", "master", 1536107260, good_karma});
-    db.Put({"id2", "O>>-<", "general2", 1536107260, bad_karma});
+    ASSERT(db.Put({"id1", "Hello there", "master", 1536107260, good_karma}));
+    ASSERT(db.Put({"id2", "O>>-<", "general2", 1536107260, bad_karma}));
 
+    std::cerr << db << std::endl;
+
+    /*
     int count = 0;
     db.RangeByKarma(
         bad_karma,
@@ -53,8 +140,9 @@ void TestRangeBoundaries()
     });
 
     ASSERT_EQUAL(2, count);
+    */
 }
-
+/*
 void TestSameUser()
 {
     Database db;
@@ -71,7 +159,8 @@ void TestSameUser()
 
     ASSERT_EQUAL(2, count);
 }
-
+*/
+/*
 void TestReplacement()
 {
     const string final_body = "Feeling sad";
@@ -85,12 +174,14 @@ void TestReplacement()
     ASSERT(record != nullptr);
     ASSERT_EQUAL(final_body, record->title);
 }
-
+*/
 int main()
 {
     TestRunner tr;
     RUN_TEST(tr, TestRangeBoundaries);
+    /*
     RUN_TEST(tr, TestSameUser);
     RUN_TEST(tr, TestReplacement);
+    */
     return 0;
 }

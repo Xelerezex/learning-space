@@ -15,33 +15,21 @@ struct Record
     int timestamp;
     int karma;
 };
-// operator() for vector
 
 // Реализуйте этот класс
 class Database
 {
 public:
-    // True, if insertion is successfull, else false
     bool Put(const Record& record);
-
-    // Find obj by id, return nullptr if there is no object
     const Record* GetById(const string& id) const;
-
-    // Find than delete obj, if there is no obj return false
     bool Erase(const string& id);
 
-    // Analog: Count in diapasone
-    // Goes from [low, high] of timestamp, call callback, if callback == false, stop iteration
     template <typename Callback>
     void RangeByTimestamp(int low, int high, Callback callback) const;
 
-    // Analog: Count in diapasone
-    // Goes from [low, high] of karma, call callback, if callback == false, stop iteration
     template <typename Callback>
     void RangeByKarma(int low, int high, Callback callback) const;
 
-    // Analog: Count in diapasone
-    // Goes from [low, high] of user, call callback, if callback == false, stop iteration
     template <typename Callback>
     void AllByUser(const string& user, Callback callback) const;
 };
