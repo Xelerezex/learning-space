@@ -36,20 +36,27 @@ struct Record
 
 struct RecordHasher
 {
-    const size_t coef = 2142;
+/*    size_t operator() (const Record& address) const
+    {
+        const size_t coef = 31;
 
-    const hash<string> id_hasher;
-    const hash<string> title_hasher;
-    const hash<string> user_hasher;
-    const hash<int>    timestamp_hasher;
-    const hash<int>    karma_hasher;
+        const hash<string> id_hasher;
+        const hash<string> title_hasher;
+        const hash<string> user_hasher;
+        const hash<int>    timestamp_hasher;
+        const hash<int>    karma_hasher;
 
-    size_t operator() (const Record& address) const {
         return (coef * coef * coef * coef * id_hasher(address.id))
              + (coef * coef * coef * title_hasher(address.title))
              + (coef * coef * user_hasher(address.user))
              + (coef * timestamp_hasher(address.timestamp))
              + (karma_hasher(address.karma));
+    }*/
+    size_t operator() (const string &str) const
+    {
+        const size_t coef = 2213;
+        const hash<string> id_hasher;
+        return coef * id_hasher(str);
     }
 };
 
@@ -62,15 +69,53 @@ class Database
         // True, if insertion is successfull, else false
         bool Put(const Record& record)
         {
-            auto returned = DataSet.insert({record, (++count_data)});
-            return returned.second;
+            auto iter = DataSet.insert({record, (++count_data)});
+
+            if (iter != DataSet.end())
+            {
+                RefData.insert({record.id, iter});
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         // Find obj by id, return nullptr if there is no object
-/*        const Record* GetById(const string& id) const {}*/
+        const Record* GetById(const string& id) const
+        {
+            auto iter = RefData.find(id);
+
+            if (iter != RefData.end())
+            {
+                auto iter_to_multi = (*iter).second;
+                return &(*iter_to_multi).first;
+            }
+            else
+            {
+                return nullptr;
+            }
+        }
 
         // Find than delete obj, if there is no obj return false
-/*        bool Erase(const string& id) {}*/
+        bool Erase(const string& id)
+        {
+            auto iter = RefData.find(id);
+
+            if (iter != RefData.end())
+            {
+                auto iter_to_multi = (*iter).second;
+                DataSet.erase(iter_to_multi);
+                RefData.erase(iter);
+
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
 
         // Analog: Count in diapasone
         // Goes from [low, high] of timestamp, call callback, if callback == false, stop iteration
@@ -92,8 +137,8 @@ class Database
         auto end()   const { return DataSet.end(); }
     private:
         size_t count_data = 0;
-        unordered_map<Record, size_t, RecordHasher> DataSet;
-        multimap<string, typename unordered_map<Record, string>::iterator> RefData;
+        multimap<Record, size_t/*, RecordHasher*/> DataSet;
+        unordered_map<string, typename multimap<Record, size_t>::iterator, RecordHasher> RefData;
 };
 
 ostream& operator << (ostream& os, Database DataSet)
