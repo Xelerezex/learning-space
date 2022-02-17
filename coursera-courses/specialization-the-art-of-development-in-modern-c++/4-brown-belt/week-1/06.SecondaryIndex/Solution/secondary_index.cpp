@@ -34,90 +34,92 @@ struct Record
     }
 };
 
-
-struct RecordRef
+ostream& operator << (ostream& os, const Record &record)
 {
-    typename multimap<string, string>::iterator title_iterator;
-    typename multimap<string, string>::iterator user_iterator;
-    typename multimap<int, string>::iterator    timestamp_iterator;
-    typename multimap<int, string>::iterator    karma_iterator;
-
-    bool operator== (const RecordRef &other) const
-    {
-        return (*title_iterator == *other.title_iterator)
-            && (*user_iterator == *other.user_iterator)
-            && (*timestamp_iterator == *other.timestamp_iterator)
-            && (*karma_iterator == *other.karma_iterator);
-    }
-
-    bool operator< (const RecordRef &other) const
-    {
-        return (*title_iterator < *other.title_iterator)
-            && (*user_iterator < *other.user_iterator)
-            && (*timestamp_iterator < *other.timestamp_iterator)
-            && (*karma_iterator < *other.karma_iterator);
-    }
-};
-
-struct RecordHasher
-{
-/*    size_t operator() (const Record& address) const
-    {
-        const size_t coef = 31;
-
-        const hash<string> id_hasher;
-        const hash<string> title_hasher;
-        const hash<string> user_hasher;
-        const hash<int>    timestamp_hasher;
-        const hash<int>    karma_hasher;
-
-        return (coef * coef * coef * coef * id_hasher(address.id))
-             + (coef * coef * coef * title_hasher(address.title))
-             + (coef * coef * user_hasher(address.user))
-             + (coef * timestamp_hasher(address.timestamp))
-             + (karma_hasher(address.karma));
-    }*/
-    size_t operator() (const string &str) const
-    {
-        const size_t coef = 2213;
-        const hash<string> id_hasher;
-        return coef * id_hasher(str);
-    }
-};
+    os << "("
+       << record.id        << ", "
+       << record.title     << ", "
+       << record.user      << ", "
+       << record.timestamp << ", "
+       << record.karma;
+    return os << ")";
+}
 
 // Реализуйте этот класс
 class Database
 {
+    private:
+        //-----------------------------------------------------------------------------------------//
+        using IdValue           = std::string;
+        using UserValue         = std::string;
+        using TimestampValue    = int;
+        using KarmaValue        = int;
+        using DataBaseIterator  = typename map<IdValue, Record>::iterator;
+        using UserIterator      = typename multimap<UserValue, DataBaseIterator>::iterator;
+        using TimestampIterator = typename multimap<TimestampValue, DataBaseIterator>::iterator;
+        using KarmaIterator     = typename multimap<KarmaValue, DataBaseIterator>::iterator;
+        //-----------------------------------------------------------------------------------------//
+        struct RecordReference
+        {
+            DataBaseIterator  id_iterator;
+            UserIterator      user_iterator;
+            TimestampIterator timestamp_iterator;
+            KarmaIterator     karma_iterator;
 
+            bool operator== (const RecordReference &other) const
+            {
+                return (*id_iterator        == *other.id_iterator)
+                    && (*user_iterator      == *other.user_iterator)
+                    && (*timestamp_iterator == *other.timestamp_iterator)
+                    && (*karma_iterator     == *other.karma_iterator);
+            }
+
+            bool operator< (const RecordReference &other) const
+            {
+                return (id_iterator->first        < other.id_iterator->first)
+                    && (user_iterator->first      < other.user_iterator->first)
+                    && (timestamp_iterator->first < other.timestamp_iterator->first)
+                    && (karma_iterator->first     < other.karma_iterator->first);
+            }
+        };
+
+        struct RecordHasher
+        {
+            size_t operator() (const string &str) const
+            {
+                const size_t coef = 2213;
+                const hash<string> id_hasher;
+                return coef * id_hasher(str);
+            }
+        };
+        //-----------------------------------------------------------------------------------------//
+        unordered_map<IdValue, RecordReference, RecordHasher>  DataBaseLinks;
+        map<IdValue, Record>                                   DataBase;
+        multimap<UserValue, DataBaseIterator>                  UserBase;
+        multimap<TimestampValue, DataBaseIterator>             TimestampBase;
+        multimap<KarmaValue, DataBaseIterator>                 KarmaBase;
+        //-----------------------------------------------------------------------------------------//
     public:
-        // Database() {}
         // True, if insertion is successfull, else false
         bool Put(const Record& record)
         {
-            auto iter = RefData.find(record.id);
-
-            auto iter_to_title     = TitleData.insert({record.title, record.id});
-            auto iter_to_user      = UserData.insert({record.user, record.id});
-            auto iter_to_timestamp = TimestampData.insert({record.timestamp, record.id});
-            auto iter_to_karma     = KarmaData.insert({record.karma, record.id});
-
-            if (   iter          == RefData.end()
-                && iter_to_title != TitleData.end()
-                && iter_to_title != TitleData.end()
-                && iter_to_title != TitleData.end()
-                && iter_to_title != TitleData.end())
+            if (const auto [iterator, flag] = DataBase.insert({record.id, record}); flag == true)
             {
-                auto iter = DataSet.insert({record, RecordRef{iter_to_title, iter_to_user, iter_to_timestamp, iter_to_karma}});
+                const auto user_iterator      = UserBase.insert({record.user, iterator});
+                const auto timestamp_iterator = TimestampBase.insert({record.timestamp, iterator});
+                const auto karma_iterator     = KarmaBase.insert({record.karma, iterator});
 
-                if (iter != DataSet.end())
-                {
-                    RefData.insert({record.id, iter});
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
+                DataBaseLinks.insert({
+                    record.id,
+                    RecordReference{
+                        iterator,
+                        user_iterator,
+                        timestamp_iterator,
+                        karma_iterator
+                    }
+                });
+
+                return flag;
             }
             else
             {
@@ -128,12 +130,11 @@ class Database
         // Find obj by id, return nullptr if there is no object
         const Record* GetById(const string& id) const
         {
-            auto iter = RefData.find(id);
-
-            if (iter != RefData.end())
+            if (const auto iterator = DataBaseLinks.find(id); iterator != DataBaseLinks.end())
             {
-                auto iter_to_multi = (*iter).second;
-                return &(*iter_to_multi).first;
+                const auto recordreference_iterator = iterator->second;
+                const auto database_iterator        = recordreference_iterator.id_iterator;
+                return &(database_iterator->second);
             }
             else
             {
@@ -142,29 +143,10 @@ class Database
         }
 
         // Find than delete obj, if there is no obj return false
-        bool Erase(const string& id)
+/*        bool Erase(const string& id)
         {
-            auto iter = RefData.find(id);
 
-            if (iter != RefData.end())
-            {
-                auto iter_to_multi = (*iter).second;
-
-                TitleData.erase(iter_to_multi->second.title_iterator);
-                UserData.erase(iter_to_multi->second.user_iterator);
-                TimestampData.erase(iter_to_multi->second.timestamp_iterator);
-                KarmaData.erase(iter_to_multi->second.karma_iterator);
-
-                DataSet.erase(iter_to_multi);
-                RefData.erase(iter);
-
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
+        }*/
 
         // Analog: Count in diapasone
         // Goes from [low, high] of timestamp, call callback, if callback == false, stop iteration
@@ -175,103 +157,97 @@ class Database
 
         // Analog: Count in diapasone
         // Goes from [low, high] of karma, call callback, if callback == false, stop iteration
-        template <typename Callback>
+/*        template <typename Callback>
         void RangeByKarma(int low, int high, Callback callback) const
         {
-            auto low_iter = KarmaData.lower_bound(low);
-            auto high_iter = KarmaData.lower_bound(high);
-
-            auto db_low_iter = RefData.find(low_iter->second);
-            auto db_high_iter = RefData.find(high_iter->second);
-
-            for (auto iteration = db_low_iter->second; iteration != db_high_iter->second;)
-            {
-                if (callback((*iteration).first) == false)
-                {
-                    iteration = db_high_iter->second;
-                }
-                else
-                {
-                    ++iteration;
-                }
-            }
-
-        }
+        }*/
 
         // Analog: Count in diapasone
         // Goes from [low, high] of user, call callback, if callback == false, stop iteration
-        template <typename Callback>
+/*        template <typename Callback>
         void AllByUser(const string& user, Callback callback) const
         {
-            auto user_start = UserData.lower_bound(user);
+        }*/
 
-            auto db_user_start = RefData.find(user_start->second);
-
-            auto iteration = db_user_start->second;
-
-
-            while (callback((*iteration).first) == true && iteration != DataSet.end())
-            {
-                iteration++;
-            }
-        }
-
-
-        auto begin() const { return DataSet.begin(); }
-        auto end()   const { return DataSet.end(); }
         void Print() const
         {
             std::cerr << std::endl;
-
-            std::cerr << "TitleData" << " : " << std::endl
-                      << TitleData << std::endl;
-            std::cerr << "UserData" << " : " << std::endl
-                      << UserData << std::endl;
-            std::cerr << "TimestampData" << " : " << std::endl
-                      << TimestampData << std::endl;
-            std::cerr << "KarmaData" << " : " << std::endl
-                      << KarmaData << std::endl;
-
-            std::cerr << "[";
-            bool first = true;
-            for(const auto &pair : DataSet)
             {
-                if (!first)
+                std::cerr << "DataBaseLinks : " << std::endl << "\t {";
+                bool first = true;
+                for (const auto &pair : DataBaseLinks)
                 {
-                    std::cerr << ", ";
+                    if (!first)
+                    {
+                        std::cerr << ", ";
+                    }
+                    first = false;
+                    std::cerr << pair.first;
                 }
-                first = false;
-                std::cerr << "("
-                   << pair.first.id        << ", "
-                   << pair.first.title     << ", "
-                   << pair.first.user      << ", "
-                   << pair.first.timestamp << ", "
-                   << pair.first.karma     << ")";
+                std::cerr << "}" << std::endl;
             }
-            std::cerr << "]";
+            {
+                std::cerr << "DataBase : " << std::endl << "\t ";
+                bool first = true;
+                for (const auto &pair : DataBase)
+                {
+                    if (!first)
+                    {
+                        std::cerr << "," << std::endl << "\t ";
+                    }
+                    first = false;
+                    std::cerr << "{" << pair.first << " : " << pair.second << "}";
+                }
+                std::cerr << std::endl;
+            }
+            {
+                std::cerr << "UserBase : " << std::endl << "\t {";
+                bool first = true;
+                for (const auto &pair : UserBase)
+                {
+                    if (!first)
+                    {
+                        std::cerr << ", ";
+                    }
+                    first = false;
+                    std::cerr << pair.first;
+                }
+                std::cerr << "}" << std::endl;
+            }
+            {
+                std::cerr << "TimestampBase : " << std::endl << "\t {";
+                bool first = true;
+                for (const auto &pair : TimestampBase)
+                {
+                    if (!first)
+                    {
+                        std::cerr << ", ";
+                    }
+                    first = false;
+                    std::cerr << pair.first;
+                }
+                std::cerr << "}" << std::endl;
+            }
+            {
+                std::cerr << "KarmaBase : " << std::endl << "\t {";
+                bool first = true;
+                for (const auto &pair : KarmaBase)
+                {
+                    if (!first)
+                    {
+                        std::cerr << ", ";
+                    }
+                    first = false;
+                    std::cerr << pair.first;
+                }
+                std::cerr << "}" << std::endl;
+            }
             std::cerr << std::endl;
         }
-
-    private:
-        multimap<string, string> TitleData;
-        multimap<string, string> UserData;
-        multimap<int, string> TimestampData;
-        multimap<int, string> KarmaData;
-        multimap<Record, RecordRef> DataSet;
-        unordered_map<string, typename multimap<Record, RecordRef>::iterator, RecordHasher> RefData;
 };
 
 
-ostream& operator << (ostream& os, const Record &record)
-{
-        os << "("
-           << record.id        << ", "
-           << record.title     << ", "
-           << record.user      << ", "
-           << record.timestamp << ", "
-           << record.karma;
-    return os << ")";
-}
+
 
 void TestRangeBoundaries()
 {
@@ -283,16 +259,16 @@ void TestRangeBoundaries()
     ASSERT(db.Put({"id2", "O>>-<", "general2", 1536107260, bad_karma}));
     ASSERT(db.Put({"id7", "WIoFLY", "somebody", 1536107260, 500}));
     ASSERT(!db.Put({"id7", "WIoFLY", "somebody", 1536107260, 500}));
-
-    // std::cerr << *db.GetById("id10") << std::endl;
-    ASSERT_EQUAL(*db.GetById("id7"), (Record{"id7", "WIoFLY", "somebody", 1536107260, 500}));
-    ASSERT_EQUAL(db.GetById("id10"), nullptr);
-    ASSERT(db.Erase("id7"));
-    ASSERT(!db.Erase("id7"));
     db.Print();
 
 
-    int count = 0;
+    ASSERT_EQUAL(*db.GetById("id7"), (Record{"id7", "WIoFLY", "somebody", 1536107260, 500}));
+    /*ASSERT(db.Erase("id7"));
+    ASSERT_EQUAL(db.GetById("id10"), nullptr);
+    ASSERT(!db.Erase("id7"));*/
+
+
+/*    int count = 0;
     db.RangeByKarma(
         bad_karma,
         good_karma,
@@ -301,10 +277,10 @@ void TestRangeBoundaries()
             return true;
     });
 
-    ASSERT_EQUAL(2, count);
+    ASSERT_EQUAL(2, count);*/
 
 }
-
+/*
 void TestSameUser()
 {
     Database db;
@@ -324,7 +300,7 @@ void TestSameUser()
 
     ASSERT_EQUAL(2, count);
 }
-
+*/
 /*
 void TestReplacement()
 {
@@ -344,8 +320,8 @@ int main()
 {
     TestRunner tr;
     RUN_TEST(tr, TestRangeBoundaries);
-    RUN_TEST(tr, TestSameUser);
     /*
+    RUN_TEST(tr, TestSameUser);
     RUN_TEST(tr, TestReplacement);
     */
     return 0;
