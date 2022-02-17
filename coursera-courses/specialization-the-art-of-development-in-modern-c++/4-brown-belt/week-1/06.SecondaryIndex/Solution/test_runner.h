@@ -3,14 +3,23 @@
 
 
 //---------------------------------IMPLEMENTATION-----------------------------------------------//
-template <class T>
-std::ostream& operator << (std::ostream& os, const std::set<T>& s);
+template <class S>
+std::ostream& operator << (std::ostream& os, const std::set<S>& s);
 
-template <class K,  class V>
-std::ostream& operator << (std::ostream& os, const std::map<K, V>& m);
+template <class US>
+std::ostream& operator << (std::ostream& os, const std::unordered_set<US>& us);
 
-template <class K, class V, class F>
-std::ostream& operator << (std::ostream& os,const std::map<K, V, F>& m);
+template <class MS>
+std::ostream& operator << (std::ostream& os, const std::multiset<MS>& ms);
+
+template <class MF,  class MS>
+std::ostream& operator << (std::ostream& os, const std::map<MF, MS>& m);
+
+template <class UMF,  class UMS>
+std::ostream& operator << (std::ostream& os, const std::unordered_map<UMF, UMS>& um);
+
+template <class MMF,  class MMS>
+std::ostream& operator << (std::ostream& os, const std::multimap<MMF, MMS>& mm);
 
 template <class L>
 std::ostream& operator << (std::ostream& os, const std::vector<L>& l);
@@ -104,8 +113,8 @@ class TestRunner
 
 //------------------------------OUTPUT-OPERATOR-FOR-CONTAINERS----------------------------------//
 //-------------FOR-STD::SET
-template <class T>
-std::ostream& operator << (std::ostream& os, const std::set <T>& s)
+template <class S>
+std::ostream& operator << (std::ostream& os, const std::set <S>& s)
 {
     os << "{";
     bool first = true;
@@ -124,10 +133,51 @@ std::ostream& operator << (std::ostream& os, const std::set <T>& s)
   return os << "}";
 }
 
+//-------------FOR-STD::UNORDERED_SET
+template <class US>
+std::ostream& operator << (std::ostream& os, const std::unordered_set<US>& us)
+{
+    os << "{";
+    bool first = true;
+
+    for(const auto& x : us)
+    {
+        if (!first)
+        {
+            os << ", ";
+        }
+
+        first = false;
+        os << x;
+  }
+
+  return os << "}";
+}
+
+//-------------FOR-STD::MULTISET
+template <class MS>
+std::ostream& operator << (std::ostream& os, const std::multiset<MS>& ms)
+{
+    os << "{";
+    bool first = true;
+
+    for(const auto& x : ms)
+    {
+        if (!first)
+        {
+            os << ", ";
+        }
+
+        first = false;
+        os << x;
+  }
+
+  return os << "}";
+}
 
 //-------------FOR-STD::MAP
-template <class K, class V>
-std::ostream& operator << (std::ostream& os,const std::map<K, V>& m)
+template <class MF,  class MS>
+std::ostream& operator << (std::ostream& os, const std::map<MF, MS>& m)
 {
     os << "{";
     bool first = true;
@@ -145,14 +195,14 @@ std::ostream& operator << (std::ostream& os,const std::map<K, V>& m)
     return os <<"}";
 }
 
-//-------------FOR-STD::MAP-ALOC
-template <class K, class V, class F>
-std::ostream& operator << (std::ostream& os,const std::map<K, V, F>& m)
+//-------------FOR-STD::UNORDERED_MAP
+template <class UMF,  class UMS>
+std::ostream& operator << (std::ostream& os, const std::unordered_map<UMF, UMS>& um)
 {
     os << "{";
     bool first = true;
 
-    for(const auto& kv : m)
+    for(const auto& kv : um)
     {
         if (!first)
         {
@@ -162,9 +212,28 @@ std::ostream& operator << (std::ostream& os,const std::map<K, V, F>& m)
         first = false;
         os << kv.first << ": " << kv.second;
     }
-    return os <<"}.";
+    return os <<"}";
 }
 
+//-------------FOR-STD::MULTIMAP
+template <class MMF,  class MMS>
+std::ostream& operator << (std::ostream& os, const std::multimap<MMF, MMS>& mm)
+{
+    os << "{";
+    bool first = true;
+
+    for(const auto& kv : mm)
+    {
+        if (!first)
+        {
+            os << ", ";
+        }
+
+        first = false;
+        os << kv.first << ": " << kv.second;
+    }
+    return os <<"}";
+}
 
 //-------------FOR-STD::VECTOR
 template <class L>
