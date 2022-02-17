@@ -1,9 +1,10 @@
 #include "test_runner.h"
 
-#include <iostream>
-#include <map>
-#include <string>
 #include <unordered_map>
+// #include <multimap>
+#include <iostream>
+#include <string>
+#include <map>
 
 using namespace std;
 
@@ -143,31 +144,94 @@ class Database
         }
 
         // Find than delete obj, if there is no obj return false
-/*        bool Erase(const string& id)
+        bool Erase(const string& id)
         {
+            if (const auto iterator = DataBaseLinks.find(id); iterator != DataBaseLinks.end())
+            {
+                const auto recordreference_iterator = iterator->second;
+                const auto database_iterator        = recordreference_iterator.id_iterator;
+                const auto userbase_iterator        = recordreference_iterator.user_iterator;
+                const auto timestampbase_iterator   = recordreference_iterator.timestamp_iterator;
+                const auto karmabase_iterator       = recordreference_iterator.karma_iterator;
+                KarmaBase.erase(karmabase_iterator);
+                TimestampBase.erase(timestampbase_iterator);
+                UserBase.erase(userbase_iterator);
+                DataBase.erase(database_iterator);
+                DataBaseLinks.erase(iterator);
 
-        }*/
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
 
-        // Analog: Count in diapasone
+        // Analog: Count in diapason
         // Goes from [low, high] of timestamp, call callback, if callback == false, stop iteration
-/*        template <typename Callback>
+        template <typename Callback>
         void RangeByTimestamp(int low, int high, Callback callback) const
         {
-        }*/
+            const auto low_iterator = TimestampBase.lower_bound(low);
+            const auto high_iterator = TimestampBase.upper_bound(high);
 
-        // Analog: Count in diapasone
+            for (auto iteration = low_iterator; iteration != high_iterator;)
+            {
+                const auto record = (iteration->second)->second;
+                if (callback(record) == true)
+                {
+                    ++iteration;
+                }
+                else
+                {
+                    iteration = high_iterator;
+                }
+            }
+        }
+
+        // Analog: Count in diapason
         // Goes from [low, high] of karma, call callback, if callback == false, stop iteration
-/*        template <typename Callback>
+        template <typename Callback>
         void RangeByKarma(int low, int high, Callback callback) const
         {
-        }*/
+            const auto low_iterator = KarmaBase.lower_bound(low);
+            const auto high_iterator = KarmaBase.upper_bound(high);
+
+            for (auto iteration = low_iterator; iteration != high_iterator;)
+            {
+                const auto record = (iteration->second)->second;
+                if (callback(record) == true)
+                {
+                    ++iteration;
+                }
+                else
+                {
+                    iteration = high_iterator;
+                }
+            }
+        }
 
         // Analog: Count in diapasone
         // Goes from [low, high] of user, call callback, if callback == false, stop iteration
-/*        template <typename Callback>
+        template <typename Callback>
         void AllByUser(const string& user, Callback callback) const
         {
-        }*/
+            const auto low_iterator = UserBase.lower_bound(user);
+            const auto high_iterator = UserBase.upper_bound(user);
+
+            for (auto iteration = low_iterator; iteration != high_iterator;)
+            {
+                const auto record = (iteration->second)->second;
+                if (callback(record) == true)
+                {
+                    ++iteration;
+                }
+                else
+                {
+                    iteration = high_iterator;
+                }
+            }
+        }
 
         void Print() const
         {
@@ -259,16 +323,15 @@ void TestRangeBoundaries()
     ASSERT(db.Put({"id2", "O>>-<", "general2", 1536107260, bad_karma}));
     ASSERT(db.Put({"id7", "WIoFLY", "somebody", 1536107260, 500}));
     ASSERT(!db.Put({"id7", "WIoFLY", "somebody", 1536107260, 500}));
-    db.Print();
-
+    // db.Print();
 
     ASSERT_EQUAL(*db.GetById("id7"), (Record{"id7", "WIoFLY", "somebody", 1536107260, 500}));
-    /*ASSERT(db.Erase("id7"));
+    ASSERT(db.Erase("id7"));
     ASSERT_EQUAL(db.GetById("id10"), nullptr);
-    ASSERT(!db.Erase("id7"));*/
+    ASSERT(!db.Erase("id7"));
+    // db.Print();
 
-
-/*    int count = 0;
+    int count = 0;
     db.RangeByKarma(
         bad_karma,
         good_karma,
@@ -277,18 +340,17 @@ void TestRangeBoundaries()
             return true;
     });
 
-    ASSERT_EQUAL(2, count);*/
+    ASSERT_EQUAL(2, count);
 
 }
-/*
+
 void TestSameUser()
 {
     Database db;
     db.Put({"id1", "Don't sell", "master", 1536107260, 1000});
     db.Put({"id2", "Rethink life", "master", 1536107260, 2000});
 
-    db.Print();
-
+    // db.Print();
 
     int count = 0;
     db.AllByUser(
@@ -300,8 +362,8 @@ void TestSameUser()
 
     ASSERT_EQUAL(2, count);
 }
-*/
-/*
+
+
 void TestReplacement()
 {
     const string final_body = "Feeling sad";
@@ -315,14 +377,12 @@ void TestReplacement()
     ASSERT(record != nullptr);
     ASSERT_EQUAL(final_body, record->title);
 }
-*/
+
 int main()
 {
     TestRunner tr;
     RUN_TEST(tr, TestRangeBoundaries);
-    /*
     RUN_TEST(tr, TestSameUser);
     RUN_TEST(tr, TestReplacement);
-    */
     return 0;
 }
