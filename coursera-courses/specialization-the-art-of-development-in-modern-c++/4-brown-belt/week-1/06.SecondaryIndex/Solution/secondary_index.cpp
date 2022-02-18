@@ -84,7 +84,7 @@ class Database
             }
         };
 
-        struct RecordHasher
+/*        struct RecordHasher
         {
             size_t operator() (const string &str) const
             {
@@ -92,9 +92,9 @@ class Database
                 const hash<string> id_hasher;
                 return coef * id_hasher(str);
             }
-        };
+        };*/
         //-----------------------------------------------------------------------------------------//
-        unordered_map<IdValue, RecordReference, RecordHasher>  DataBaseLinks;
+        unordered_map<IdValue, RecordReference>  DataBaseLinks;
         map<IdValue, Record>                                   DataBase;
         multimap<UserValue, DataBaseIterator>                  UserBase;
         multimap<TimestampValue, DataBaseIterator>             TimestampBase;
@@ -167,6 +167,24 @@ class Database
             }
         }
 
+
+        template <typename Iterator, typename Callback>
+        inline void LookUp(const Iterator low, const Iterator high, Callback callback) const
+        {
+            for (auto iteration = low; iteration != high;)
+            {
+                const auto record = (iteration->second)->second;
+                if (callback(record) == false)
+                {
+                    break;
+                }
+                else
+                {
+                    ++iteration;
+                }
+            }
+        }
+
         // Analog: Count in diapason
         // Goes from [low, high] of timestamp, call callback, if callback == false, stop iteration
         template <typename Callback>
@@ -174,19 +192,7 @@ class Database
         {
             const auto low_iterator = TimestampBase.lower_bound(low);
             const auto high_iterator = TimestampBase.upper_bound(high);
-
-            for (auto iteration = low_iterator; iteration != high_iterator;)
-            {
-                const auto record = (iteration->second)->second;
-                if (callback(record) == true)
-                {
-                    ++iteration;
-                }
-                else
-                {
-                    iteration = high_iterator;
-                }
-            }
+            LookUp(low_iterator, high_iterator, callback);
         }
 
         // Analog: Count in diapason
@@ -196,19 +202,7 @@ class Database
         {
             const auto low_iterator = KarmaBase.lower_bound(low);
             const auto high_iterator = KarmaBase.upper_bound(high);
-
-            for (auto iteration = low_iterator; iteration != high_iterator;)
-            {
-                const auto record = (iteration->second)->second;
-                if (callback(record) == true)
-                {
-                    ++iteration;
-                }
-                else
-                {
-                    iteration = high_iterator;
-                }
-            }
+            LookUp(low_iterator, high_iterator, callback);
         }
 
         // Analog: Count in diapasone
@@ -218,20 +212,10 @@ class Database
         {
             const auto low_iterator = UserBase.lower_bound(user);
             const auto high_iterator = UserBase.upper_bound(user);
-
-            for (auto iteration = low_iterator; iteration != high_iterator;)
-            {
-                const auto record = (iteration->second)->second;
-                if (callback(record) == true)
-                {
-                    ++iteration;
-                }
-                else
-                {
-                    iteration = high_iterator;
-                }
-            }
+            LookUp(low_iterator, high_iterator, callback);
         }
+
+
 
         void Print() const
         {
