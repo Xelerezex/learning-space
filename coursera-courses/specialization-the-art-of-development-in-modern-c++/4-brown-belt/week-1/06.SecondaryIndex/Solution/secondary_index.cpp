@@ -93,11 +93,7 @@ class Database
         // True, if insertion is successfull, else false
         bool Put(const Record& record)
         {
-            if (
-                const auto [iterator, flag] =
-                DataBase.insert({record.id, {record, UserBase.end(), TimestampBase.end(), KarmaBase.end()}});
-                flag == true
-                )
+            if (const auto [iterator, flag] = DataBase.insert({record.id, {record, {}, {}, {}}}); flag == true)
             {
                 const Record * record_pointer = &(iterator->second).record;
 
