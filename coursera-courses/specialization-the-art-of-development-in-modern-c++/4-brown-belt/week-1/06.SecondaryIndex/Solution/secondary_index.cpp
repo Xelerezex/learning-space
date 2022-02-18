@@ -1,7 +1,6 @@
 #include "test_runner.h"
 
 #include <unordered_map>
-// #include <multimap>
 #include <iostream>
 #include <string>
 #include <map>
@@ -52,73 +51,63 @@ class Database
     private:
         //-----------------------------------------------------------------------------------------//
         using IdValue           = std::string;
+        using PointerRecord     = const Record *;
         using UserValue         = std::string;
         using TimestampValue    = int;
         using KarmaValue        = int;
-        using DataBaseIterator  = typename map<IdValue, Record>::iterator;
-        using UserIterator      = typename multimap<UserValue, DataBaseIterator>::iterator;
-        using TimestampIterator = typename multimap<TimestampValue, DataBaseIterator>::iterator;
-        using KarmaIterator     = typename multimap<KarmaValue, DataBaseIterator>::iterator;
+        using UserIterator      = typename multimap<UserValue, PointerRecord>::iterator;
+        using TimestampIterator = typename multimap<TimestampValue, PointerRecord>::iterator;
+        using KarmaIterator     = typename multimap<KarmaValue, PointerRecord>::iterator;
         //-----------------------------------------------------------------------------------------//
-        struct RecordReference
+        struct RecordWithReference
         {
-            DataBaseIterator  id_iterator;
+            Record            record;
             UserIterator      user_iterator;
             TimestampIterator timestamp_iterator;
             KarmaIterator     karma_iterator;
 
-            bool operator== (const RecordReference &other) const
+            bool operator== (const RecordWithReference &other) const
             {
-                return (*id_iterator        == *other.id_iterator)
+                return (record              == record)
                     && (*user_iterator      == *other.user_iterator)
                     && (*timestamp_iterator == *other.timestamp_iterator)
                     && (*karma_iterator     == *other.karma_iterator);
             }
 
-            bool operator< (const RecordReference &other) const
+            bool operator< (const RecordWithReference &other) const
             {
-                return (id_iterator->first        < other.id_iterator->first)
+                return (record                    < record)
                     && (user_iterator->first      < other.user_iterator->first)
                     && (timestamp_iterator->first < other.timestamp_iterator->first)
                     && (karma_iterator->first     < other.karma_iterator->first);
             }
         };
 
-/*        struct RecordHasher
-        {
-            size_t operator() (const string &str) const
-            {
-                const size_t coef = 2213;
-                const hash<string> id_hasher;
-                return coef * id_hasher(str);
-            }
-        };*/
         //-----------------------------------------------------------------------------------------//
-        unordered_map<IdValue, RecordReference>  DataBaseLinks;
-        map<IdValue, Record>                                   DataBase;
-        multimap<UserValue, DataBaseIterator>                  UserBase;
-        multimap<TimestampValue, DataBaseIterator>             TimestampBase;
-        multimap<KarmaValue, DataBaseIterator>                 KarmaBase;
+        unordered_map<IdValue, RecordWithReference>         DataBase;
+        multimap<UserValue, PointerRecord>                  UserBase;
+        multimap<TimestampValue, PointerRecord>             TimestampBase;
+        multimap<KarmaValue, PointerRecord>                 KarmaBase;
         //-----------------------------------------------------------------------------------------//
     public:
         // True, if insertion is successfull, else false
         bool Put(const Record& record)
         {
-            if (const auto [iterator, flag] = DataBase.insert({record.id, record}); flag == true)
+            if (
+                const auto [iterator, flag] =
+                DataBase.insert({record.id, {record, UserBase.end(), TimestampBase.end(), KarmaBase.end()}});
+                flag == true
+                )
             {
-                const auto user_iterator      = UserBase.insert({record.user, iterator});
-                const auto timestamp_iterator = TimestampBase.insert({record.timestamp, iterator});
-                const auto karma_iterator     = KarmaBase.insert({record.karma, iterator});
+                const Record * record_pointer = &(iterator->second).record;
 
-                DataBaseLinks.insert({
-                    record.id,
-                    RecordReference{
-                        iterator,
-                        user_iterator,
-                        timestamp_iterator,
-                        karma_iterator
-                    }
-                });
+                const auto user_iterator      = UserBase.insert({record.user, record_pointer});
+                const auto timestamp_iterator = TimestampBase.insert({record.timestamp, record_pointer});
+                const auto karma_iterator     = KarmaBase.insert({record.karma, record_pointer});
+
+                (iterator->second).user_iterator = user_iterator;
+                (iterator->second).timestamp_iterator = timestamp_iterator;
+                (iterator->second).karma_iterator = karma_iterator;
 
                 return flag;
             }
@@ -131,11 +120,10 @@ class Database
         // Find obj by id, return nullptr if there is no object
         const Record* GetById(const string& id) const
         {
-            if (const auto iterator = DataBaseLinks.find(id); iterator != DataBaseLinks.end())
+            if (const auto iterator = DataBase.find(id); iterator != DataBase.end())
             {
-                const auto recordreference_iterator = iterator->second;
-                const auto database_iterator        = recordreference_iterator.id_iterator;
-                return &(database_iterator->second);
+                const auto record_reference = &iterator->second.record;
+                return record_reference;
             }
             else
             {
@@ -146,18 +134,18 @@ class Database
         // Find than delete obj, if there is no obj return false
         bool Erase(const string& id)
         {
-            if (const auto iterator = DataBaseLinks.find(id); iterator != DataBaseLinks.end())
+            if (const auto iterator = DataBase.find(id); iterator != DataBase.end())
             {
-                const auto recordreference_iterator = iterator->second;
-                const auto database_iterator        = recordreference_iterator.id_iterator;
-                const auto userbase_iterator        = recordreference_iterator.user_iterator;
-                const auto timestampbase_iterator   = recordreference_iterator.timestamp_iterator;
-                const auto karmabase_iterator       = recordreference_iterator.karma_iterator;
+                const auto database_iterator        = iterator;
+                const auto userbase_iterator        = database_iterator->second.user_iterator;
+                const auto timestampbase_iterator   = database_iterator->second.timestamp_iterator;
+                const auto karmabase_iterator       = database_iterator->second.karma_iterator;
+
                 KarmaBase.erase(karmabase_iterator);
                 TimestampBase.erase(timestampbase_iterator);
                 UserBase.erase(userbase_iterator);
                 DataBase.erase(database_iterator);
-                DataBaseLinks.erase(iterator);
+
 
                 return true;
             }
@@ -173,8 +161,8 @@ class Database
         {
             for (auto iteration = low; iteration != high;)
             {
-                const auto record = (iteration->second)->second;
-                if (callback(record) == false)
+                // const Record * record = iteration->second;
+                if (callback(*iteration->second) == false)
                 {
                     break;
                 }
@@ -219,21 +207,6 @@ class Database
 
         void Print() const
         {
-            std::cerr << std::endl;
-            {
-                std::cerr << "DataBaseLinks : " << std::endl << "\t {";
-                bool first = true;
-                for (const auto &pair : DataBaseLinks)
-                {
-                    if (!first)
-                    {
-                        std::cerr << ", ";
-                    }
-                    first = false;
-                    std::cerr << pair.first;
-                }
-                std::cerr << "}" << std::endl;
-            }
             {
                 std::cerr << "DataBase : " << std::endl << "\t ";
                 bool first = true;
@@ -244,7 +217,7 @@ class Database
                         std::cerr << "," << std::endl << "\t ";
                     }
                     first = false;
-                    std::cerr << "{" << pair.first << " : " << pair.second << "}";
+                    std::cerr << "{" << pair.first << " : " << pair.second.record << "}";
                 }
                 std::cerr << std::endl;
             }
