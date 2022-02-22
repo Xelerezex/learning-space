@@ -1,5 +1,7 @@
 #pragma once
 
+#include "test_runner.h"
+
 #include <istream>
 #include <sstream>
 #include <vector>
@@ -20,6 +22,13 @@ class Node
         template <typename T>
         T AttributeValue(const string& name) const;
 
+        void Print() const
+        {
+            cerr << "name:\n\t" << name << endl;
+            // cerr << "children:\n\t" << children << endl;
+            cerr << "attrs:\n\t" << attrs << endl;
+        }
+
     private:
         string name;
         vector<Node> children;
@@ -33,6 +42,10 @@ class Document
 
         const Node& GetRoot() const;
 
+        void Print() const
+        {
+            root.Print();
+        }
     private:
         Node root;
 };

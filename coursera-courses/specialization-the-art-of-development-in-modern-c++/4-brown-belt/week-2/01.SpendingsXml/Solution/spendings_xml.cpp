@@ -49,7 +49,17 @@ string MostExpensiveCategory(
 
 vector<Spending> LoadFromXml(istream& input)
 {
-    // Реализуйте эту функцию с помощью библиотеки xml.h
+    Document doc = Load(input);
+    vector<Spending> output;
+
+    for (const auto &child : doc.GetRoot().Children())
+    {
+        output.push_back(Spending{
+            child.AttributeValue<string>("category"),
+            child.AttributeValue<int>("amount")
+        });
+    }
+    return output;
 }
 
 void TestLoadFromXml()

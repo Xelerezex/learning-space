@@ -4,6 +4,7 @@
 #include <iostream>
 using namespace std;
 
+// Splits string_view to two parts, by separator
 pair<string_view, string_view> Split(string_view line, char by)
 {
     size_t pos = line.find(by);
@@ -19,6 +20,7 @@ pair<string_view, string_view> Split(string_view line, char by)
     }
 }
 
+// Deletes front spaces in string_view
 string_view Lstrip(string_view line)
 {
     while (!line.empty() && isspace(line[0]))
@@ -28,6 +30,7 @@ string_view Lstrip(string_view line)
     return line;
 }
 
+// Deletes Quotes in string_view
 string_view Unquote(string_view value)
 {
     if (!value.empty() && value.front() == '"')
