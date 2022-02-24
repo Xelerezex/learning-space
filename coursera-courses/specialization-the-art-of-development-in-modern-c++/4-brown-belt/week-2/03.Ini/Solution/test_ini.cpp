@@ -1,8 +1,5 @@
 #include "test_runner.h"
-
 #include "ini.h"
-
-#include <sstream>
 
 using namespace std;
 
@@ -25,6 +22,7 @@ jewelery=25000
     );
 
     const Ini::Document doc = Ini::Load(input);
+/*    std::cerr << "OK!" << std::endl;*/
 
     ASSERT_EQUAL(doc.SectionCount(), 2u);
 
