@@ -17,15 +17,17 @@ void TestAll();
 
 unique_ptr<StatsAggregator> ReadAggregators(istream& input)
 {
+    using namespace StatsAggregators;
+
     const unordered_map<string, std::function<unique_ptr<StatsAggregator>()>> known_builders = {
-        {"sum", [] { return make_unique<SumStatsAggregator>(); }},
-        {"min", [] { return make_unique<MinStatsAggregator>(); }},
-        {"max", [] { return make_unique<MaxStatsAggregator>(); }},
-        {"avg", [] { return make_unique<AverageStatsAggregator>(); }},
-        {"mode", [] { return make_unique<ModeStatsAggregator>(); }}
+        {"sum", [] { return make_unique<Sum>(); }},
+        {"min", [] { return make_unique<Min>(); }},
+        {"max", [] { return make_unique<Max>(); }},
+        {"avg", [] { return make_unique<Average>(); }},
+        {"mode", [] { return make_unique<Mode>(); }}
     };
 
-    auto result = make_unique<CompositeStatsAggregator>();
+    auto result = make_unique<Composite>();
 
     int aggr_count;
     input >> aggr_count;
@@ -58,12 +60,14 @@ int main()
 
 void TestAll()
 {
+    using namespace StatsAggregators;
+
     TestRunner tr;
-    RUN_TEST(tr, TestSumStatsAggregator);
-    RUN_TEST(tr, TestMinStatsAggregator);
-    RUN_TEST(tr, TestMaxStatsAggregator);
-    RUN_TEST(tr, TestAverageStatsAggregator);
-    RUN_TEST(tr, TestModeStatsAggregator);
-    RUN_TEST(tr, TestCompositeStatsAggregator);
+    RUN_TEST(tr, TestSum);
+    RUN_TEST(tr, TestMin);
+    RUN_TEST(tr, TestMax);
+    RUN_TEST(tr, TestAverage);
+    RUN_TEST(tr, TestMode);
+    RUN_TEST(tr, TestComposite);
 }
 
