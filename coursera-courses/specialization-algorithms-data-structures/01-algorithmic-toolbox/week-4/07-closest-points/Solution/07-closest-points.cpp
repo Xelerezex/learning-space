@@ -6,25 +6,132 @@
 #include <string>
 #include <cmath>
 
-using std::vector;
-using std::string;
-using std::pair;
-using std::min;
-
-
-double minimal_distance(vector<int> x, vector<int> y) {
-  //write your code here
-  return 0.;
+double distance(
+    const std::pair<int64_t, int64_t>& lhs,
+    const std::pair<int64_t, int64_t>& rhs
+)
+{
+    return sqrt(
+               (rhs.first  - lhs.first)  * (rhs.first  - lhs.first)
+             + (rhs.second - lhs.second) * (rhs.second - lhs.second)
+           );
 }
 
+
+bool less_than_on_x(std::pair<int64_t, int64_t>& lhs, std::pair<int64_t, int64_t>& rhs)
+{
+    return (lhs.first == rhs.first) ? (lhs.second < rhs.second) : (lhs.first < rhs.first);
+}
+
+
+bool less_than_on_y(std::pair<int64_t, int64_t>& lhs, std::pair<int64_t, int64_t>& rhs)
+{
+    return (lhs.second == rhs.second) ? (lhs.first < rhs.first) : (lhs.second < rhs.second);
+}
+
+
+void merge(std::vector<std::pair<int64_t, int64_t>>& points, int64_t start, int64_t end) {
+    if (start >= end)
+    {
+        return;
+    }
+
+    int64_t middle = start + (end - start) / 2;
+    int64_t s_iter = start;
+    int64_t m_iter = middle + 1;
+    std::vector<std::pair<int64_t, int64_t>> data;
+    data.reserve(end - start + 1);
+
+    while (s_iter <= middle and m_iter <= end)
+    {
+        if (less_than_on_y(points[s_iter], points[m_iter]))
+        {
+            data.emplace_back(points[s_iter].first, points[s_iter].second);
+            s_iter++;
+        }
+        else
+        {
+            data.emplace_back(points[m_iter].first, points[m_iter].second);
+            m_iter++;
+        }
+    }
+
+    while (s_iter <= middle)
+    {
+        data.emplace_back(points[s_iter].first, points[s_iter].second);
+        s_iter++;
+    }
+
+    while (m_iter <= end)
+    {
+        data.emplace_back(points[m_iter].first, points[m_iter].second);
+        m_iter++;
+    }
+
+    for (size_t it = 0; it < data.size(); ++it)
+    {
+        points[start + it] = data.at(it);
+    }
+}
+
+double minimal_distance(std::vector<std::pair<int64_t, int64_t>>& points, int64_t start, int64_t end)
+{
+    if (start >= end)
+    {
+        return std::numeric_limits<double>::max();
+    };
+
+    if (end - start == 1)
+    {
+        if (not less_than_on_y(points[start], points[end]))
+        {
+            std::swap(points[start], points[end]);
+        }
+
+        return distance(points[start], points[end]);
+    }
+
+    int64_t middle = start + (end - start) / 2;
+    std::pair<int64_t, int64_t> middle_point = points.at(middle);
+
+    double minimal = std::min(minimal_distance(points, start, middle), minimal_distance(points, middle + 1, end));
+
+    std::vector<std::pair<int64_t, int64_t>> strip_points;
+
+    merge(points, start, end);
+    for (int64_t i = start; i <= end; i++)
+    {
+        if (std::abs(points[i].first - middle_point.first) <= minimal)
+        {
+            strip_points.emplace_back(points[i].first, points[i].second);
+        }
+    }
+
+    for (size_t i = 0; i < strip_points.size() - 1; i++)
+    {
+        for (size_t j = i + 1; j < strip_points.size() and j - i < 8; j++)
+        {
+            minimal = std::min(minimal, distance(strip_points[i], strip_points[j]));
+        }
+    }
+    return minimal;
+}
+
+
 int main() {
-  size_t n;
-  std::cin >> n;
-  vector<int> x(n);
-  vector<int> y(n);
-  for (size_t i = 0; i < n; i++) {
-    std::cin >> x[i] >> y[i];
-  }
-  std::cout << std::fixed;
-  std::cout << std::setprecision(9) << minimal_distance(x, y) << "\n";
+    size_t points_count;
+    std::cin >> points_count;
+    std::vector<std::pair<int64_t, int64_t>> points(points_count);
+    int64_t x, y;
+    for (size_t it = 0; it < points_count; it++)
+    {
+        std::cin >> x >> y;
+        points[it] = {x, y};
+    }
+
+    sort(points.begin(), points.end(), &less_than_on_x);
+
+    std::cout << std::fixed;
+    std::cout << std::setprecision(9) << minimal_distance(points, 0, points.size() - 1)
+              << std::endl;
 }
