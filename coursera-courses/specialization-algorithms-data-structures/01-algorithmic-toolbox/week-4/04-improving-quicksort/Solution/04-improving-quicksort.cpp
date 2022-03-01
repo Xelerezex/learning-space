@@ -1,45 +1,75 @@
+#include <algorithm>
 #include <iostream>
 #include <vector>
-#include <cstdlib>
+#include <random>
 
-using std::vector;
-using std::swap;
+template<class RandomIt>
+std::pair<RandomIt, RandomIt> three_way_partition(RandomIt start, RandomIt end) {
+    end = prev(end);                       // Last pointing not to end(), but on last element
+    const auto& pivot = *end;              // Pivot value
 
-int partition2(vector<int> &a, int l, int r) {
-  int x = a[l];
-  int j = l;
-  for (int i = l + 1; i <= r; i++) {
-    if (a[i] <= x) {
-      j++;
-      swap(a[i], a[j]);
+    RandomIt iter_first  = start;
+    RandomIt iter_second = start;
+    RandomIt iter_end    = end;
+
+    while (iter_second != iter_end)
+    {
+        if (*iter_second < pivot)
+        {
+            std::iter_swap(iter_first, iter_second);
+            iter_first  = next(iter_first);
+            iter_second = next(iter_second);
+        }
+        else if (*iter_second > pivot)
+        {
+            iter_end = prev(iter_end);
+            std::iter_swap(iter_second, iter_end);
+        }
+        else
+        {
+            iter_second = next(iter_second);
+        }
     }
-  }
-  swap(a[l], a[j]);
-  return j;
+
+    std::iter_swap(iter_second, end);
+
+    iter_second = next(iter_second);
+    return {iter_first, iter_second};
 }
 
-void randomized_quick_sort(vector<int> &a, int l, int r) {
-  if (l >= r) {
-    return;
-  }
+template<typename RandomIt>
+void randomized_quick_sort(RandomIt start, RandomIt end)
+{
+    using distr = std::uniform_int_distribution<typename RandomIt::difference_type>;
 
-  int k = l + rand() % (r - l + 1);
-  swap(a[l], a[k]);
-  int m = partition2(a, l, r);
+    if (std::distance(start, end) > 1)
+    {
+        std::mt19937 gen;
+        distr distribution(0, std::distance(start, end) - 1);
+        std::iter_swap(std::next(start, distribution(gen)), prev(end, 1));
 
-  randomized_quick_sort(a, l, m - 1);
-  randomized_quick_sort(a, m + 1, r);
+        const auto [first_bound, second_bound] = three_way_partition(start, end);
+        randomized_quick_sort(start, first_bound);
+        randomized_quick_sort(second_bound, end);
+    }
 }
 
-int main() {
-  int n;
-  std::cin >> n;
-  vector<int> a(n);
-  for (size_t i = 0; i < a.size(); ++i) {
-    std::cin >> a[i];
-  }
-  randomized_quick_sort(a, 0, a.size() - 1);
-  for (size_t i = 0; i < a.size(); ++i) {
-    std::cout << a[i] << ' ';
-  }
+int main()
+{
+    size_t vector_size;
+    std::cin >> vector_size;
+
+    std::vector<size_t> data(vector_size);
+
+    for (size_t it = 0; it < data.size(); ++it)
+    {
+        std::cin >> data[it];
+    }
+
+    randomized_quick_sort(data.begin(), data.end());
+
+    for (size_t it = 0; it < data.size(); ++it)
+    {
+        std::cout << data[it] << ' ';
+    }
 }
