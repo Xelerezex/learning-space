@@ -1,407 +1,359 @@
-// Файл stats_aggregator.h
+// dynamic_cast
 
-#pragma once
-
-#include <ostream>
-#include <limits>
-#include <memory>
-#include <vector>
-#include <optional>
-#include <unordered_map>
-
-struct StatsAggregator
+bool Collide(const GameObject& first, const GameObject& second)
 {
-    virtual ~StatsAggregator()
+    if (auto* unit = dynamic_cast<const Unit*>(&first))
     {
+        if (auto* unit2 = dynamic_cast<const Unit*>(&second))
+        {
+            return geo2d::Collide(unit->GetPosition(), unit2->GetPosition());
+        }
+        else if (auto* building = dynamic_cast<const Building*>(&second))
+        {
+            return geo2d::Collide(unit->GetPosition(), building->GetGeometry());
+        }
+        else if (auto* tower = dynamic_cast<const Tower*>(&second))
+        {
+            return geo2d::Collide(unit->GetPosition(), tower->GetGeometry());
+        }
+        else if (auto* fence = dynamic_cast<const Fence*>(&second))
+        {
+            return geo2d::Collide(unit->GetPosition(), fence->GetGeometry());
+        }
+        else
+        {
+            throw std::runtime_error("Failed to cast second to any known game object");
+        }
     }
-
-    virtual void Process(int value) = 0;
-    virtual void PrintValue(std::ostream& out) const = 0;
-};
-
-namespace StatsAggregators
-{
-
-class Sum : public StatsAggregator
-{
-public:
-    void Process(int value) override;
-    void PrintValue(std::ostream& out) const override;
-
-private:
-    int sum = 0;
-};
-
-class Min : public StatsAggregator
-{
-public:
-    void Process(int value) override;
-    void PrintValue(std::ostream& out) const override;
-
-private:
-    std::optional<int> current_min;
-};
-
-class Max : public StatsAggregator
-{
-public:
-    void Process(int value) override;
-    void PrintValue(std::ostream& out) const override;
-
-private:
-    std::optional<int> current_max;
-};
-
-class Average : public StatsAggregator
-{
-public:
-    void Process(int value) override;
-    void PrintValue(std::ostream& out) const override;
-
-private:
-    int sum = 0;
-    int total = 0;
-};
-
-class Mode : public StatsAggregator
-{
-public:
-    void Process(int value) override;
-    void PrintValue(std::ostream& out) const override;
-
-private:
-    std::unordered_map<int, int> count;
-    std::optional<int> mode;
-};
-
-class Composite : public StatsAggregator
-{
-public:
-    void Process(int value) override;
-    void PrintValue(std::ostream& output) const override;
-
-    void Add(std::unique_ptr<StatsAggregator> aggr);
-
-private:
-    std::vector<std::unique_ptr<StatsAggregator>> aggregators;
-};
-
-void TestSum();
-void TestMin();
-void TestMax();
-void TestAverage();
-void TestMode();
-void TestComposite();
-
+    else if (auto* building = dynamic_cast<const Building*>(&first))
+    {
+        ...
+    } ...
 }
 
-// Файл stats_aggregator.cpp
+// doble dispatch
 
-#include "stats_aggregator.h"
+#include "geo2d.h"
+#include "game_object.h"
+
+#include "test_runner.h"
+
+#include <vector>
+#include <memory>
 
 using namespace std;
-
-namespace StatsAggregators
-{
 
 template <typename T>
-ostream& operator << (ostream& os, const optional<T>& v)
+struct Collider : GameObject
 {
-    if (v)
+    bool Collide(const GameObject& that) const override
     {
-        os << *v;
-    } else
-    {
-        os << "undefined";
+        return that.CollideWith(static_cast<const T&>(*this));
     }
-    return os;
-}
+};
 
-void Composite::Process(int value)
+class Unit : public Collider<Unit>
 {
-    for (auto& aggr : aggregators)
+public:
+    Unit(geo2d::Point position) : position_(position)
     {
-        aggr->Process(value);
     }
-}
 
-void Composite::PrintValue(std::ostream& output) const
-{
-    for (const auto& aggr : aggregators)
+    geo2d::Point GetPosition() const
     {
-        aggr->PrintValue(output);
-        output << '\n';
+        return position_;
     }
-}
 
-void Composite::Add(std::unique_ptr<StatsAggregator> aggr)
-{
-    aggregators.push_back(std::move(aggr));
-}
+    bool CollideWith(const Unit& that) const override;
+    bool CollideWith(const Building& that) const override;
+    bool CollideWith(const Tower& that) const override;
+    bool CollideWith(const Fence& that) const override;
 
-void Sum::Process(int value)
-{
-    sum += value;
-}
+private:
+    geo2d::Point position_;
+};
 
-void Sum::PrintValue(std::ostream& out) const
+class Building : public Collider<Building>
 {
-    out << "Sum is " << sum;
-}
-
-void Min::Process(int value)
-{
-    if (!current_min || value < *current_min)
+public:
+    Building(geo2d::Rectangle geometry)
+        : geometry_(geometry)
     {
-        current_min = value;
     }
-}
 
-void Min::PrintValue(std::ostream& out) const
-{
-    out << "Min is " << current_min;
-}
-
-void Max::Process(int value)
-{
-    if (!current_max || value > *current_max)
+    const geo2d::Rectangle& GetGeometry() const
     {
-        current_max = value;
+        return geometry_;
     }
-}
 
-void Max::PrintValue(std::ostream& out) const
-{
-    out << "Max is " << current_max;
-}
+    bool CollideWith(const Unit& that) const override;
+    bool CollideWith(const Building& that) const override;
+    bool CollideWith(const Tower& that) const override;
+    bool CollideWith(const Fence& that) const override;
 
-void Average::Process(int value)
-{
-    sum += value;
-    ++total;
-}
+private:
+    geo2d::Rectangle geometry_;
+};
 
-void Average::PrintValue(std::ostream& out) const
+class Tower : public Collider<Tower>
 {
-    out << "Average is ";
-    if (total == 0)
+public:
+    Tower(geo2d::Circle geometry)
+        : geometry_(geometry)
     {
-        out << "undefined";
-    } else
-    {
-        out << sum / total;
     }
-}
 
-void Mode::Process(int value)
-{
-    int current_count = ++count[value];
-    if (!mode || current_count > count[*mode])
+    const geo2d::Circle& GetGeometry() const
     {
-        mode = value;
+        return geometry_;
     }
-}
 
-void Mode::PrintValue(std::ostream& out) const
+    bool CollideWith(const Unit& that) const override;
+    bool CollideWith(const Building& that) const override;
+    bool CollideWith(const Tower& that) const override;
+    bool CollideWith(const Fence& that) const override;
+
+private:
+    geo2d::Circle geometry_;
+};
+
+class Fence : public Collider<Fence>
 {
-    out << "Mode is " << mode;
-}
-
-}
-
-// Файл stats_aggregator_test.cpp
-
-#include "stats_aggregator.h"
-#include "test_runner.h"
-
-#include <sstream>
-using namespace std;
-
-namespace StatsAggregators
-{
-
-string PrintedValue(const StatsAggregator& aggr)
-{
-    ostringstream output;
-    aggr.PrintValue(output);
-    return output.str();
-}
-
-void TestSum()
-{
-    Sum aggr;
-    ASSERT_EQUAL(PrintedValue(aggr), "Sum is 0");
-
-    aggr.Process(3);
-    aggr.Process(8);
-    aggr.Process(-1);
-    aggr.Process(16);
-
-    ASSERT_EQUAL(PrintedValue(aggr), "Sum is 26");
-}
-
-void TestMin()
-{
-    Min aggr;
-    ASSERT_EQUAL(PrintedValue(aggr), "Min is undefined");
-
-    aggr.Process(3);
-    aggr.Process(8);
-    aggr.Process(-1);
-    aggr.Process(16);
-
-    ASSERT_EQUAL(PrintedValue(aggr), "Min is -1");
-}
-
-void TestMax()
-{
-    Max aggr;
-    ASSERT_EQUAL(PrintedValue(aggr), "Max is undefined");
-
-    aggr.Process(3);
-    aggr.Process(8);
-    aggr.Process(-1);
-    aggr.Process(16);
-
-    ASSERT_EQUAL(PrintedValue(aggr), "Max is 16");
-}
-
-void TestAverage()
-{
-    Average aggr;
-    ASSERT_EQUAL(PrintedValue(aggr), "Average is undefined");
-
-    aggr.Process(3);
-    aggr.Process(8);
-    aggr.Process(-1);
-    aggr.Process(16);
-
-    ASSERT_EQUAL(PrintedValue(aggr), "Average is 6");
-}
-
-void TestMode()
-{
-    Mode aggr;
-    ASSERT_EQUAL(PrintedValue(aggr), "Mode is undefined");
-
-    aggr.Process(3);
-    aggr.Process(3);
-    aggr.Process(8);
-    aggr.Process(8);
-    aggr.Process(8);
-    aggr.Process(8);
-    aggr.Process(-1);
-    aggr.Process(-1);
-    aggr.Process(-1);
-    aggr.Process(16);
-
-    ASSERT_EQUAL(PrintedValue(aggr), "Mode is 8");
-}
-
-void TestComposite()
-{
-    Composite aggr;
-    aggr.Add(make_unique<Sum>());
-    aggr.Add(make_unique<Min>());
-    aggr.Add(make_unique<Max>());
-    aggr.Add(make_unique<Average>());
-    aggr.Add(make_unique<Mode>());
-
-    aggr.Process(3);
-    aggr.Process(8);
-    aggr.Process(-1);
-    aggr.Process(16);
-    aggr.Process(16);
-
-    string expected = "Sum is 42\n";
-    expected += "Min is -1\n";
-    expected += "Max is 16\n";
-    expected += "Average is 8\n";
-    expected += "Mode is 16\n";
-    ASSERT_EQUAL(PrintedValue(aggr), expected);
-}
-
-}
-
-
-// Файл main.cpp
-
-#include "test_runner.h"
-#include "stats_aggregator.h"
-
-#include <vector>
-#include <string>
-#include <map>
-#include <memory>
-#include <iostream>
-#include <unordered_map>
-#include <functional>
-using namespace std;
-
-void TestAll();
-
-unique_ptr<StatsAggregator> ReadAggregators(istream& input)
-{
-    using namespace StatsAggregators;
-
-    const unordered_map<string, std::function<unique_ptr<StatsAggregator>()>> known_builders =
+public:
+    Fence(geo2d::Segment geometry)
+        : geometry_(geometry)
     {
+    }
 
-       {"sum", []
-       { return make_unique<Sum>(); }},
+    const geo2d::Segment& GetGeometry() const
+    {
+        return geometry_;
+    }
 
-       {"min", []
-       { return make_unique<Min>(); }},
+    bool CollideWith(const Unit& that) const override;
+    bool CollideWith(const Building& that) const override;
+    bool CollideWith(const Tower& that) const override;
+    bool CollideWith(const Fence& that) const override;
 
-       {"max", []
-       { return make_unique<Max>(); }},
+private:
+    geo2d::Segment geometry_;
+};
 
-       {"avg", []
-       { return make_unique<Average>(); }},
+// Unit CollideWith implementation
 
-       {"mode", []
-       { return make_unique<Mode>(); }}
+bool Unit::CollideWith(const Unit& that) const
+{
+    return geo2d::Collide(position_, that.position_);
+}
+
+bool Unit::CollideWith(const Building& that) const
+{
+    return geo2d::Collide(position_, that.GetGeometry());
+}
+
+bool Unit::CollideWith(const Tower& that) const
+{
+    return geo2d::Collide(position_, that.GetGeometry());
+}
+
+bool Unit::CollideWith(const Fence& that) const
+{
+    return geo2d::Collide(position_, that.GetGeometry());
+}
+
+#define DEFINE_METHOD_COLLIDE_WITH(Class, ArgClass)         \
+bool Class::CollideWith(const ArgClass& that) const         \
+{                                                           \
+    return geo2d::Collide(geometry_, that.GetGeometry());   \
+}
+
+// Building CollideWith implementation
+
+bool Building::CollideWith(const Unit& that) const
+{
+    return geo2d::Collide(geometry_, that.GetPosition());
+}
+
+DEFINE_METHOD_COLLIDE_WITH(Building, Building)
+DEFINE_METHOD_COLLIDE_WITH(Building, Tower)
+DEFINE_METHOD_COLLIDE_WITH(Building, Fence)
+
+// Tower CollideWith implementation
+
+bool Tower::CollideWith(const Unit& that) const
+{
+    return geo2d::Collide(geometry_, that.GetPosition());
+}
+
+DEFINE_METHOD_COLLIDE_WITH(Tower, Building)
+DEFINE_METHOD_COLLIDE_WITH(Tower, Tower)
+DEFINE_METHOD_COLLIDE_WITH(Tower, Fence)
+
+// Fence CollideWith implementation
+
+bool Fence::CollideWith(const Unit& that) const
+{
+    return geo2d::Collide(geometry_, that.GetPosition());
+}
+
+DEFINE_METHOD_COLLIDE_WITH(Fence, Building)
+DEFINE_METHOD_COLLIDE_WITH(Fence, Tower)
+DEFINE_METHOD_COLLIDE_WITH(Fence, Fence)
+
+bool Collide(const GameObject& first, const GameObject& second)
+{
+    return first.Collide(second);
+}
+
+void TestAddingNewObjectOnMap()
+{
+    // Юнит-тест моделирует ситуацию, когда на игровой карте уже есть какие-то объекты,
+    // и мы хотим добавить на неё новый, например, построить новое сдание или башню.
+    // Мы можем его добавить, только если он не пересекается ни с одним из существующих.
+    using namespace geo2d;
+
+    const vector<shared_ptr<GameObject>> game_map =
+    {
+        make_shared<Unit>(Point{3, 3}),
+        make_shared<Unit>(Point{5, 5}),
+        make_shared<Unit>(Point{3, 7}),
+        make_shared<Fence>(Segment{{7, 3}, {9, 8}}),
+        make_shared<Tower>(Circle{Point{9, 4}, 1}),
+        make_shared<Tower>(Circle{Point{10, 7}, 1}),
+        make_shared<Building>(Rectangle{{11, 4}, {14, 6}})
     };
 
-    auto result = make_unique<Composite>();
-
-    int aggr_count;
-    input >> aggr_count;
-
-    string line;
-    for (int i = 0; i < aggr_count; ++i)
+    for (size_t i = 0; i < game_map.size(); ++i)
     {
-        input >> line;
-        result->Add(known_builders.at(line)());
+        Assert(
+            Collide(*game_map[i], *game_map[i]),
+            "An object doesn't collide with itself: " + to_string(i)
+        );
+
+        for (size_t j = 0; j < i; ++j)
+        {
+            Assert(
+                !Collide(*game_map[i], *game_map[j]),
+                "Unexpected collision found " + to_string(i) + ' ' + to_string(j)
+            );
+        }
     }
 
-    return result;
+    auto new_warehouse = make_shared<Building>(Rectangle{{4, 3}, {9, 6}});
+    ASSERT(!Collide(*new_warehouse, *game_map[0]));
+    ASSERT( Collide(*new_warehouse, *game_map[1]));
+    ASSERT(!Collide(*new_warehouse, *game_map[2]));
+    ASSERT( Collide(*new_warehouse, *game_map[3]));
+    ASSERT( Collide(*new_warehouse, *game_map[4]));
+    ASSERT(!Collide(*new_warehouse, *game_map[5]));
+    ASSERT(!Collide(*new_warehouse, *game_map[6]));
+
+    auto new_defense_tower = make_shared<Tower>(Circle{{8, 2}, 2});
+    ASSERT(!Collide(*new_defense_tower, *game_map[0]));
+    ASSERT(!Collide(*new_defense_tower, *game_map[1]));
+    ASSERT(!Collide(*new_defense_tower, *game_map[2]));
+    ASSERT( Collide(*new_defense_tower, *game_map[3]));
+    ASSERT( Collide(*new_defense_tower, *game_map[4]));
+    ASSERT(!Collide(*new_defense_tower, *game_map[5]));
+    ASSERT(!Collide(*new_defense_tower, *game_map[6]));
+}
+
+//////////////////////////////////////////////////////////////////////////
+/// Тесты ниже не являются частью решения. Они нужны для отладки!!!
+//////////////////////////////////////////////////////////////////////////
+
+void TestVectorProduct()
+{
+    using geo2d::Vector;
+    ASSERT_EQUAL((Vector{1, 0} * Vector{2, 0}), 0);
+    ASSERT_EQUAL((Vector{1, 0} * Vector{-1, 0}), 0);
+    ASSERT((Vector{1, 0} * Vector{1, 1} > 0));
+    ASSERT((Vector{1, 1} * Vector{1, 0} < 0));
+    ASSERT((Vector{1, 0} * Vector{-1, 1} > 0));
+}
+
+void TestPointSegmentCollide()
+{
+    using geo2d::Point;
+    using geo2d::Segment;
+
+    ASSERT(geo2d::Collide(Point{1, 0}, Segment{{0, 0}, {10, 0}}));
+    ASSERT(geo2d::Collide(Point{0, 0}, Segment{{0, 0}, {10, 0}}));
+    ASSERT(geo2d::Collide(Point{10, 0}, Segment{{0, 0}, {10, 0}}));
+    ASSERT(geo2d::Collide(Point{3, 3}, Segment{{0, 0}, {10, 10}}));
+
+    ASSERT(!geo2d::Collide(Point{-1, 0}, Segment{{0, 0}, {10, 0}}));
+    ASSERT(!geo2d::Collide(Point{11, 0}, Segment{{0, 0}, {10, 0}}));
+    ASSERT(!geo2d::Collide(Point{1, 1}, Segment{{0, 0}, {10, 0}}));
+    ASSERT(!geo2d::Collide(Point{5, 5}, Segment{{0, 0}, {10, 0}}));
+    ASSERT(!geo2d::Collide(Point{-5, 0}, Segment{{0, 0}, {10, 0}}));
+    ASSERT(!geo2d::Collide(Point{5, -1}, Segment{{0, 0}, {10, 0}}));
+}
+
+void TestPointRectangleCollide()
+{
+    using geo2d::Point;
+    using geo2d::Rectangle;
+
+    const Rectangle r{{0, 0}, {5, 3}};
+    ASSERT(geo2d::Collide(Point{0, 0}, r));
+    ASSERT(geo2d::Collide(Point{5, 0}, r));
+    ASSERT(geo2d::Collide(Point{5, 3}, r));
+    ASSERT(geo2d::Collide(Point{0, 3}, r));
+    ASSERT(geo2d::Collide(Point{2, 2}, r));
+    ASSERT(geo2d::Collide(Point{1, 3}, r));
+
+    ASSERT(!geo2d::Collide(Point{-1, 0}, r));
+    ASSERT(!geo2d::Collide(Point{0, -1}, r));
+    ASSERT(!geo2d::Collide(Point{0, 4}, r));
+    ASSERT(!geo2d::Collide(Point{6, 0}, r));
+    ASSERT(!geo2d::Collide(Point{5, 4}, r));
+    ASSERT(!geo2d::Collide(Point{6, 3}, r));
+    ASSERT(!geo2d::Collide(Point{2, 8}, r));
+}
+
+void TestSegmentSegmentCollide()
+{
+    using geo2d::Segment;
+    ASSERT(geo2d::Collide(Segment{{0, 0}, {2, 2}}, Segment{{2, 0}, {0, 2}}));
+    ASSERT(geo2d::Collide(Segment{{0, 0}, {2, 2}}, Segment{{2, 0}, {1, 1}}));
+    ASSERT(geo2d::Collide(Segment{{0, 0}, {10, 6}}, Segment{{5, 3}, {15, 9}}));
+    ASSERT(geo2d::Collide(Segment{{0, 0}, {6, 2}}, Segment{{4, 2}, {6, 0}}));
+    ASSERT(geo2d::Collide(Segment{{0, 0}, {6, 2}}, Segment{{6, 2}, {6, 3}}));
+
+    ASSERT(!geo2d::Collide(Segment{{0, 0}, {2, 2}}, Segment{{2, 0}, {1, 0}}));
+    ASSERT(!geo2d::Collide(Segment{{0, 0}, {10, 6}}, Segment{{5, 4}, {15, 10}}));
+    ASSERT(!geo2d::Collide(Segment{{0, 0}, {6, 2}}, Segment{{4, 1}, {6, 0}}));
+}
+
+void TestSegmentCircleCollide()
+{
+    using geo2d::Circle;
+    using geo2d::Segment;
+    const Circle c{{0, 0}, 4};
+
+    ASSERT(geo2d::Collide(c, Segment{{0, 0}, {1, 0}}));
+    ASSERT(geo2d::Collide(c, Segment{{3, 1}, {10, 1}}));
+    ASSERT(geo2d::Collide(c, Segment{{-5, 2}, {5, 2}}));
+    ASSERT(geo2d::Collide(c, Segment{{-5, 3}, {5, 3}}));
+    ASSERT(geo2d::Collide(c, Segment{{-5, 4}, {5, 4}}));
+    ASSERT(geo2d::Collide(c, Segment{{3, 1}, {4, 5}}));
+    ASSERT(geo2d::Collide(c, Segment{{5, 0}, {-2, 4}}));
+
+    ASSERT(!geo2d::Collide(c, Segment{{4, 1}, {4, 5}}));
+    ASSERT(!geo2d::Collide(c, Segment{{-5, 5}, {5, 5}}));
+    ASSERT(!geo2d::Collide(c, Segment{{4, 4}, {5, 4}}));
+    ASSERT(!geo2d::Collide(Circle{{10, 7}, 1}, Segment{{7, 3}, {9, 8}}));
 }
 
 int main()
 {
-    TestAll();
-
-    auto stats_aggregator = ReadAggregators(cin);
-
-    for (int value; cin >> value; )
-    {
-        stats_aggregator->Process(value);
-    }
-    stats_aggregator->PrintValue(cout);
-
+    TestRunner tr;
+    RUN_TEST(tr, TestAddingNewObjectOnMap);
+    RUN_TEST(tr, TestVectorProduct);
+    RUN_TEST(tr, TestPointSegmentCollide);
+    RUN_TEST(tr, TestPointRectangleCollide);
+    RUN_TEST(tr, TestSegmentSegmentCollide);
+    RUN_TEST(tr, TestSegmentCircleCollide);
     return 0;
 }
-
-void TestAll()
-{
-    TestRunner tr;
-
-    RUN_TEST(tr, StatsAggregators::TestSum);
-    RUN_TEST(tr, StatsAggregators::TestMin);
-    RUN_TEST(tr, StatsAggregators::TestMax);
-    RUN_TEST(tr, StatsAggregators::TestAverage);
-    RUN_TEST(tr, StatsAggregators::TestMode);
-    RUN_TEST(tr, StatsAggregators::TestComposite);
-}
-
