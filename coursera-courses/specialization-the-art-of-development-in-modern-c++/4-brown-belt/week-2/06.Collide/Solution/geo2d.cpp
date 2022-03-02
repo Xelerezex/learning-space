@@ -23,7 +23,7 @@ namespace geo2d
     template <typename T>
     T Sign(T x)
     {
-        return x != 0 ? x / abs(x) : 0;
+        return x != 0 ? x / std::abs(x) : 0;
     }
 
     uint64_t DistanceSquared(Point p1, Point p2)
@@ -160,7 +160,7 @@ namespace geo2d
             // проведённая из c.center, равна 2S / |s.p1, s.p2|. Чтобы остаться в целых
             // числах, возведём сравниваемые величины в квадрат и сравним (2S)^ 2 с
             // R^2 * |s.p1, s.p2|^2
-            uint64_t double_triangle_square = abs(Vector{s.p1, s.p2} * Vector{s.p1, c.center});
+            uint64_t double_triangle_square = std::abs(Vector{s.p1, s.p2} * Vector{s.p1, c.center});
             return Sqr(double_triangle_square) <= Sqr<uint64_t>(c.radius) * DistanceSquared(s.p1, s.p2);
         }
         else
