@@ -57,12 +57,16 @@ class HttpResponse                                           // Output
 {
     private:
         HttpCode code;
-        unordered_map<string, string> header;
+        vector<pair<string, string>> header;
         string content;
 
     public:
-        explicit HttpResponse(int i_code, unordered_map<string, string> header_, string content_)
-          : code{i_code},
+        explicit HttpResponse(HttpCode i_code)
+          : code(i_code)
+            {}
+
+        explicit HttpResponse(HttpCode i_code, vector<pair<string, string>> header_, string content_)
+          : code(i_code),
             header(header_),
             content(content_)
             {}
@@ -74,7 +78,7 @@ class HttpResponse                                           // Output
         }
         HttpResponse& AddHeader(string name, string value)
         {
-            header[name] = value;
+            header.push_back({name, value});
             return *this;
         }
         HttpResponse& SetContent(string a_content)
@@ -91,7 +95,7 @@ class HttpResponse                                           // Output
 
             std::string comment = resp.code == HttpCode::Ok ? "OK" :
                                  (resp.code == HttpCode::Found ? "Found" :
-                                 "NotFound");
+                                 "Not found");
             output << "HTTP/1.1 " << _code << " " << comment << '\n';
 
             for (const auto &[key, value] : resp.header)
@@ -99,9 +103,15 @@ class HttpResponse                                           // Output
                 output << key << ": " << value << '\n';
             }
 
-            output << "Content-Length: " << resp.content.size() << '\n'
-                   << resp.content << '\n';
-
+            if (resp.content.size() > 0)
+            {
+                output << "Content-Length: " << resp.content.size() << "\n\n"
+                       << resp.content;
+            }
+            else
+            {
+                output << '\n';
+            }
 
             return output;
         }
@@ -130,7 +140,7 @@ class CommentServer
                     comments_.emplace_back();
                     std::string response = to_string(comments_.size() - 1);
 
-                    return HttpResponse{200, {}, response};
+                    return HttpResponse{HttpCode::Ok, {}, response};
                 }
                 else if (req.path == "/add_comment")
                 {
@@ -149,11 +159,11 @@ class CommentServer
                     {
                         comments_[user_id].push_back(string(comment));
 
-                        return HttpResponse{200, {}, {}};
+                        return HttpResponse{HttpCode::Ok, {}, {}};
                     }
                     else
                     {
-                        return HttpResponse{302, {{"Location", "/captcha"}}, {}};
+                        return HttpResponse{HttpCode::Found, {{"Location", "/captcha"}}, {}};
                     }
                 }
                 else if (req.path == "/checkcaptcha")
@@ -166,16 +176,16 @@ class CommentServer
                             last_comment.reset();
                         }
 
-                        return HttpResponse{200, {}, {}};
+                        return HttpResponse{HttpCode::Ok, {}, {}};
                     }
                     else
                     {
-                        return HttpResponse{302, {{"Location", "/captcha"}}, {}};
+                        return HttpResponse{HttpCode::Found, {{"Location", "/captcha"}}, {}};
                     }
                 }
                 else
                 {
-                    return HttpResponse{404, {}, {}};
+                    return HttpResponse{HttpCode::NotFound, {}, {}};
                 }
             }
             //-----------------------------------------------------------------------------//
@@ -190,21 +200,21 @@ class CommentServer
                         response += c + '\n';
                     }
 
-                    return HttpResponse{200, {}, response};
+                    return HttpResponse{HttpCode::Ok, {}, response};
                 }
                 else if (req.path == "/captcha")
                 {
-                    return HttpResponse{200, {}, {"What's the answer for The Ultimate Question of Life, the Universe, and Everything?"}};
+                    return HttpResponse{HttpCode::Ok, {}, {"What's the answer for The Ultimate Question of Life, the Universe, and Everything?"}};
                 }
                 else
                 {
-                    return HttpResponse{404, {}, {}};
+                    return HttpResponse{HttpCode::NotFound, {}, {}};
                 }
             }
             //-----------------------------------------------------------------------------//
             else
             {
-                return HttpResponse{404, {}, {}};
+                return HttpResponse{HttpCode::NotFound, {}, {}};
             }
         }
 };
@@ -224,13 +234,13 @@ void TestServer()
 {
     CommentServer cs;
 
-    const HttpResponse ok{200, {}, {}};
-    const HttpResponse redirect_to_captcha{302, {{"Location", "/captcha"}}, {}};
-    const HttpResponse not_found{404, {}, {}};
+    const HttpResponse ok{HttpCode::Ok, {}, {}};
+    const HttpResponse redirect_to_captcha{HttpCode::Found, {{"Location", "/captcha"}}, {}};
+    const HttpResponse not_found{HttpCode::NotFound, {}, {}};
 
-    Test(cs, {"POST", "/add_user", {}, {}}, HttpResponse{200, {}, "0"});
-    Test(cs, {"POST", "/add_user", {}, {}}, HttpResponse{200, {}, "1"});
-    Test(cs, {"POST", "/add_user", {}, {}}, HttpResponse{200, {}, "2"});
+    Test(cs, {"POST", "/add_user", {}, {}}, HttpResponse{HttpCode::Ok, {}, "0"});
+    Test(cs, {"POST", "/add_user", {}, {}}, HttpResponse{HttpCode::Ok, {}, "1"});
+    Test(cs, {"POST", "/add_user", {}, {}}, HttpResponse{HttpCode::Ok, {}, "2"});
     Test(cs, {"POST", "/add_comment", "0 Hello", {}}, ok);
     Test(cs, {"POST", "/add_comment", "1 Hi", {}}, ok);
     Test(cs, {"POST", "/add_comment", "1 Buy my goods", {}}, ok);
@@ -241,15 +251,15 @@ void TestServer()
 
     Test(cs,
         {"GET", "/user_comments", "", {{"user_id", "0"}}},
-        HttpResponse{200, {}, "Hello\nWhat are you selling?\n"}
+        HttpResponse{HttpCode::Ok, {}, "Hello\nWhat are you selling?\n"}
     );
     Test(cs,
         {"GET", "/user_comments", "", {{"user_id", "1"}}},
-        HttpResponse{200, {}, "Hi\nBuy my goods\nEnlarge\n"}
+        HttpResponse{HttpCode::Ok, {}, "Hi\nBuy my goods\nEnlarge\n"}
     );
     Test(cs,
         {"GET", "/captcha", "", {}},
-        HttpResponse{200, {}, {"What's the answer for The Ultimate Question of Life, the Universe, and Everything?"}}
+        HttpResponse{HttpCode::Ok, {}, {"What's the answer for The Ultimate Question of Life, the Universe, and Everything?"}}
     );
     Test(cs,
         {"POST", "/checkcaptcha", "1 24", {}},
@@ -266,7 +276,7 @@ void TestServer()
     );
     Test(cs,
         {"GET", "/user_comments", "", {{"user_id", "1"}}},
-        HttpResponse{200, {}, "Hi\nBuy my goods\nEnlarge\nSorry! No spam any more\n"}
+        HttpResponse{HttpCode::Ok, {}, "Hi\nBuy my goods\nEnlarge\nSorry! No spam any more\n"}
     );
     Test(cs, {"GET", "/user_commntes", "", {}}, not_found);
     Test(cs, {"POST", "/add_uesr", "", {}}, not_found);
