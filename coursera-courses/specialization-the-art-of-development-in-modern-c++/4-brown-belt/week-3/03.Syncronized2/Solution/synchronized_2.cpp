@@ -1,5 +1,6 @@
 #include "test_runner.h"
 
+
 #include <numeric>
 #include <vector>
 #include <string>
@@ -8,27 +9,51 @@
 #include <queue>
 using namespace std;
 
-template <typename T>
-class Synchronized
-{
-    public:
-        explicit Synchronized(T initial = T());
 
-        ??? GetAccess();
-        ??? GetAccess() const;
+template <typename T>
+class Synchronized {
+    public:
+        explicit Synchronized(T initial = T())
+            : value(move(initial))
+        {
+        }
+
+        struct Access
+        {
+            T& ref_to_value;
+            lock_guard<mutex> guard;
+        };
+
+        struct AccessConst
+        {
+            const T& ref_to_value;
+            lock_guard<mutex> guard;
+        };
+
+        Access GetAccess()
+        {
+            return Access{value, lock_guard(m)};
+        }
+
+        AccessConst GetAccess() const
+        {
+            return AccessConst{value, lock_guard(m)};
+        }
 
     private:
         T value;
+        mutable mutex m;
 };
+
 
 void TestConcurrentUpdate()
 {
     Synchronized<string> common_string;
 
     const size_t add_count = 50000;
-    auto updater = [&common_string, add_count]
+    auto updater = [&common_string/*, add_count*/]
     {
-        for (size_t i = 0; i < add_count; ++i)
+        for (size_t i = 0; i < 50000; ++i)
         {
             auto access = common_string.GetAccess();
             access.ref_to_value += 'a';
