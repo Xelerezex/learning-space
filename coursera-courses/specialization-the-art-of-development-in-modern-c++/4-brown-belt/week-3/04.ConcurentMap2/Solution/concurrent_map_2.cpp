@@ -10,6 +10,13 @@
 #include <random>
 using namespace std;
 
+template <typename T>
+T Abs(T x)
+{
+    return x < 0 ? -x : x;
+}
+
+
 template <typename K, typename V, typename Hash = std::hash<K>>
 class ConcurrentMap
 {
@@ -18,25 +25,64 @@ class ConcurrentMap
 
         struct WriteAccess
         {
+            mutable lock_guard<mutex> guard;
             V& ref_to_value;
+
+            WriteAccess(const K& key, pair<mutex, MapType> &bucket_content)
+                : guard(bucket_content.first)
+                , ref_to_value(bucket_content.second[key])
+            {
+            }
         };
 
         struct ReadAccess
         {
+            lock_guard<mutex> guard;
             const V& ref_to_value;
+
+            ReadAccess(const K& key, pair<mutex, MapType> &bucket_content)
+                : guard(bucket_content.first)
+                , ref_to_value(bucket_content.second[key])
+            {
+            }
         };
 
-        explicit ConcurrentMap(size_t bucket_count);
+        explicit ConcurrentMap(size_t bucket_count)
+            : data(bucket_count)
+        {
+        }
 
-        WriteAccess operator[](const K& key);
-        ReadAccess At(const K& key) const;
+        WriteAccess operator[](const K& key)
+        {
+            auto& bucket = data[hasher(key)];
+            return {key, bucket};
+        }
 
-        bool Has(const K& key) const;
+        ReadAccess At(const K& key) const
+        {
+            return {key, data[hasher(key)].at(key)};
+        }
 
-        MapType BuildOrdinaryMap() const;
+        bool Has(const K& key) const
+        {
+            return data[hasher(key)].find(key) == data.end() ? false : true;
+        }
+
+        MapType BuildOrdinaryMap() const
+        {
+            for (auto& [mtx, mapping] : data)
+            {
+                lock_guard<mutex> lock_mutex(mtx);
+                output.merge(mapping);
+            }
+            return output;
+        }
 
     private:
         Hash hasher;
+        vector<pair<mutex, MapType>> data;
+
+        mutable MapType output;
 };
 
 void RunConcurrentUpdates(

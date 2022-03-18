@@ -37,21 +37,21 @@ class LogDuration
 class TotalDuration
 {
     public:
-        string message;
-        steady_clock::duration value;
+        std::string message;
+        std::chrono::steady_clock::duration value;
 
-        explicit TotalDuration(const string& msg = "")
+        explicit TotalDuration(const std::string& msg = "")
             : message(msg + ": ")
             , value(0)
         {}
 
         ~TotalDuration()
         {
-            ostringstream os;
+            std::ostringstream os;
             os << message
-               << duration_cast<milliseconds>(value).count()
-               << " ms" << endl;
-            cerr << os.str();
+               << std::chrono::duration_cast<std::chrono::milliseconds>(value).count()
+               << " ms" << std::endl;
+            std::cerr << os.str();
         }
 };
 
@@ -62,9 +62,9 @@ class TotalDuration
 class AddDuration
 {
     public:
-        explicit AddDuration(steady_clock::duration& dest)
+        explicit AddDuration(std::chrono::steady_clock::duration& dest)
             : add_to(dest)
-            , start(steady_clock::now())
+            , start(std::chrono::steady_clock::now())
         {}
 
         explicit AddDuration(TotalDuration& dest)
@@ -72,11 +72,11 @@ class AddDuration
         {}
 
         ~AddDuration() {
-            add_to += steady_clock::now() - start;
+            add_to += std::chrono::steady_clock::now() - start;
         }
     private:
-        steady_clock::duration& add_to;
-        steady_clock::time_point start;
+        std::chrono::steady_clock::duration& add_to;
+        std::chrono::steady_clock::time_point start;
 };
 
 //----------------------------------------------------------------------------------------------//
