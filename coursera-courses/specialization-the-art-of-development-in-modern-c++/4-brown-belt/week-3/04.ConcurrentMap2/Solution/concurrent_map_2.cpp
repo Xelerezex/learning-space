@@ -22,15 +22,30 @@ class ConcurrentMap
 {
     public:
         using MapType = unordered_map<K, V, Hash>;
+    private:
+        struct Bucket
+        {
+            mutable mutex bmutex;
+            MapType bucket;
+        };
 
+        Hash hasher;
+        vector<Bucket> data;
+
+    private:
+        size_t GetIndex(const K& key) const
+        {
+            return hasher(key) % data.size();
+        }
+    public:
         struct WriteAccess
         {
-            mutable lock_guard<mutex> guard;
+            lock_guard<mutex> guard;
             V& ref_to_value;
 
-            WriteAccess(const K& key, pair<mutex, MapType> &bucket_content)
-                : guard(bucket_content.first)
-                , ref_to_value(bucket_content.second[key])
+            WriteAccess(const K& key, Bucket &bucket_content)
+                : guard(bucket_content.bmutex)
+                , ref_to_value(bucket_content.bucket[key])
             {
             }
         };
@@ -40,9 +55,9 @@ class ConcurrentMap
             lock_guard<mutex> guard;
             const V& ref_to_value;
 
-            ReadAccess(const K& key, pair<mutex, MapType> &bucket_content)
-                : guard(bucket_content.first)
-                , ref_to_value(bucket_content.second[key])
+            ReadAccess(const K& key, const Bucket &bucket_content)
+                : guard(bucket_content.bmutex)
+                , ref_to_value(bucket_content.bucket.at(key))
             {
             }
         };
@@ -54,35 +69,30 @@ class ConcurrentMap
 
         WriteAccess operator[](const K& key)
         {
-            auto& bucket = data[hasher(key)];
-            return {key, bucket};
+            return {key, data[GetIndex(key)]};
         }
 
         ReadAccess At(const K& key) const
         {
-            return {key, data[hasher(key)].at(key)};
+            return {key, data[GetIndex(key)]};
         }
 
-        bool Has(const K& key) const
-        {
-            return data[hasher(key)].find(key) == data.end() ? false : true;
+        bool Has(const K &key) const {
+            auto& ref_to_bucket = data[GetIndex(key)];
+            lock_guard guard(ref_to_bucket.bmutex);
+            return ref_to_bucket.bucket.count(key) > 0;
         }
 
         MapType BuildOrdinaryMap() const
         {
-            for (auto& [mtx, mapping] : data)
+            MapType result;
+            for (auto& [mtx, data] : data)
             {
-                lock_guard<mutex> lock_mutex(mtx);
-                output.merge(mapping);
+                lock_guard g(mtx);
+                result.insert(begin(data), end(data));
             }
-            return output;
+            return result;
         }
-
-    private:
-        Hash hasher;
-        vector<pair<mutex, MapType>> data;
-
-        mutable MapType output;
 };
 
 void RunConcurrentUpdates(
@@ -280,13 +290,13 @@ void TestUserType()
 
     for (int i = 0; i < 1000; ++i)
     {
-        ASSERT_EQUAL(point_weight.At(Point{i, i}).ref_to_value, i);
+        ASSERT_EQUAL(static_cast<int>(point_weight.At(Point{i, i}).ref_to_value), i);
     }
 
     const auto weights = point_weight.BuildOrdinaryMap();
     for (int i = 0; i < 1000; ++i)
     {
-        ASSERT_EQUAL(weights.at(Point{i, i}), i);
+        ASSERT_EQUAL(static_cast<int>(weights.at(Point{i, i})), i);
     }
 }
 
