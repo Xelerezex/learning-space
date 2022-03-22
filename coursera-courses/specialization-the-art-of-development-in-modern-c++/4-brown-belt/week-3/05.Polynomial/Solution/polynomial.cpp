@@ -42,102 +42,134 @@ void PrintCoeff(std::ostream& out, int i, const T& coef, bool printed)
 template<typename T>
 class Polynomial
 {
-private:
-    std::vector<T> coeffs_ = {0};
+    private:
+        std::vector<T> coeffs_ = {0};
 
-    void Shrink()
-    {
-        while (coeffs_.size() > 1 && coeffs_.back() == 0)
+        void Shrink()
         {
-            coeffs_.pop_back();
+            while (coeffs_.size() > 1 && coeffs_.back() == 0)
+            {
+                coeffs_.pop_back();
+            }
         }
-    }
 
-public:
-    Polynomial() = default;
-    Polynomial(vector<T> coeffs) : coeffs_(std::move(coeffs))
-    {
-        Shrink();
-    }
-
-    template<typename Iterator>
-    Polynomial(Iterator first, Iterator last) : coeffs_(first, last)
-    {
-        Shrink();
-    }
-
-    bool operator ==(const Polynomial& other) const
-    {
-        return coeffs_ == other.coeffs_;
-    }
-
-    bool operator !=(const Polynomial& other) const
-    {
-        return !operator==(other);
-    }
-
-    int Degree() const
-    {
-        return coeffs_.size() - 1;
-    }
-
-    Polynomial& operator +=(const Polynomial& r)
-    {
-        if (r.coeffs_.size() > coeffs_.size())
+        class IndexProxy
         {
-            coeffs_.resize(r.coeffs_.size());
-        }
-        for (size_t i = 0; i != r.coeffs_.size(); ++i)
+            public:
+                IndexProxy(Polynomial &poly, size_t degree) : poly_(poly), degree_(degree) {}
+
+                IndexProxy& operator=(const T& value)
+                {
+                    if (degree_ >= poly_.coeffs_.size())
+                    {
+                        poly_.coeffs_.resize(degree_ + 1);
+                    }
+                    poly_.coeffs_[degree_] = value;
+                    poly_.Shrink();
+                    return *this;
+                }
+
+                operator T() const
+                {
+                    return std::as_const(poly_)[degree_];
+                }
+
+            private:
+                Polynomial &poly_;
+                size_t  degree_;
+        };
+    public:
+        Polynomial() = default;
+        Polynomial(vector<T> coeffs) : coeffs_(std::move(coeffs))
         {
-            coeffs_[i] += r.coeffs_[i];
+            Shrink();
         }
-        Shrink();
-        return *this;
-    }
 
-    Polynomial& operator -=(const Polynomial& r)
-    {
-        if (r.coeffs_.size() > coeffs_.size())
+        template<typename Iterator>
+        Polynomial(Iterator first, Iterator last) : coeffs_(first, last)
         {
-            coeffs_.resize(r.coeffs_.size());
+            Shrink();
         }
-        for (size_t i = 0; i != r.coeffs_.size(); ++i)
+
+        bool operator ==(const Polynomial& other) const
         {
-            coeffs_[i] -= r.coeffs_[i];
+            return coeffs_ == other.coeffs_;
         }
-        Shrink();
-        return *this;
-    }
 
-    T operator [](size_t degree) const
-    {
-        return degree < coeffs_.size() ? coeffs_[degree] : 0;
-    }
-
-    // Реализуйте неконстантную версию operator[]
-
-    T operator ()(const T& x) const
-    {
-        T res = 0;
-        for (auto it = coeffs_.rbegin(); it != coeffs_.rend(); ++it)
+        bool operator !=(const Polynomial& other) const
         {
-            res *= x;
-            res += *it;
+            return !operator==(other);
         }
-        return res;
-    }
 
-    using const_iterator = typename std::vector<T>::const_iterator;
+        int Degree() const
+        {
+            return coeffs_.size() - 1;
+        }
 
-    const_iterator begin() const
-    {
-        return coeffs_.cbegin();
-    }
+        Polynomial& operator +=(const Polynomial& r)
+        {
+            if (r.coeffs_.size() > coeffs_.size())
+            {
+                coeffs_.resize(r.coeffs_.size());
+            }
+            for (size_t i = 0; i != r.coeffs_.size(); ++i)
+            {
+                coeffs_[i] += r.coeffs_[i];
+            }
+            Shrink();
+            return *this;
+        }
 
-    const_iterator end() const
-    {
-        return coeffs_.cend();
-    }
+        Polynomial& operator -=(const Polynomial& r)
+        {
+            if (r.coeffs_.size() > coeffs_.size())
+            {
+                coeffs_.resize(r.coeffs_.size());
+            }
+            for (size_t i = 0; i != r.coeffs_.size(); ++i)
+            {
+                coeffs_[i] -= r.coeffs_[i];
+            }
+            Shrink();
+            return *this;
+        }
+
+        T operator [](size_t degree) const
+        {
+            return degree < coeffs_.size() ? coeffs_[degree] : 0;
+        }
+
+        IndexProxy operator[](size_t degree) {
+            return IndexProxy{*this, degree};
+        }
+
+        T operator ()(const T& x) const
+        {
+            T res = 0;
+            for (auto it = coeffs_.rbegin(); it != coeffs_.rend(); ++it)
+            {
+                res *= x;
+                res += *it;
+            }
+            return res;
+        }
+
+        using const_iterator = typename std::vector<T>::const_iterator;
+
+        const_iterator begin() const
+        {
+            return coeffs_.cbegin();
+        }
+
+        const_iterator end() const
+        {
+            return coeffs_.cend();
+        }
+
+        void Print() const
+        {
+            std::cerr << coeffs_ << std::endl;
+        }
 };
 
 template <typename T>
@@ -270,8 +302,11 @@ void TestNonconstAccess()
     Polynomial<int> poly;
 
     poly[0] = 1;
+    poly.Print();
     poly[3] = 12;
+    poly.Print();
     poly[5] = 4;
+    poly.Print();
     ASSERT_EQUAL(poly.Degree(), 5);
 
     ASSERT_EQUAL(poly[0], 1);
