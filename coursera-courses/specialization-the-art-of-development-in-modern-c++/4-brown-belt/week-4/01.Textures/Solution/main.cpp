@@ -164,30 +164,17 @@ void TestCpp()
     canvas.SetSize({77, 17});
 
     // Буква "C" как разность двух эллипсов, один из которых нарисован цветом фона
-    canvas.AddShape(ShapeType::Ellipse,
-        {2, 1},
-    {30, 15},
-                                    MakeTextureCheckers({100, 100}, 'c', 'C'));
-    canvas.AddShape(ShapeType::Ellipse,
-        {8, 4},
-    {30, 9},
-                                    MakeTextureSolid({100, 100}, ' '));
+    canvas.AddShape(ShapeType::Ellipse, {2, 1}, {30, 15}, MakeTextureCheckers({100, 100}, 'c', 'C'));
+    canvas.AddShape(ShapeType::Ellipse, {8, 4}, {30, 9}, MakeTextureSolid({100, 100}, ' '));
 
     // Горизонтальные чёрточки плюсов
-    auto h1 = canvas.AddShape(ShapeType::Rectangle,
-        {54, 7},
-    {22, 3},
-                                                        MakeTextureSolid({100, 100}, '+'));
-    auto h2 = canvas.DuplicateShape(h1,
-        {30, 7});
+    auto h1 = canvas.AddShape(ShapeType::Rectangle, {54, 7}, {22, 3}, MakeTextureSolid({100, 100}, '+'));
+    auto h2 = canvas.DuplicateShape(h1, {30, 7});
 
     // Вертикальные чёрточки плюсов
-    auto v1 = canvas.DuplicateShape(h1,
-        {62, 3});
-    canvas.ResizeShape(v1,
-        {6, 11});
-    auto v2 = canvas.DuplicateShape(v1,
-        {38, 3});
+    auto v1 = canvas.DuplicateShape(h1, {62, 3});
+    canvas.ResizeShape(v1, {6, 11});
+    auto v2 = canvas.DuplicateShape(v1, {38, 3});
 
     stringstream output;
     canvas.Print(output);
@@ -223,5 +210,6 @@ int main()
     RUN_TEST(tr, TestSmallTexture);
     RUN_TEST(tr, TestCow);
     RUN_TEST(tr, TestCpp);
+    cerr << "OK!" << endl;
     return 0;
 }

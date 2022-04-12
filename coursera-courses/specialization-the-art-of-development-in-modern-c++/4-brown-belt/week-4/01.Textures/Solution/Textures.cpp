@@ -19,8 +19,7 @@ public:
     {
         auto width = static_cast<int>(image_.empty() ? 0 : image_[0].size());
         auto height = static_cast<int>(image_.size());
-        return
-        {width, height};
+        return {width, height};
     }
 
     const Image& GetImage() const override
