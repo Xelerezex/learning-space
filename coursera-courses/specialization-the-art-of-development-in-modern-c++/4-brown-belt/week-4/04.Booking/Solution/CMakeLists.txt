@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(UniquePtr)
+project(Booking)
 
 # set(CMAKE_CXX_COMPILER g++)
 set(CMAKE_CXX_COMPILER clang++)
@@ -10,7 +10,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ggdb3")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pipe")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror")
+# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wextra")
 
 # Debug mode ON
@@ -24,13 +24,16 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 add_library(
  	libraries
 	SHARED
+		new_trip_manager.h
+		new_booking_providers.h
+		booking.h
 		test_runner.h
 		profile.h
 		headers.h
 )
 
 add_executable(${PROJECT_NAME}
-  	unique_ptr.cpp
+  	test.cpp
 )
 
 # If there is no cpp file in add_library
