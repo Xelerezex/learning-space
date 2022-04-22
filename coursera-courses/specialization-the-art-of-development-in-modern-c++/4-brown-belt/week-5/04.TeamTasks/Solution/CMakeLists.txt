@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(Expresses)
+project(TeamTask)
 
 # set(CMAKE_CXX_COMPILER g++)
 set(CMAKE_CXX_COMPILER clang++)
@@ -30,7 +30,7 @@ add_library(
 )
 
 add_executable(${PROJECT_NAME}
-  	expresses.cpp
+  	team_task.cpp
 )
 
 # If there is no cpp file in add_library
