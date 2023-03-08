@@ -1,0 +1,12 @@
+# This config should be pregenerated with cmake:
+#    cmake -C config.txt <other_commands>
+# File exists like analogue for -D typing in command line
+
+# Set c compiler to clang
+set(CMAKE_C_COMPILER "/usr/bin/clang" CACHE STRING "Clang compiler" FORCE)
+
+# Set c++ compiler to clang++
+set(CMAKE_CXX_COMPILER "/usr/bin/clang++" CACHE STRING "Clang compiler++" FORCE)
+
+# Set ninja to file generator
+set(CMAKE_GENERATOR "Ninja" CACHE INTERNAL "" FORCE)
