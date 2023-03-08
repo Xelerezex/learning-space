@@ -1,0 +1,60 @@
+{
+    "name": "learning-space",
+
+    "build": {
+        "dockerfile": "Dockerfile"
+    },
+
+    //An array of Docker CLI arguments that should be used when running the container. Defaults to [].
+    // For example, this allows ptrace based debuggers like C++ to work in the container:
+    "runArgs": [
+        "--name=learning-space",
+        "-it",
+        "--privileged",
+        "--ipc=host",
+        "--volume=/tmp/.X11-unix:/tmp/.X11-unix",
+        "--env=DISPLAY=:0",
+        "--env=XAUTHORITY",
+        "--env=QT_X11_NO_MITSHM=:1"
+        // "--rm=true",
+    ],
+
+    // Set *default* container specific settings.json values on container create.
+    // "remoteEnv": {"MY_VARIABLE":"/dev/bus/usb:/dev/bus/usb"},
+
+    // Add the IDs of extensions you want installed when the container is created.
+    "customizations": {
+        "vscode": {
+            "extensions": [
+				"ms-vscode-remote.remote-containers",
+				"ms-vscode-remote.remote-ssh",
+				"ms-vscode-remote.remote-ssh-edit",
+				"ms-vscode.remote-explorer",
+				"ms-vscode-remote.remote-wsl",
+				"ms-vscode.cpptools-extension-pack",
+				"surajbarkale.ninja",
+				"twxs.cmake",
+				"ms-vscode.cpptools"
+			],
+            "settings": {
+                "terminal.integrated.profiles.linux": {
+                    "bash": {
+                        "path": "/bin/bash",
+                        "icon": "terminal-bash"
+                    }
+                }
+            }
+        }
+    },
+
+    // Use 'forwardPorts' to make a list of ports inside the container available locally.
+    // "forwardPorts": [],
+    // Use 'postCreateCommand' to run commands after the container is created.
+    "postCreateCommand": [
+    ]
+
+    // Indicates whether VS Code should stop the container when the VS Code window is closed / shut down.
+    // "shutdownAction": "stopContainer",
+    // Comment out this line to run as root instead.
+    // "remoteUser": "user"
+}

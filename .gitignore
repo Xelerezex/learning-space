@@ -9,6 +9,8 @@ __pycache__/
 # Unignore all with extensions
 !*.*
 
+# Unignore Dockerfile
+!Dockerfile
 
 # Ignore all object & output files
 *.out
