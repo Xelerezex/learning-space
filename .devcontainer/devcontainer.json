@@ -34,7 +34,8 @@
 				"ms-vscode.cpptools-extension-pack",
 				"surajbarkale.ninja",
 				"twxs.cmake",
-				"ms-vscode.cpptools"
+				"ms-vscode.cpptools",
+                "cschlosser.doxdocgen"
 			],
             "settings": {
                 "terminal.integrated.profiles.linux": {

@@ -13,12 +13,13 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wextra")
 
+#
+# MOVE ALL TO SEPARATED REPO
+#
+
 # Debug mode ON
-# -DCMAKE_BUILD_TYPE=Debug
 set(CMAKE_BUILD_TYPE Debug)
 set(CMAKE_CXX_FLAGS_DEBUG_INIT "-Wall")
 set(CMAKE_CXX_FLAGS_RELEASE_INIT "-Wall")
 
-add_executable(app main.cpp)
-
-target_link_libraries(app gtest gmock pthread)
+add_subdirectory(tests)
