@@ -1,0 +1,3 @@
+[submodule "stepik-courses/algorithmic-foundation"]
+	path = stepik-courses/algorithmic-foundation
+	url = https://gitlab.com/eternal-777/algorithmic-foundation.git
