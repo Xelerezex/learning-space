@@ -1,25 +1,36 @@
-# For Python
-__pycache__/
-.ipynb_checkpoints/
+# Prerequisites
+*.d
 
-# For C++:
-# Ignore all
-*
-
-# Unignore all with extensions
-!*.*
-
-# Unignore Dockerfile
-!Dockerfile
-
-# Ignore all object & output files
-*.out
+# Compiled Object files
+*.slo
+*.lo
 *.o
+*.obj
 
-# Unignore all dirs
-!*/
-!Makefile
-!Makefile-*
+# Precompiled Headers
+*.gch
+*.pch
 
-# Ignore folder for Cmake
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+# Build folder
 build/
+.cache/
